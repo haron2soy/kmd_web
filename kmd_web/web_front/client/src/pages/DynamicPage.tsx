@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRoute } from 'wouter';
+import { useParams } from 'wouter';
 import { PageLayout } from '@/components/PageLayout';
 import apiClient from '@/api/apiClient';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,18 +13,19 @@ interface PageData {
 }
 
 export default function DynamicPage() {
-  const [match, params] = useRoute('/pages/:slug');
+  //const [match, params] = useRoute('/pages/:slug');
+  const { slug } = useParams<{ slug: string }>();
   const [data, setData] = useState<PageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!match || !params?.slug) return;
-
+    //if (!match || !params?.slug) return;
+    if (!slug) return;
     setLoading(true);
     setError(null);
 
-    apiClient.get(`/pages/${params.slug}`)
+    apiClient.get(`/pages/${slug}/`)
       .then(response => {
         setData(response.data);
       })
@@ -35,9 +36,9 @@ export default function DynamicPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [match, params?.slug]);
+  }, [slug]);//[match, params?.slug]);
 
-  if (!match) return null;
+  //if (!match) return null;
 
   return (
     <PageLayout>
@@ -47,10 +48,10 @@ export default function DynamicPage() {
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary">
             {loading ? <Skeleton className="h-10 w-2/3 max-w-lg bg-slate-300" /> : data?.title || 'Page Not Found'}
           </h1>
-          <div className="flex items-center gap-2 mt-4 text-sm text-slate-500">
+             <div className="flex items-center gap-2 mt-4 text-sm text-slate-500">
              <span>Home</span>
              <span>/</span>
-             <span className="capitalize">{params?.slug.replace(/-/g, ' ')}</span>
+             <span className="capitalize">{slug?.replace(/-/g, ' ')}</span>
           </div>
         </div>
       </div>
@@ -76,11 +77,27 @@ export default function DynamicPage() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             ) : (
-              <div 
-                className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:text-primary prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
-                dangerouslySetInnerHTML={{ __html: data?.content || '' }} 
-              />
+              <>
+                <div
+                  className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:text-primary prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
+                  dangerouslySetInnerHTML={{ __html: data?.content || '' }}
+                />
+
+                {data?.created_at && (
+                  <div className="mt-10 pt-6 border-t border-slate-200 text-sm text-slate-500">
+                    Published on{" "}
+                    {new Date(data.created_at).toLocaleString("en-GB", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                )}
+              </>
             )}
+
           </div>
 
           {/* Sidebar Navigation (Contextual) */}

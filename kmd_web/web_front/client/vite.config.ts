@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    host:true,
     port: 5173, // Vite dev server port
     proxy: {
       // Proxy any request starting with /api to Nginx backend
@@ -17,7 +18,11 @@ export default defineConfig({
         target: "http://localhost", // Nginx (port 80)
         changeOrigin: true,
         secure: false,
+        
       },
+
     },
+    strictPort:true,
+    allowedHosts: ['rsmc.test', 'localhost'],
   },
 });
