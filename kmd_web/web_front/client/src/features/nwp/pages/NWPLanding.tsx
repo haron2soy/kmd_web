@@ -4,6 +4,7 @@ import { getNWPModels } from "../api";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Clock, AlertCircle } from "lucide-react";
+import { Link } from "wouter";
 
 interface NWPModel {
   id: string | number;
@@ -13,26 +14,31 @@ interface NWPModel {
   status?: "pending" | "live" | "deprecated";
   resolution?: string;
   updateFrequency?: string;
+  path?: string;
 }
 
-const ModelCard = ({ model }: { model: NWPModel }) => (
-  <div className="group relative p-6 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white">
-    <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-    
-    <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors mb-3">
-      {model.name}
-    </h3>
-    
-    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
-      {model.description || "No description available."}
-    </p>
+const ModelCard = ({ model }: { model: NWPModel }) => {
+  const cardContent = (
+    <div className="group relative p-6 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white cursor-pointer">
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      
+      <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors mb-3">
+        {model.name}
+      </h3>
+      
+      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+        {model.description || "No description available."}
+      </p>
 
-    <div className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
-      <Clock className="h-3.5 w-3.5" />
-      <span>Data integration pending</span>
+      <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+        <Clock className="h-3.5 w-3.5" />
+        <span>View model</span>
+      </div>
     </div>
-  </div>
-);
+  );
+
+  return model.path ? <Link href={model.path}>{cardContent}</Link> : cardContent;
+};
 
 const ModelSkeleton = () => (
   <div className="p-6 border border-gray-200 rounded-lg bg-white">

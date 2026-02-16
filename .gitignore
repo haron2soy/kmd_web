@@ -1,0 +1,18 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.sqlite3
+media/
+
+# Virtual environments
+venv/
+env/
+.rsmc-env/
+
+# VSCode
+.vscode/
+*.pyc
