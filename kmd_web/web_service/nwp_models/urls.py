@@ -1,17 +1,26 @@
-#nwp_models/urls.py
+# nwp_models/urls.py
 from django.urls import path
-#from .views import wrf_field
-from .views import GeoDataView
-from .tiles import tile_view
+from . import views
+from . import tiles
 
 urlpatterns = [
-    #path("nwp-models/field/", wrf_field, name="wrf_field"),
-    #path("layers/", views.available_layers),
-    #path("layer/<str:variable>/", views.get_layer),
-    path("wrf/", GeoDataView.as_view(), name="geodata-grid"),
+    # GeoData grid endpoint (your original)
+    path("wrf/", views.GeoDataView.as_view(), name="geodata-grid"),
+    
+    # Tile serving endpoints
     path(
         "wrf/<str:variable>/<int:z>/<int:x>/<int:y>.png",
-        tile_view,
+        tiles.tile_view,
         name="wrf-tile",
     ),
+    
+    # Metadata endpoint
+    path('metadata/', 
+         tiles.metadata_view, name='wrf-metadata'),
+    
+    # Original API endpoints
+    path('layers/', 
+         views.available_layers, name='wrf-layers'),
+    path('layer/<str:variable>/', 
+         views.get_layer, name='wrf-layer'),
 ]
