@@ -8,6 +8,7 @@ __pycache__/
 *.sqlite3
 media/
 nwp_models_data/
+kmd_web/web_service/nwp_models/data/
 
 # Virtual environments
 venv/
