@@ -1,3 +1,4 @@
+//src/features/nwp/components/WrfMap.tsx
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { Map, ImageSource } from "maplibre-gl";
 import type {LngLatBoundsLike} from "maplibre-gl";

@@ -1,77 +1,145 @@
 # nwp_models/views.py
+
 """
-API endpoints for WRF visualization (scalable for large files)
-Serves Cloud-Optimized GeoTIFFs (COGs) and tile URLs instead of full arrays.
+CONTROL PLANE (Django)
+
+- Provides metadata
+- Provides tile endpoints
+- Proxies FastAPI (data plane)
+- DOES NOT touch NetCDF directly
 """
 
+import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+
 from django.conf import settings
 
-from .services.wrf_to_cog import generate_cog
-from .services.tiling import build_tile_url
 from .services.cache import get_or_set
 
-'''WRF_FILE = "data/wrfout.nc"
-BASE_URL = "http://localhost:8000/media/cog/"'''
+
+# -----------------------------------
+# CONFIG
+# -----------------------------------
+FASTAPI_URL = "http://127.0.0.1:8001"
 
 
+# -----------------------------------
+# AVAILABLE LAYERS
+# -----------------------------------
 @api_view(["GET"])
 def available_layers(request):
-    """
-    List all available WRF layers for visualization
-    """
     return Response({
-        "layers": ["precip", "t2"]
+        "layers": [
+            "T2",
+            "PRECIP",
+            "RH",
+            "U10",
+            "V10"
+        ]
     })
 
 
+# -----------------------------------
+# TILE URL PROVIDER (NO PROCESSING)
+# -----------------------------------
 @api_view(["GET"])
 def get_layer(request, variable: str):
     """
-    Returns tile URLs for a WRF variable
+    Returns tile URL for frontend map
+    Example:
+    /api/wrf/layer/T2?file=wrfout_d01_2026-02-11_12:00:00
     """
-    cache_key = f"wrf:{variable}"
 
-    def compute():
-        # Convert WRF variable to a COG if not already exists
-        cog_path = generate_cog(WRF_FILE, variable)
+    file = request.GET.get("file")
+    time_index = request.GET.get("time_index", 0)
 
-        # Build XYZ tile endpoint for frontend (deck.gl / Mapbox)
-        tile_url = build_tile_url(cog_path)
-        return {"variable": variable, "tile_url": tile_url}
+    if not file:
+        return Response({"error": "Missing file"}, status=400)
 
-    data = get_or_set(cache_key, compute, timeout=1800)
-    return Response(data)
+    # Build Django tile endpoint (NOT FastAPI)
+    tile_url = (
+        f"/api/wrf/tiles/{variable}/{{z}}/{{x}}/{{y}}.png"
+        f"?file={file}&time_index={time_index}"
+    )
+
+    return Response({
+        "variable": variable,
+        "tile_url": tile_url
+    })
 
 
+# -----------------------------------
+# FASTAPI PROXY (RAW FIELD)
+# -----------------------------------
+@api_view(["GET"])
+def field_proxy(request):
+    """
+    Proxy raw binary data from FastAPI
+    """
+
+    file = request.GET.get("file")
+    variable = request.GET.get("variable", "T2")
+    time_index = request.GET.get("time_index", 0)
+
+    if not file:
+        return Response({"error": "Missing file"}, status=400)
+
+    try:
+        resp = requests.get(
+            f"{FASTAPI_URL}/field",
+            params={
+                "file": file,
+                "variable": variable,
+                "time_index": time_index
+            },
+            timeout=30
+        )
+
+        if resp.status_code != 200:
+            return Response({"error": "FastAPI error"}, status=502)
+
+        return Response({
+            "size_bytes": len(resp.content),
+            "dtype": "float32"
+        })
+
+    except requests.exceptions.RequestException:
+        return Response({"error": "FastAPI unavailable"}, status=502)
+
+
+# -----------------------------------
+# LIGHTWEIGHT PREVIEW (OPTIONAL)
+# -----------------------------------
 class GeoDataView(APIView):
     """
-    Handles on-demand GeoData requests (e.g., downsampled previews or metadata)
-    Instead of returning full arrays, return small preview or stats
+    Only metadata / preview — NEVER full arrays
     """
 
     def get(self, request):
-        from .serializers import GeoDataRequestSerializer
-        serializer = GeoDataRequestSerializer(data=request.GET)
-        serializer.is_valid(raise_exception=True)
-        params = serializer.validated_data
 
-        cache_key = f"wrf_preview:{params['variable']}:{params.get('time_index',0)}"
+        variable = request.GET.get("variable", "T2")
 
-        def fetch_preview():
-            """
-            ⚡ IMPORTANT:
-            Only return small preview or metadata, not full array!
-            """
-            from .services.netcdf import extract_variable
-            return extract_variable(
-                params["file"],
-                params["variable"],
-                params.get("time_index", 0),
-                downsample=10  # 10x downsample to reduce memory usage
-            )
+        cache_key = f"wrf:preview:{variable}"
 
-        data = get_or_set(cache_key, fetch_preview, timeout=1800)
+        def fetch():
+            try:
+                resp = requests.get(
+                    f"{FASTAPI_URL}/field",
+                    params={
+                        "variable": variable
+                    },
+                    timeout=10
+                )
+
+                return {
+                    "status": "ok",
+                    "size_bytes": len(resp.content)
+                }
+
+            except:
+                return {"error": "FastAPI unavailable"}
+
+        data = get_or_set(cache_key, fetch, timeout=600)
         return Response(data)

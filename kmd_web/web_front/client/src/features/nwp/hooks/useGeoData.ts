@@ -1,5 +1,5 @@
 // Hook to connect Django API → frontend
-
+//src/features/components/useGeoData.tsx
 import { useQuery } from "@tanstack/react-query";
 
 export function useGeoData(variable: string, timeIndex: number) {

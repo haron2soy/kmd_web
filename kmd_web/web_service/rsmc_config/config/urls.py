@@ -22,5 +22,6 @@ urlpatterns = [
     path("api/", include("home.home.urls")),
     path("api/", include("pages.urls")),
     path("api/nwp-models/", include("nwp_models.urls")),
+    path("api/wrf/", include("nwp_models.urls")),  # central entry point
 
 ]

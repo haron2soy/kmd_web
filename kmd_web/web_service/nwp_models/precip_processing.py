@@ -1,5 +1,5 @@
 # nwp_models/precip_processing.py
-
+'''
 import xarray as xr
 import numpy as np
 import rioxarray
@@ -39,3 +39,4 @@ def wrf_to_geotiff(nc_file: str, output_path: str):
     ds.close()
 
     return output_path
+'''

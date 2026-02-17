@@ -1,3 +1,4 @@
+//src/features/nwp/components/LayerControl.tsx
 // Variable selector
 
 export default function LayerControl({ variable, setVariable }: any) {

@@ -1,26 +1,56 @@
-# nwp_models/urls.py
+#nwp_models/urls.py
 from django.urls import path
 from . import views
-from . import tiles
-
+from .tiles import tile_view, metadata_view
+from .fastapi_views import wrf_field
 urlpatterns = [
-    # GeoData grid endpoint (your original)
-    path("wrf/", views.GeoDataView.as_view(), name="geodata-grid"),
-    
-    # Tile serving endpoints
+    # -------------------------------
+    # CONTROL PLANE (Django-owned)
+    # -------------------------------
+
+    # Metadata (can stay in Django OR proxy to FastAPI later)
     path(
-        "wrf/<str:variable>/<int:z>/<int:x>/<int:y>.png",
-        tiles.tile_view,
-        name="wrf-tile",
+        "metadata/",
+        metadata_view,
+        name="wrf-metadata"
     ),
-    
-    # Metadata endpoint
-    path('metadata/', 
-         tiles.metadata_view, name='wrf-metadata'),
-    
-    # Original API endpoints
-    path('layers/', 
-         views.available_layers, name='wrf-layers'),
-    path('layer/<str:variable>/', 
-         views.get_layer, name='wrf-layer'),
+
+    # Available layers (UI support)
+    path(
+        "layers/",
+        views.available_layers,
+        name="wrf-layers"
+    ),
+
+    # Layer request (SHOULD proxy FastAPI now ⚠️)
+    path(
+        "layer/<str:variable>/",
+        views.get_layer,
+        name="wrf-layer"
+    ),
+
+    # -------------------------------
+    # TILE API (Django gateway)
+    # -------------------------------
+    path(
+        "tiles/<str:variable>/<int:z>/<int:x>/<int:y>.png",
+        tile_view,
+        name="wrf-tile"
+    ),
+
+    # -------------------------------
+    # OPTIONAL (LEGACY / DEBUG)
+    # -------------------------------
+    path(
+        "wrf/",
+        views.GeoDataView.as_view(),
+        name="geodata-grid"
+    ),
+
+     
+     path(
+          "field/", 
+          wrf_field, 
+          name="field"
+     ),
 ]

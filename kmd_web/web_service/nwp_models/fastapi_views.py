@@ -1,3 +1,4 @@
+#nwp_models/fastapi_views.py
 import requests
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET

@@ -1,4 +1,4 @@
-# nwp-models/tiles.py (improved version)
+# nwp-models/tiles.py
 
 """
 Generates 256x256 PNG XYZ tiles from WRF NetFILES.
@@ -8,7 +8,7 @@ Properly handles geographic coordinates and includes base map.
 import os
 from io import BytesIO
 from functools import lru_cache
-
+import requests
 import xarray as xr
 import numpy as np
 import pyproj
@@ -216,40 +216,55 @@ def to_png_with_colormap(arr: np.ndarray, variable: str) -> Image.Image:
 # API endpoints
 # -------------------------------
 def tile_view(request, variable: str, z: int, x: int, y: int, model: str = "default"):
-    """Serve WRF tiles with proper geographic bounds"""
-    
     file = request.GET.get("file")
     time_index = int(request.GET.get("time_index", 0))
-    opacity = float(request.GET.get("opacity", 0.8))
-    
+
     cache_key = f"tile:{model}:{variable}:{z}:{x}:{y}:{time_index}:{file}"
-    
+
     def generate():
         try:
-            ds = get_dataset(file)
-            
-            # Use geographic extraction
-            tile_arr = extract_tile_geographic(ds, variable, time_index, z, x, y)
-            img = to_png_with_colormap(tile_arr, variable)
-            
+            # 🔥 CALL FASTAPI INSTEAD OF LOADING DATA LOCALLY
+            response = requests.get(
+                "http://localhost:8001/field",
+                params={
+                    "file": file,
+                    "variable": variable,
+                    "time_index": time_index
+                },
+                timeout=30
+            )
+
+            if response.status_code != 200:
+                return None
+
+            # Convert bytes → numpy
+            data = np.frombuffer(response.content, dtype=np.float32)
+
+            # 🔧 reshape (IMPORTANT: must match your domain)
+            data = data.reshape((300, 264))  # <-- your domain
+
+            # Continue with existing pipeline
+            arr = extract_tile_geographic_from_array(data, z, x, y)
+            img = to_png_with_colormap(arr, variable)
+
             buf = BytesIO()
             img.save(buf, format="PNG")
             return buf.getvalue()
-            
+
         except Exception as e:
-            print(f"Tile generation error: {e}")
+            print(f"Tile error: {e}")
             return None
-    
+
     png_bytes = get_or_set(cache_key, generate, timeout=3600)
-    
+
     if png_bytes is None:
-        # Return transparent tile on error
         transparent = Image.new('RGBA', (TILE_SIZE, TILE_SIZE), (0, 0, 0, 0))
         buf = BytesIO()
         transparent.save(buf, format="PNG")
         return HttpResponse(buf.getvalue(), content_type="image/png")
-    
+
     return HttpResponse(png_bytes, content_type="image/png")
+
 
 
 def metadata_view(request):
@@ -288,3 +303,18 @@ def metadata_view(request):
         
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+
+def extract_tile_geographic_from_array(data, z, x, y):
+    """
+    Same logic as before but using raw numpy array
+    (skip lat/lon masking for now — fast mode)
+    """
+
+    from skimage.transform import resize
+
+    return resize(
+        data,
+        (TILE_SIZE, TILE_SIZE),
+        preserve_range=True,
+        anti_aliasing=True
+    ).astype(np.float32)

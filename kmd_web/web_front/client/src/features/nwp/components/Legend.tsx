@@ -1,5 +1,5 @@
 // Legend.tsx
-
+//src/features/nwp/components/Legend.tsx
 type LegendProps = {
   variable: string;
 };

@@ -1,5 +1,5 @@
 // Time control
-
+//src/features/nwp/components/TimeSlider.tsx
 interface Props {
   value: number;
   onChange: (v: number) => void;
