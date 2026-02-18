@@ -1,67 +1,104 @@
-#nwp_models/fastapi_views.py
+# nwp_models/fastapi_views.py
+
+"""
+Django → FastAPI proxy (CONTROL PLANE)
+
+Responsibilities:
+- Validate incoming requests
+- Optional authentication / authorization
+- Forward requests to FastAPI
+- Return raw binary payload unchanged
+- Forward metadata headers
+
+This module MUST NOT:
+- Read NetCDF files
+- Use numpy / xarray
+- Apply colormaps
+- Understand tiles or geography
+"""
+
 import requests
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
 
-FASTAPI_URL = "http://127.0.0.1:8001/"
+FASTAPI_BASE_URL = "http://127.0.0.1:8001"
 
 
 @require_GET
 def wrf_field(request):
     """
-    Django endpoint:
-    /api/wrf/field/?datetime=...&variable=T2
+    Endpoint:
+      /api/wrf/field/?datetime=YYYY-MM-DDTHH:MM&variable=T2
 
-    Role:
-    - validation
-    - auth (optional)
-    - proxy to FastAPI
+    Returns:
+      - Raw binary array (float32)
+      - Metadata via HTTP headers
     """
 
+    # -------------------------
+    # Validate query parameters
+    # -------------------------
     datetime = request.GET.get("datetime")
     variable = request.GET.get("variable", "T2")
 
-    # -------------------------
-    # Validate request
-    # -------------------------
     if not datetime:
-        return JsonResponse({"error": "Missing datetime"}, status=400)
+        return JsonResponse(
+            {"error": "Missing required parameter: datetime"},
+            status=400
+        )
 
     # -------------------------
-    # OPTIONAL: Auth layer
+    # Optional authentication
     # -------------------------
     # if not request.user.is_authenticated:
     #     return JsonResponse({"error": "Unauthorized"}, status=401)
 
+    # -------------------------
+    # Proxy request to FastAPI
+    # -------------------------
     try:
-        resp = requests.get(
-            f"{FASTAPI_URL}/field",
-            params={"datetime": datetime, "variable": variable},
-            timeout=15
+        upstream = requests.get(
+            f"{FASTAPI_BASE_URL}/field",
+            params={
+                "datetime": datetime,
+                "variable": variable,
+            },
+            timeout=20,
         )
     except requests.exceptions.RequestException:
-        return JsonResponse({"error": "FastAPI unavailable"}, status=502)
+        return JsonResponse(
+            {"error": "FastAPI service unavailable"},
+            status=502
+        )
 
     # -------------------------
-    # Handle errors
+    # Handle upstream errors
     # -------------------------
-    if resp.status_code != 200:
+    if upstream.status_code != 200:
         try:
-            return JsonResponse(resp.json(), status=resp.status_code)
-        except Exception:
-            return JsonResponse({"error": "Upstream error"}, status=resp.status_code)
+            return JsonResponse(
+                upstream.json(),
+                status=upstream.status_code
+            )
+        except ValueError:
+            return JsonResponse(
+                {"error": "Upstream FastAPI error"},
+                status=upstream.status_code
+            )
 
     # -------------------------
-    # Return binary data
+    # Return raw binary response
     # -------------------------
     response = HttpResponse(
-        resp.content,
-        content_type="application/octet-stream"
+        upstream.content,
+        content_type="application/octet-stream",
     )
 
+    # -------------------------
     # Forward metadata headers
-    response["X-Shape"] = resp.headers.get("X-Shape", "")
-    response["X-Dtype"] = resp.headers.get("X-Dtype", "")
-    response["X-Variable"] = resp.headers.get("X-Variable", variable)
+    # -------------------------
+    for header in ("X-Shape", "X-Dtype", "X-Variable"):
+        if header in upstream.headers:
+            response[header] = upstream.headers[header]
 
     return response

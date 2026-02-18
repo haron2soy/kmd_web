@@ -1,7 +1,7 @@
 #nwp_models/urls.py
 from django.urls import path
 from . import views
-from .tiles import tile_view, metadata_view
+from .tiles import tile_view
 from .fastapi_views import wrf_field
 urlpatterns = [
     # -------------------------------
@@ -9,11 +9,7 @@ urlpatterns = [
     # -------------------------------
 
     # Metadata (can stay in Django OR proxy to FastAPI later)
-    path(
-        "metadata/",
-        metadata_view,
-        name="wrf-metadata"
-    ),
+     
 
     # Available layers (UI support)
     path(
@@ -41,12 +37,7 @@ urlpatterns = [
     # -------------------------------
     # OPTIONAL (LEGACY / DEBUG)
     # -------------------------------
-    path(
-        "wrf/",
-        views.GeoDataView.as_view(),
-        name="geodata-grid"
-    ),
-
+    
      
      path(
           "field/", 

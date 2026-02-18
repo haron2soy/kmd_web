@@ -1,8 +1,9 @@
+//src/features/nwp/WrfViewer.tsx
 import { useState } from "react";
 import MapView from "@/features/nwp/components/MapView";
 import LayerControl from "../components/LayerControl";
 import Legend from "../components/Legend";
-
+//import WrfMap from "@/features/nwp/components/WrfMap";
 export default function WrfViewer() {
   const [variable, setVariable] = useState("T2");
 
@@ -16,7 +17,7 @@ export default function WrfViewer() {
       {/* Map */}
       <div className="flex-1 relative">
         <MapView variable={variable} timeIndex={0} />
-
+        
         <div className="absolute bottom-4 left-4">
           <Legend variable={variable} />
         </div>
