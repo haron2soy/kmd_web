@@ -8,6 +8,8 @@ __pycache__/
 *.sqlite3
 media/
 nwp_models_data/
+nwp_models_data_test/
+generated_maps/
 
 # Virtual environments
 venv/
