@@ -1,77 +1,119 @@
 # nwp_models/views.py
-"""
-API endpoints for WRF visualization (scalable for large files)
-Serves Cloud-Optimized GeoTIFFs (COGs) and tile URLs instead of full arrays.
-"""
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .tasks import process_new_wrf
+import os
+import json
+from django.http import FileResponse, HttpResponseBadRequest
 from django.conf import settings
 
-from .services.wrf_to_cog import generate_cog
-from .services.tiling import build_tile_url
-from .services.cache import get_or_set
 
-'''WRF_FILE = "data/wrfout.nc"
-BASE_URL = "http://localhost:8000/media/cog/"'''
+BASE_MAP_DIR = "/home/haron/kmd/generated_maps"
 
+@api_view(["POST"])
+def notify_new_wrf(request):
+    nc_path = request.data["path"]
+    process_new_wrf.delay(nc_path)
+    return Response({"status": "accepted"})
 
 @api_view(["GET"])
-def available_layers(request):
-    """
-    List all available WRF layers for visualization
-    """
+def get_wrf_metadata(request):
+    datetime = request.GET.get("file")
+
+    if not datetime:
+        return Response({"error": "Missing file parameter"}, status=400)
+
+    # ⚠️ Replace later with dynamic extraction from NetCDF
+    bounds = [
+        [33.0, -5.0],
+        [42.0, -5.0],
+        [42.0, 5.0],
+        [33.0, 5.0],
+    ]
+
     return Response({
-        "layers": ["precip", "t2"]
+        "bounds": bounds,
+        "projection": "EPSG:4326",
     })
 
+'''def get_wrf_field(request):
+    datetime = request.GET.get("datetime")
+    variable = request.GET.get("variable")
 
-@api_view(["GET"])
-def get_layer(request, variable: str):
-    """
-    Returns tile URLs for a WRF variable
-    """
-    cache_key = f"wrf:{variable}"
+    if not datetime or not variable:
+        return HttpResponseBadRequest("Missing parameters")
 
-    def compute():
-        # Convert WRF variable to a COG if not already exists
-        cog_path = generate_cog(WRF_FILE, variable)
+    run_id = datetime
+    folder = os.path.join(BASE_MAP_DIR, run_id)
 
-        # Build XYZ tile endpoint for frontend (deck.gl / Mapbox)
-        tile_url = build_tile_url(cog_path)
-        return {"variable": variable, "tile_url": tile_url}
+    # Map variable → filename
+    variable_map = {
+        "PRECIP": "rainfall_map.png",
+        "T2": "temperature_map.png",
+        "WIND": "wind_map.png",
+    }
 
-    data = get_or_set(cache_key, compute, timeout=1800)
-    return Response(data)
+    filename = variable_map.get(variable)
 
+    if not filename:
+        return HttpResponseBadRequest("Invalid variable")
 
-class GeoDataView(APIView):
-    """
-    Handles on-demand GeoData requests (e.g., downsampled previews or metadata)
-    Instead of returning full arrays, return small preview or stats
-    """
+    file_path = os.path.join(folder, f"{run_id}_{filename}")
 
-    def get(self, request):
-        from .serializers import GeoDataRequestSerializer
-        serializer = GeoDataRequestSerializer(data=request.GET)
-        serializer.is_valid(raise_exception=True)
-        params = serializer.validated_data
+    if not os.path.exists(file_path):
+        return HttpResponseBadRequest("File not found")
 
-        cache_key = f"wrf_preview:{params['variable']}:{params.get('time_index',0)}"
+    # 🔥 IMPORTANT: Hardcoded bounds (replace later with dynamic)
+    bounds = [
+        [33.0, -5.0],   # SW
+        [42.0, -5.0],   # SE
+        [42.0, 5.0],    # NE
+        [33.0, 5.0],    # NW
+    ]
 
-        def fetch_preview():
-            """
-            ⚡ IMPORTANT:
-            Only return small preview or metadata, not full array!
-            """
-            from .services.netcdf import extract_variable
-            return extract_variable(
-                params["file"],
-                params["variable"],
-                params.get("time_index", 0),
-                downsample=10  # 10x downsample to reduce memory usage
-            )
+    response = FileResponse(open(file_path, "rb"), content_type="image/png")
+    response["X-Domain-Bounds"] = json.dumps(bounds)
 
-        data = get_or_set(cache_key, fetch_preview, timeout=1800)
-        return Response(data)
+    return response'''
+
+def get_wrf_field(request):
+    datetime = request.GET.get("datetime")
+    variable = request.GET.get("variable")
+
+    if not datetime or not variable:
+        return HttpResponseBadRequest("Missing parameters")
+
+    run_id = f"d01_{datetime}"
+    folder = os.path.join(BASE_MAP_DIR, run_id)
+
+    variable_map = {
+        "PRECIP": "rainfall_map.png",
+        "T2": "temperature_map.png",
+        "WIND": "wind_map.png",
+    }
+
+    filename = variable_map.get(variable.upper())
+    if not filename:
+        return HttpResponseBadRequest("Invalid variable")
+
+    file_path = os.path.join(folder, f"{run_id}_{filename}")
+
+    if not os.path.exists(file_path):
+        return HttpResponseBadRequest(f"File not found: {file_path}")
+
+    bounds = [
+        [33.0, -5.0],
+        [42.0, -5.0],
+        [42.0, 5.0],
+        [33.0, 5.0],
+    ]
+
+    response = FileResponse(open(file_path, "rb"), content_type="image/png")
+
+    # 🔥 Important headers
+    response["X-Domain-Bounds"] = json.dumps(bounds)
+    response["Cache-Control"] = "public, max-age=3600"
+    response["Access-Control-Expose-Headers"] = "X-Domain-Bounds"
+
+    return response
+

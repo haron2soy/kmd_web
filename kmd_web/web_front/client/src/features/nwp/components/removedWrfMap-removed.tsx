@@ -1,9 +1,10 @@
+//nwp/components/WrfMap.tsx
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { Map, ImageSource } from "maplibre-gl";
 import type {LngLatBoundsLike} from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-type Variable = "PRECIP" | "T2";
+type Variable = "PRECIP" | "T2"| "WIND";
 
 export default function WrfMap() {
   const mapContainer = useRef<HTMLDivElement | null>(null);

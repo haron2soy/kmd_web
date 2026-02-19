@@ -1,5 +1,5 @@
 """
-URL configuration for kmd_web project.
+URL configuration for rsmc_config.config.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include("home.home.urls")),
     path("api/", include("pages.urls")),
-    path("api/nwp-models/", include("nwp_models.urls")),
+    path("api/nwp_models/", include("nwp_models.urls")),
 
 ]

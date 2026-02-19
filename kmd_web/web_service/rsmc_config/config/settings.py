@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962'
-
+#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+#DATABASES["default"]["PASSWORD"] = os.getenv("DB_PASSWORD")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -147,10 +148,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
 MEDIA_URL = "/media/"
 WRF_DATA_DIR = "/home/haron/kmd/nwp_models_data/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+#MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
@@ -181,3 +183,17 @@ CACHES = {
         }
     }
 }
+
+# Celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+# Celery Enhancements
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_TIMEZONE = "UTC"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_TASK_ACKS_LATE = True
+CELERY_TASK_TIME_LIMIT = 1800
+CELERY_TASK_SOFT_TIME_LIMIT = 1500
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 10
