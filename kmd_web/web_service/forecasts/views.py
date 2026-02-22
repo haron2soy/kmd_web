@@ -35,7 +35,7 @@ def latest_forecast(request):
 
     if forecast:
         return Response({
-            "image": request.build_absolute_uri(forecast.map_image.url),
+            "image": forecast.map_image.url,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
             "day": day_int
         })
@@ -77,7 +77,7 @@ def latest_forecast(request):
     )
 
     return Response({
-        "image": request.build_absolute_uri(forecast.map_image.url),
+        "image": forecast.map_image.url,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
         "day": day_int
     })
