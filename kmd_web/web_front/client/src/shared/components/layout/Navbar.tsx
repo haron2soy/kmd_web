@@ -109,25 +109,25 @@ export function Navbar() {
 
             {/* Home dropdown */}
             <li className="relative group">
-              <Link href="/">
-                <a className={cn(
+              <Link href="/"
+                className={cn(
                   "flex items-center gap-1 px-2 py-4 transition-colors hover:bg-white/10 border-b-4 border-transparent",
                   isHomeActive && "border-accent bg-white/10"
                 )}>
                   Home
                   <ChevronDown className="h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />
-                </a>
+                
               </Link>
               <div className="absolute left-0 top-full hidden group-hover:block pt-1">
                 <div className="bg-primary/95 backdrop-blur-sm border border-white/10 rounded-md shadow-xl min-w-[220px] py-2">
                   {homeSubmenu.map(link => (
-                    <Link key={link.href} href={link.href}>
-                      <a className={cn(
+                    <Link key={link.href} href={link.href}
+                       className={cn(
                         "block px-5 py-2.5 text-sm hover:bg-white/10 transition-colors",
                         isActive(link.href) && "bg-white/15 font-semibold"
                       )}>
                         {link.label}
-                      </a>
+                      
                     </Link>
                   ))}
                 </div>
@@ -142,14 +142,14 @@ export function Navbar() {
 
               return (
                 <li key={item.href} className="relative group">
-                  <Link href={item.href}>
-                    <a className={cn(
+                  <Link href={item.href}
+                     className={cn(
                       "flex items-center gap-1 px-2 py-4 transition-colors hover:bg-white/10 border-b-4 border-transparent",
                       itemActive && "border-accent bg-white/10"
                     )}>
                       {item.label}
                       {item.submenu && <ChevronDown className="h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />}
-                    </a>
+                    
                   </Link>
 
                   {item.submenu && (
@@ -163,13 +163,13 @@ export function Navbar() {
                               </div>
                             )}
                             {(sub.items || [sub]).map(link => (
-                              <Link key={link.href} href={link.href}>
-                                <a className={cn(
+                              <Link key={link.href} href={link.href}
+                                 className={cn(
                                   "block px-6 py-2.5 text-sm hover:bg-white/10 transition-colors",
                                   isActive(link.href) && "bg-white/15 font-semibold"
                                 )}>
                                   {link.label}
-                                </a>
+                                
                               </Link>
                             ))}
                           </div>

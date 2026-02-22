@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+//import path from "path";
 
-export default defineConfig({
+/*export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
@@ -15,7 +15,8 @@ export default defineConfig({
     proxy: {
       // Proxy any request starting with /api to Nginx backend
       "/api": {
-        target: "http://localhost", // Nginx (port 80)
+        //target: "http://localhost", // Nginx (port 80)
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
         
@@ -25,4 +26,21 @@ export default defineConfig({
     strictPort:true,
     allowedHosts: ['rsmc.test', 'localhost'],
   },
-});
+});*/
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+      '/uploads': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
+  },
+})
+

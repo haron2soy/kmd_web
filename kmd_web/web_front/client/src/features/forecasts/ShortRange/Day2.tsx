@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { ImageViewer } from "../components/ImageViewer";
 
-const IMAGE_PATH = "/uploads/forecasts/short-range/day2.jpg";
+const IMAGE_PATH = "http://127.0.0.1:8000/uploads/rsmc/2026/february/feb-21/rsmc01.jpg";
 
 // Related links – Day 2 is marked active
 const relatedLinks = [

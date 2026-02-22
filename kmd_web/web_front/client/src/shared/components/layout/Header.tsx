@@ -7,8 +7,8 @@ export function Header() {
     <header className="bg-white border-b-4 border-primary">
       <div className="container mx-auto px-4 py-4 flex items-center gap-6">
 
-        <Link href="/">
-          <a className="relative flex items-center gap-4 group cursor-pointer select-none caret-transparent">
+        <Link href="/"
+           className="relative flex items-center gap-4 group cursor-pointer select-none caret-transparent">
             <img
               src={logo}
               alt="Regional Specialized Meteorological Centre (RSMC) Logo"
@@ -23,7 +23,7 @@ export function Header() {
                 Serving the Region with Excellence in Meteorology
               </p>
             </div>
-          </a>
+          
         </Link>
 
         <div className="ml-auto hidden lg:block select-none caret-transparent">
