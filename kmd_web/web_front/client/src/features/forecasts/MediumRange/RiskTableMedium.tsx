@@ -2,15 +2,15 @@
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { FileViewer } from "../components/FileViewer";
+import { useEffect, useState } from "react";
+import { useScrollToHeaderDoc } from "../components/scrollToHeaderDoc";
 //import React from "react";
-  
-  // Assume uploaded to /uploads/forecasts/medium-range/risk_table_medium.doc
-const FILE_PATH = "/uploads/forecasts/medium-range/risk_table_medium.doc";
-  
+
   // Related links 
   const relatedLinks = [
     { href: "/forecasts/day-1", label: "Day 1 Forecast" },
     { href: "/forecasts/day-2", label: "Day 2 Forecast" },
+     { href: "/forecasts/day-4", label: "Day 4 Forecast" },
     { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
     { href: "/forecasts/archive", label: "Forecast Archive" },
   ];
@@ -32,13 +32,56 @@ const FILE_PATH = "/uploads/forecasts/medium-range/risk_table_medium.doc";
   );
   
   export default function RiskTableMedium() {
+    const [document, setDocument] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    // Scroll to top on mount
+     const { headerRef } = useScrollToHeaderDoc(80, !loading);
+    // Fetch Latest Medium-range Risk table document
+    useEffect(() => {
+      fetch("/api/forecasts/latest-doc/?slug=medium-risktable")
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (data?.document) {
+            // Django media URLs are already complete (e.g., /media/rsmc/2026/february/feb-22/file.doc)
+            setDocument(data.document);
+          } else {
+            setError(data?.error || "Document not found");
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch latest forecast:", err);
+          setError("Failed to load document");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
+          <div className="text-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading Medium Range Risk Table...</p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
     return (
       <PageLayout>  {/* ← uses Header + Navbar, but skips extra hero because no title prop */}
-        <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
+        <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
           <div className="lg:grid lg:grid-cols-12 lg:gap-10">
             {/* Main content area */}
             <div className="lg:col-span-9">
-              <header className="mb-10 md:mb-12">
+              <header ref={headerRef} className="mb-10 md:mb-12">
                 <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
                   Risk Table Medium Range
                 </h1>
@@ -48,12 +91,23 @@ const FILE_PATH = "/uploads/forecasts/medium-range/risk_table_medium.doc";
               </header>
   
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                {error ? (
+                  <div className="p-8 text-center">
+                    <div className="text-red-600 mb-4">⚠️</div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Document Unavailable</h3>
+                    <p className="text-gray-600 mb-6">{error}</p>
+                    <p className="text-sm text-gray-500">
+                      Check back later or contact support if this persists.
+                    </p>
+                  </div>
+                ) : (
                 <FileViewer
                   title="Medium Range Risk Table"
                   description="Monthly Medium range forecast risk table document"
-                  fileUrl={FILE_PATH}
+                  fileUrl={document || '/document.doc'}
                   fileType="doc"
                 />
+                )}
               </div>
             </div>
   

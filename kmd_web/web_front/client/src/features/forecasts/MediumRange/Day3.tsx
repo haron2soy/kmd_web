@@ -1,11 +1,11 @@
 // src/features/forecasts/pages/Day3.tsx
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
-import { ImageViewer } from "../components/ImageViewer";
+import { useEffect } from "react";
+import { useScrollToHeader } from "../components/scrollToHeader";
 
-const IMAGE_PATH = "/uploads/forecasts/medium-range/day3.jpg";
 
-// Related links – 
+// Related links 
 const relatedLinks = [
   { href: "/forecasts/day-4", label: "Day 4 Forecast" },
   { href: "/forecasts/day-5", label: "Day 5 Forecast" },
@@ -31,13 +31,32 @@ const SidebarLink = ({ href, label, isActive = false }: { href: string; label: s
 );
 
 export default function Day3() {
+  
+  //const [image, setImage] = useState<string | null>(null);
+  const { image, setImage, headerRef } = useScrollToHeader(80);
+  // Scroll to top on mount
+ 
+
+    // Fetch latest Day 3 forecast
+    useEffect(() => {
+      fetch("/api/forecasts/latest/?day=3")
+        .then(res => res.json())
+        .then(data => {
+          if (data?.image) {
+            // Ensure image points to /uploads/... for Nginx
+            setImage(data.image.startsWith("/uploads/") ? data.image : `/uploads/${data.image}`);
+          }
+        })
+        .catch(err => console.error("Failed to fetch latest forecast:", err));
+    }, []);
+
   return (
     <PageLayout>  {/* ← uses Header + Navbar, but skips extra hero because no title prop */}
-      <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
+      <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
           {/* Main content area */}
           <div className="lg:col-span-9">
-            <header className="mb-10 md:mb-12">
+            <header ref={headerRef} className="mb-6 md:mb-8">
               <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
                 Medium Range Forecast – Day 3
               </h1>
@@ -46,11 +65,23 @@ export default function Day3() {
               </p>
             </header>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <ImageViewer
-                src={IMAGE_PATH}
-                alt="Medium Range Forecast – Day 3"
-              />
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col items-center p-4">
+              <div className="w-full h-[500px] overflow-hidden flex justify-center items-center">
+                <img
+                  src={image || "/fallback.jpg"}
+                  alt="Short Range Forecast – Day 1"
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              {image && (
+                <a
+                  href={image}
+                  download
+                  className="mt-4 inline-block px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition"
+                >
+                  Download Image
+                </a>
+              )}
             </div>
           </div>
 

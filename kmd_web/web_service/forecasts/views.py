@@ -28,6 +28,7 @@ def latest_forecast(request):
 
     # 1️⃣ Try database first
     forecast = Forecast.objects.filter(
+        content_type="image",
         day=day_int,
         issue_date=today,
         is_active=True
@@ -35,7 +36,7 @@ def latest_forecast(request):
 
     if forecast:
         return Response({
-            "image": forecast.map_image.url,
+            "image": forecast.file.url,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
             "day": day_int
         })
@@ -71,13 +72,13 @@ def latest_forecast(request):
         issue_date=today,
         defaults={
             "title": f"Short Range Forecast - Day {day_int}",
-            "map_image": f"rsmc/{year}/{month}/{day_folder}/{filename}",
+            "file": f"rsmc/{year}/{month}/{day_folder}/{filename}",
             "is_active": True,
         }
     )
 
     return Response({
-        "image": forecast.map_image.url,
+        "image": forecast.file.url,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
         "day": day_int
     })

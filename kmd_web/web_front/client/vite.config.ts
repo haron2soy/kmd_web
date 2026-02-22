@@ -46,6 +46,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    //allowedHosts: ['rsmc.test']
   },
 })
 
