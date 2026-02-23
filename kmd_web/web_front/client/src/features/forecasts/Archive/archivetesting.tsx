@@ -179,7 +179,40 @@ useEffect(() => {
   const closePreview = () => {
     setPreviewFile(null);
   };
+    // TypeScript helper functions
+    const downloadFile = useCallback((file: FileItem): void => {
+    const link = document.createElement('a');
+    link.href = file.url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    }, []);
 
+    const navigateFile = useCallback((direction: number): void => {
+    if (!previewFile || files.length <= 1) return;
+    
+    const imageFiles = files.filter((f): f is FileItem => f.type === 'image');
+    const currentIndex = imageFiles.findIndex((f) => f.url === previewFile.url);
+    
+    if (currentIndex === -1) return;
+    
+    const newIndex = (currentIndex + direction + imageFiles.length) % imageFiles.length;
+    setPreviewFile(imageFiles[newIndex]);
+    setCurrentFileIndex(newIndex);
+    }, [previewFile, files]);
+
+    const openPreview = useCallback((file: FileItem): void => {
+    const imageFiles = files.filter((f): f is FileItem => f.type === 'image');
+    const index = imageFiles.findIndex((f) => f.url === file.url);
+    setCurrentFileIndex(Math.max(0, index));
+    setPreviewFile(file);
+    }, [files]);
+
+    const closePreview = useCallback((): void => {
+    setPreviewFile(null);
+    setCurrentFileIndex(0);
+    }, []);
   return (
     <PageLayout>
       <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
@@ -341,67 +374,114 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Preview Modal */}
-      {previewFile && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
-          onClick={closePreview}
-        >
-          <div
-            className="relative max-w-4xl max-h-[90vh] w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+      {/* ✅ TypeScript Preview Modal */}
+{previewFile && files.length > 0 && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4"
+    onClick={closePreview}
+  >
+    <div
+      className="relative max-w-6xl max-h-[95vh] w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+      onClick={(e: React.MouseEvent) => e.stopPropagation()}
+    >
+      {/* Close button */}
+      <button
+        type="button"
+        className="absolute top-6 right-6 z-20 bg-black/70 hover:bg-black/90 text-white rounded-full p-3 transition-all hover:scale-110"
+        onClick={closePreview}
+        aria-label="Close preview"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+
+      {/* Navigation Arrows - Images only */}
+      {previewFile.type === 'image' && files.filter((f) => f.type === 'image').length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={() => navigateFile(-1)}
+            className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black/80 text-white rounded-full p-4 transition-all hover:scale-110"
+            aria-label="Previous image"
           >
-            {/* Close button */}
-            <button
-              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all"
-              onClick={closePreview}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-1 px-4 border-b flex justify-between items-center">
-            <span className="text-lg font-bold truncate">{previewFile.name}</span>
-            <span className="text-blue-100 text-sm ml-2 whitespace-nowrap">
-                {previewFile.type === 'image' ? 'Forecast Map' : 'Document'}
-            </span>
-            </div>
-
-            {/* Content */}
-            <div className="w-full h-[calc(100vh-2.5rem)]"> {/* 100vh minus header height */}
-            {previewFile.type === 'image' ? (
-                <img
-                src={previewFile.url}
-                alt={previewFile.name}
-                className="w-full h-full object-contain"
-                />
-            ) : (
-                <iframe
-                src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(previewFile.url)}`}
-                className="w-full h-full border-0"
-                title="Document Preview"
-                />
-            )}
-            </div>
-
-            {/* Download button */}
-            <div className="p-4 border-t bg-gray-50 flex justify-center">
-              <a
-                href={previewFile.url}
-                download={previewFile.name}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>Download {previewFile.type === 'image' ? 'Image' : 'Document'}</span>
-              </a>
-            </div>
-          </div>
-        </div>
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateFile(1)}
+            className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black/80 text-white rounded-full p-4 transition-all hover:scale-110"
+            aria-label="Next image"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
       )}
+
+      {/* Header */}
+      <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white py-4 px-6 border-b border-gray-700 flex justify-between items-center z-10">
+        <div className="flex items-center space-x-3">
+          <span className="text-xl font-bold truncate max-w-xs">{previewFile.name}</span>
+          <span className="text-gray-300 text-sm bg-black/30 px-3 py-1 rounded-full">
+            {previewFile.type === 'image' ? 'JPG Map' : 'Word Document'}
+            {files.filter((f) => f.type === 'image').length > 1 && previewFile.type === 'image' && (
+              <span className="ml-2 text-xs">
+                ({currentFileIndex + 1} of {files.filter((f) => f.type === 'image').length})
+              </span>
+            )}
+          </span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        {previewFile.type === 'image' ? (
+          <div className="w-full h-full flex items-center justify-center p-8 bg-gray-900">
+            <img
+              src={previewFile.url}
+              alt={previewFile.name}
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              loading="eager"
+            />
+          </div>
+        ) : (
+          <iframe
+            src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(previewFile.url)}`}
+            className="w-full h-full border-0 bg-white"
+            title={`Preview of ${previewFile.name}`}
+            allowFullScreen
+          />
+        )}
+      </div>
+
+      {/* Footer - Download Button ALWAYS VISIBLE */}
+      <div className="p-6 border-t bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center space-x-4">
+        <button
+          type="button"
+          onClick={() => downloadFile(previewFile)}
+          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-3 hover:scale-[1.02]"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Download {previewFile.type === 'image' ? 'Image' : 'Document'}</span>
+        </button>
+        
+        {files.filter((f) => f.type === 'image').length > 1 && previewFile.type === 'image' && (
+          <div className="text-sm text-gray-600 font-medium">
+            {currentFileIndex + 1} / {files.filter((f) => f.type === 'image').length}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
     </PageLayout>
   );
 }
