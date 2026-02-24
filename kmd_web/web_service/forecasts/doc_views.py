@@ -60,7 +60,7 @@ def guidance_documents(request):
     filename = FILENAME_PATTERNS[slug]
     full_path = os.path.join(base_path, filename)
     
-    print("Looking for:", full_path)
+    
     if not os.path.exists(full_path):
         return Response({"error": f"{filename} not found in {day_folder}"}, status=404)
 

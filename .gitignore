@@ -7,6 +7,7 @@ __pycache__/
 # Django
 *.sqlite3
 media/
+static/
 nwp_models_data/
 nwp_models_data_test/
 generated_maps/

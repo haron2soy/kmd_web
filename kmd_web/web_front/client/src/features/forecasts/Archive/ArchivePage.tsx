@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
+import { useScrollToHeaderArc } from "../components/scrollToHeaderArc";
 
 const relatedLinks = [
   { href: "/forecasts/day-1", label: "Day 1 Forecast" },
@@ -60,7 +61,7 @@ export default function Archive() {
 
   // Modal state for preview
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
-
+  const { headerRef } = useScrollToHeaderArc(80);
   // 1. Fetch years
   useEffect(() => {
     setLoadingYears(true);
@@ -182,11 +183,11 @@ useEffect(() => {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
+      <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
           {/* Main Content */}
           <div className="lg:col-span-9">
-            <header className="mb-10 md:mb-12">
+            <header ref={headerRef} className="mb-6 md:mb-8">
               <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
                 Forecast Archive
               </h1>

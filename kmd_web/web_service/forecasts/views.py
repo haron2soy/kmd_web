@@ -56,7 +56,7 @@ def latest_forecast(request):
 
     filename = f"rsmc0{day_int}.jpg"
     full_path = os.path.join(base_path, filename)
-    print("full-path:", full_path)
+    
     if not os.path.exists(full_path):
         return Response({"error": "Forecast image not found"}, status=404)
 

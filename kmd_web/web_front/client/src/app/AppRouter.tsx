@@ -34,6 +34,12 @@ import DiscussionMedium from "@/features/forecasts/MediumRange/DiscussionMedium"
 
 import ArchivePage from "@/features/forecasts/Archive/ArchivePage";
 
+import SWFPLanding from "@/features/swfp/SWFPLanding";
+import EventTable from "@/features/swfp/eventtable/EventTable";
+import QuarterlyReport from "@/features/swfp/quarterlyreport/QuarterlyReport";
+
+import NewsDetail from "@/features/home/NewsDetail";
+
 function Router() {
   return (
     <Switch>
@@ -70,6 +76,12 @@ function Router() {
       <Route path="/forecasts/discussion-medium" component={DiscussionMedium} />
 
       <Route path="/forecasts/archive" component={ArchivePage} />
+      <Route path="/swfp-evaluation" component={SWFPLanding} />
+      <Route path="/swfp-evaluation/event-table" component={EventTable} />
+      <Route path="/swfp-evaluation/quarterly-report" component={QuarterlyReport} />
+      
+      <Route path="/news/:slug" component={NewsDetail} />
+      
       <Route component={NotFound} />
       
     </Switch>

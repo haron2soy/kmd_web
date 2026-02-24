@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "users",
     "pages",
     "wrfapi",
+    "news",
 ]
 
 MIDDLEWARE = [

@@ -1,21 +1,41 @@
 import { PageLayout } from '@/shared/components/layout/PageLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+//import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { Button } from '@/shared/components/ui/button';
-import { ArrowRight, CloudRain, FileText, AlertTriangle, Calendar } from 'lucide-react';
+import { CloudRain, AlertTriangle, Calendar } from 'lucide-react';
 import { Link } from 'wouter';
-
+import { useEffect, useState } from "react";
+import background_image1 from '@/shared/assets/background/image1.jpg';
+import background_image2 from '@/shared/assets/background/image.jpg';
+import background_image3 from '@/shared/assets/background/clouds-sky.jpg';
+import background_image4 from '@/shared/assets/background/beautiful-clouds.jpg';
+//import news_image1 from '@/shared/assets/background/clouds-sky.jpg';
+//import news_image2 from '@/shared/assets/background/beautiful-clouds.jpg';
+import AnnouncementList from './Announcements';
+import NewsList from './News';
 export default function Home() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const heroImages = [background_image1, background_image2, background_image3, background_image4];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % heroImages.length);
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentImage = heroImages[currentIndex];
+
   return (
     <PageLayout>
       {/* Hero Section */}
-      <section className="relative bg-primary text-white overflow-hidden">
+      <section className="relative bg-primary text-white overflow-hidden h-[500px]">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 z-10"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center z-0 opacity-50" 
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1590055531615-f16d36ffe8ec?auto=format&fit=crop&q=80&w=2000)' }}
+          className="absolute inset-0 bg-cover bg-center z-0 transition-opacity duration-1000"
+          style={{ backgroundImage: `url(${currentImage})` }}
         ></div>
-        
-        <div className="container mx-auto px-4 py-5 md:py-5 relative z-20">
+        <div className="container mx-auto px-4 py-5 relative z-20">
           <div className="max-w-3xl">
             <div className="inline-block bg-accent text-accent-foreground px-3 py-1 text-sm font-bold uppercase tracking-wider mb-4 rounded-sm">
               Official Monitoring
@@ -32,7 +52,7 @@ export default function Home() {
                   Our Services
                 </Button>
               </Link>
-               <Link href="/pages/about-rsmc">
+              <Link href="/pages/about-rsmc">
                 <Button size="lg" variant="outline" className="text-white border-white bg-transparent hover:bg-white hover:text-primary font-bold text-base h-12 px-8 rounded-sm">
                   About Us
                 </Button>
@@ -42,13 +62,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Content Grid */}
+      {/* Main Content */}
       <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Main Column (2/3) */}
+
+          {/* Main Column */}
           <div className="lg:col-span-2 space-y-12">
-            
             {/* Mission Statement */}
             <div className="bg-white p-8 border-l-4 border-primary shadow-sm">
               <h2 className="text-2xl font-serif font-bold text-primary mb-4">Our Mission</h2>
@@ -57,47 +76,17 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Latest News */}
-            <div>
-              <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-2">
-                <h2 className="text-2xl font-serif font-bold text-primary flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-accent" />
-                  Latest News & Announcements
-                </h2>
-                <Link href="/news" className="text-sm font-bold text-primary hover:text-accent uppercase tracking-wide flex items-center gap-1">
-                  View All <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                 {[1, 2].map((i) => (
-                  <Card key={i} className="rounded-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                    <img 
-                      src={i === 1 ? "https://images.unsplash.com/photo-1580193769210-b8d1c049a7d9?auto=format&fit=crop&q=80&w=800" : "https://images.unsplash.com/photo-1561484930-998b6a7b22e8?auto=format&fit=crop&q=80&w=800"} 
-                      alt="News Thumbnail" 
-                      className="w-full h-48 object-cover"
-                    />
-                    <CardHeader className="p-5 pb-2">
-                      <div className="text-xs font-bold text-accent-foreground/70 bg-slate-100 inline-block px-2 py-1 rounded-sm mb-2 w-fit">
-                        {new Date().toLocaleDateString()}
-                      </div>
-                      <CardTitle className="font-serif text-xl text-primary leading-tight hover:text-accent cursor-pointer transition-colors">
-                        {i === 1 ? "Regional Climate Forum 2024 Concludes Successfully" : "New Severe Weather Warning System Deployed"}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-5 pt-2">
-                      <p className="text-slate-600 line-clamp-3 mb-4">
-                        The regional forum brought together experts from 15 member states to discuss climate resilience strategies...
-                      </p>
-                      <Link href={`/news/${i}`}>
-                        <span className="text-sm font-bold text-primary hover:text-accent cursor-pointer">Read Full Story &rarr;</span>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                 ))}
-              </div>
-            </div>
+            {/* News Section */}
+            <section>
+              <h2 className="text-2xl font-serif font-bold text-primary mb-4">Latest News</h2>
+              <NewsList />
+            </section>
 
+            {/* Announcements Section */}
+            <section className="mt-12">
+              <h2 className="text-2xl font-serif font-bold text-primary mb-4">Announcements</h2>
+              <AnnouncementList />
+            </section>
           </div>
 
           {/* Sidebar Column (1/3) */}

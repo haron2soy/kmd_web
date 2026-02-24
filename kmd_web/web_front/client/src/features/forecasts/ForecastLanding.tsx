@@ -1,7 +1,7 @@
-// src/features/forecasts/pages/ForecastLanding.tsx
+// src/features/forecasts/ForecastLanding.tsx
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
-
+import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 const ForecastCard = ({ href, label }: { href: string; label: string }) => (
   <Link href={href}>
     <div className="group relative p-6 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white">
@@ -34,10 +34,11 @@ const archiveLinks = [
 ];
 
 export default function ForecastLanding() {
+  const { headerRef } = useScrollToHeader(80);
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
-        <header className="mb-12 md:mb-16">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
+        <header ref={headerRef} className="mb-6 md:mb-8">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
             Forecasts
           </h1>

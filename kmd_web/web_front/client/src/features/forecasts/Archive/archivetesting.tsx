@@ -1,5 +1,5 @@
 // src/features/forecasts/pages/Archive.tsx
-import { useEffect, useState } from "react";
+/*import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
 
@@ -217,7 +217,7 @@ useEffect(() => {
     <PageLayout>
       <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
-          {/* Main Content */}
+          {/* Main Content *}
           <div className="lg:col-span-9">
             <header className="mb-10 md:mb-12">
               <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
@@ -228,7 +228,7 @@ useEffect(() => {
               </p>
             </header>
 
-            {/* Filters */}
+            {/* Filters *}
             <div className="flex flex-wrap gap-4 mb-8 bg-white p-6 rounded-xl shadow-sm border">
               <div className="min-w-[140px] flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
@@ -297,7 +297,7 @@ useEffect(() => {
               </div>
             )}
 
-            {/* Files Grid */}
+            {/* Files Grid *}
             {loadingFiles ? (
               <div className="text-center py-16 bg-white rounded-xl shadow-sm border p-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
@@ -356,7 +356,7 @@ useEffect(() => {
             )}
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar *}
           <aside className="lg:col-span-3 mt-12 lg:mt-0">
             <div className="sticky top-32 lg:top-40">
               <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -374,7 +374,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* ✅ TypeScript Preview Modal */}
+      {/* ✅ TypeScript Preview Modal *}
 {previewFile && files.length > 0 && (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4"
@@ -384,7 +384,7 @@ useEffect(() => {
       className="relative max-w-6xl max-h-[95vh] w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col"
       onClick={(e: React.MouseEvent) => e.stopPropagation()}
     >
-      {/* Close button */}
+      {/* Close button *}
       <button
         type="button"
         className="absolute top-6 right-6 z-20 bg-black/70 hover:bg-black/90 text-white rounded-full p-3 transition-all hover:scale-110"
@@ -397,7 +397,7 @@ useEffect(() => {
       </button>
 
 
-      {/* Navigation Arrows - Images only */}
+      {/* Navigation Arrows - Images only *}
       {previewFile.type === 'image' && files.filter((f) => f.type === 'image').length > 1 && (
         <>
           <button
@@ -423,7 +423,7 @@ useEffect(() => {
         </>
       )}
 
-      {/* Header */}
+      {/* Header *}
       <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white py-4 px-6 border-b border-gray-700 flex justify-between items-center z-10">
         <div className="flex items-center space-x-3">
           <span className="text-xl font-bold truncate max-w-xs">{previewFile.name}</span>
@@ -438,7 +438,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Content */}
+      {/* Content *}
       <div className="flex-1 min-h-0 overflow-hidden">
         {previewFile.type === 'image' ? (
           <div className="w-full h-full flex items-center justify-center p-8 bg-gray-900">
@@ -459,7 +459,7 @@ useEffect(() => {
         )}
       </div>
 
-      {/* Footer - Download Button ALWAYS VISIBLE */}
+      {/* Footer - Download Button ALWAYS VISIBLE *}
       <div className="p-6 border-t bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center space-x-4">
         <button
           type="button"
@@ -484,4 +484,4 @@ useEffect(() => {
 
     </PageLayout>
   );
-}
+}*/

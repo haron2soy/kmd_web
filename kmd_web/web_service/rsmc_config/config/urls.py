@@ -25,6 +25,8 @@ urlpatterns = [
     path("api/", include("pages.urls")),
     path("api/nwp_models/", include("nwp_models.urls")),
     path("api/forecasts/", include("forecasts.urls")),
+    path("api/swfp_evaluation/", include("swfp_evaluation.urls")),
+    path("api/", include("news.urls")),
 ]
 
 

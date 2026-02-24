@@ -63,7 +63,7 @@ export function Navbar() {
       href: '/swfp-evaluation',
       label: 'SWFP Evaluation',
       submenu: [
-        { href: '/swfp-evaluation/quarterly-template', label: 'Quarterly Report Template' },
+        { href: '/swfp-evaluation/quarterly-report', label: 'Quarterly Report Template' },
         { href: '/swfp-evaluation/event-table', label: 'Event Table' },
       ],
     },
