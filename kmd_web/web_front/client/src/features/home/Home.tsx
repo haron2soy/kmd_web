@@ -3,38 +3,62 @@ import { PageLayout } from '@/shared/components/layout/PageLayout';
 import { Button } from '@/shared/components/ui/button';
 import { CloudRain, AlertTriangle, Calendar } from 'lucide-react';
 import { Link } from 'wouter';
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import background_image1 from '@/shared/assets/background/image1.jpg';
 import background_image2 from '@/shared/assets/background/image.jpg';
 import background_image3 from '@/shared/assets/background/clouds-sky.jpg';
 import background_image4 from '@/shared/assets/background/beautiful-clouds.jpg';
-//import news_image1 from '@/shared/assets/background/clouds-sky.jpg';
-//import news_image2 from '@/shared/assets/background/beautiful-clouds.jpg';
 import AnnouncementList from './Announcements';
 import NewsList from './News';
+
 export default function Home() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const heroImages = [background_image1, background_image2, background_image3, background_image4];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % heroImages.length);
-    }, 20000);
+    const stayDuration = 10000; // 3s
+    const transitionDuration = 1000; // 1s smooth pan/fade
 
-    return () => clearInterval(interval);
-  }, []);
+    const timeout = setTimeout(() => {
+      setIsTransitioning(true);
 
-  const currentImage = heroImages[currentIndex];
+      const transitionTimeout = setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % heroImages.length);
+        setIsTransitioning(false);
+      }, transitionDuration);
+
+      return () => clearTimeout(transitionTimeout);
+    }, stayDuration);
+
+    return () => clearTimeout(timeout);
+  }, [currentIndex]);
+
+  //const currentImage = heroImages[currentIndex];
 
   return (
     <PageLayout>
       {/* Hero Section */}
-      <section className="relative bg-primary text-white overflow-hidden h-[500px]">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 z-10"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center z-0 transition-opacity duration-1000"
-          style={{ backgroundImage: `url(${currentImage})` }}
-        ></div>
+      <section className="relative bg-primary text-white overflow-hidden h-[400px]">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 z-10"></div>  
+          {/* Background images */}
+          {heroImages.map((img, index) => (
+            <div
+              key={index}
+              className={cn(
+                "absolute inset-0 bg-cover bg-center transition-opacity duration-2000",
+                index === currentIndex
+                  ? "opacity-100"
+                  : "opacity-0"
+              )}
+              style={{
+                backgroundImage: `url(${img})`,
+                backgroundPosition: isTransitioning ? "10% center" : "0% center", // small pan
+              }}
+            />
+          ))}
+
         <div className="container mx-auto px-4 py-5 relative z-20">
           <div className="max-w-3xl">
             <div className="inline-block bg-accent text-accent-foreground px-3 py-1 text-sm font-bold uppercase tracking-wider mb-4 rounded-sm">

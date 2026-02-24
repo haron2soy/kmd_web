@@ -10,10 +10,9 @@ export interface NWPModel {
   path?: string;
 }
 
-// Temporary mock response while backend is pending
 export async function getNWPModels(): Promise<NWPModel[]> {
   // When backend is ready, replace with:
-  // const response = await apiClient.get("/nwp-models/");
+  //const response = await apiClient.get("/nwp-models/");
   // return response.data;
 
   return Promise.resolve([
@@ -21,14 +20,14 @@ export async function getNWPModels(): Promise<NWPModel[]> {
       id: 1,
       name: "WRF Regional Model",
       description: "High-resolution regional atmospheric model.",
-      //status: "pending",
+      status: "live",
       path: "/nwp-models/wrf",
     },
     {
       id: 2,
       name: "Global Deterministic Model",
       description: "Global forecast model for large-scale dynamics.",
-      //status: "pending",
+      status: "pending",
       path: "/nwp-models/global",
     },
   ]);

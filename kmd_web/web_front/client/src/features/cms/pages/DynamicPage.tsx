@@ -43,7 +43,7 @@ export default function DynamicPage() {
   return (
     <PageLayout>
       {/* Page Header */}
-      <div className="bg-slate-100 border-b border-slate-200 py-12">
+      <div className="bg-slate-100 border-b border-slate-200 py-6">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary">
             {loading ? <Skeleton className="h-10 w-2/3 max-w-lg bg-slate-300" /> : data?.title || 'Page Not Found'}
@@ -56,7 +56,7 @@ export default function DynamicPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           
           {/* Main Content */}

@@ -1,4 +1,4 @@
-// src/features/swfp/pages/SWFPLanding.tsx
+// src/features/swfp/SWFPLanding.tsx
 import { Link } from "wouter";
 import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "../../shared/components/ScrollToHeader/useScrollToHeader";

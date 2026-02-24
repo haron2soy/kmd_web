@@ -18,26 +18,53 @@ interface NWPModel {
 }
 
 const ModelCard = ({ model }: { model: NWPModel }) => {
+  const isPending = model.status === "pending";
+
   const cardContent = (
-    <div className="group relative p-6 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white cursor-pointer">
+    <div
+      className={`group relative p-6 border border-gray-200 rounded-lg transition-all duration-200 bg-white ${
+        !isPending ? "hover:shadow-md hover:border-primary/40 cursor-pointer" : "opacity-80 cursor-default"
+      }`}
+    >
       <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-      
+
       <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors mb-3">
         {model.name}
       </h3>
-      
+
       <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
         {model.description || "No description available."}
       </p>
 
-      <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-        <Clock className="h-3.5 w-3.5" />
-        <span>View model</span>
-      </div>
+      {/* Status badge */}
+      {model.status && (
+        <span
+          className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${
+            model.status === "pending"
+              ? "text-yellow-800 bg-yellow-50"
+              : model.status === "live"
+              ? "text-emerald-700 bg-emerald-50"
+              : "text-gray-700 bg-gray-100"
+          }`}
+        >
+          {model.status === "pending" && "Pending"}
+          {model.status === "live" && "Live"}
+          {model.status === "deprecated" && "Deprecated"}
+        </span>
+      )}
+
+      {/* Show "View model" only if not pending */}
+      {!isPending && (
+        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full mt-2">
+          <Clock className="h-3.5 w-3.5" />
+          <span>View model</span>
+        </div>
+      )}
     </div>
   );
 
-  return model.path ? <Link href={model.path}>{cardContent}</Link> : cardContent;
+  // Wrap in Link only if not pending and path exists
+  return !isPending && model.path ? <Link href={model.path}>{cardContent}</Link> : cardContent;
 };
 
 const ModelSkeleton = () => (

@@ -63,12 +63,12 @@ export function Navbar() {
       href: '/swfp-evaluation',
       label: 'SWFP Evaluation',
       submenu: [
-        { href: '/swfp-evaluation/quarterly-report', label: 'Quarterly Report Template' },
+        { href: '/swfp-evaluation/quarterly-report', label: 'Quarterly Report' },
         { href: '/swfp-evaluation/event-table', label: 'Event Table' },
       ],
     },
     {
-      href: '/national-met-services',
+      href: '/national',
       label: 'National Met Services',
       submenu: [
         { href: '/national/kenya', label: 'Kenya' },
@@ -78,19 +78,19 @@ export function Navbar() {
       ],
     },
     {
-      href: '/services',
-      label: 'Services',
+      href: '/regional-international',
+      label: 'Regional',
       submenu: [
         { label: 'Regional and International Centers', items: [
-          { href: '/services/ecmwf', label: 'ECMWF' },
-          { href: '/services/noaa-ncep', label: 'NOAA NCEP African Desk' },
-          { href: '/services/uk-met', label: 'UK MET Office' },
-          { href: '/services/dwd', label: 'DWD' },
+          { href: '/regional-international/ecmwf', label: 'ECMWF' },
+          { href: '/regional-international/noaa-ncep', label: 'NOAA NCEP African Desk' },
+          { href: '/regional-international/uk-met', label: 'UK MET Office' },
+          { href: '/regional-international/dwd', label: 'DWD' },
         ]},
         { label: 'Long Range Forecast Centers', items: [
-          { href: '/services/acmad', label: 'ACMAD' },
-          { href: '/services/kma', label: 'KMA' },
-          { href: '/services/icpac', label: 'ICPAC' },
+          { href: '/regional-international/acmad', label: 'ACMAD' },
+          { href: '/regional-international/kma', label: 'KMA' },
+          { href: '/regional-international/icpac', label: 'ICPAC' },
         ]},
       ],
     },
@@ -162,16 +162,35 @@ export function Navbar() {
                                 {sub.label}
                               </div>
                             )}
-                            {(sub.items || [sub]).map(link => (
-                              <Link key={link.href} href={link.href}
-                                 className={cn(
-                                  "block px-6 py-2.5 text-sm hover:bg-white/10 transition-colors",
-                                  isActive(link.href) && "bg-white/15 font-semibold"
-                                )}>
+
+                            {(sub.items || [sub]).map((link) => {
+                              const isNational = link.href.startsWith("/national/") || link.href.startsWith("/regional-international/");
+
+                              const baseClass = cn(
+                                "block px-6 py-2.5 text-sm hover:bg-white/10 transition-colors",
+                                isActive(link.href) && "bg-white/15 font-semibold"
+                              );
+
+                              return isNational ? (
+                                <a
+                                  key={link.href}
+                                  href={link.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={baseClass}
+                                >
                                   {link.label}
-                                
-                              </Link>
-                            ))}
+                                </a>
+                              ) : (
+                                <Link
+                                  key={link.href}
+                                  href={link.href}
+                                  className={baseClass}
+                                >
+                                  {link.label}
+                                </Link>
+                              );
+                            })}
                           </div>
                         ))}
                       </div>

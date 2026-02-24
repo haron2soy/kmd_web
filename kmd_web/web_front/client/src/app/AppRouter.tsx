@@ -40,6 +40,12 @@ import QuarterlyReport from "@/features/swfp/quarterlyreport/QuarterlyReport";
 
 import NewsDetail from "@/features/home/NewsDetail";
 
+import NationalMetServicesLanding from "@/features/national_met_services/NationalMetLanding";
+import RedirectPage from "@/features/national_met_services/pages/RedirectPage";
+
+import RegionalInternationalLanding  from "@/features/regional_and_international/RegionalInternationalLanding";
+import RedirectRegionalInternational from "@/features/regional_and_international/pages/RedirectRegionalInternational";
+
 function Router() {
   return (
     <Switch>
@@ -80,8 +86,12 @@ function Router() {
       <Route path="/swfp-evaluation/event-table" component={EventTable} />
       <Route path="/swfp-evaluation/quarterly-report" component={QuarterlyReport} />
       
-      <Route path="/news/:slug" component={NewsDetail} />
+      <Route path = "/news/:slug" component={NewsDetail} />
+      <Route path = "/national" component={NationalMetServicesLanding} />
+      <Route path = "/national/:slug" component={RedirectPage} />
       
+      <Route path = "/regional-international" component={RegionalInternationalLanding} />
+      <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
       <Route component={NotFound} />
       
     </Switch>

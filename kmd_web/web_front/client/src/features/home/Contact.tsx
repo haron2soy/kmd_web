@@ -104,11 +104,19 @@ export default function Contact() {
               </div>
             </div>
             
-            {/* Map Placeholder */}
-            <div className="bg-slate-200 h-64 rounded-sm flex items-center justify-center border border-slate-300">
-               <span className="text-slate-500 font-medium flex items-center gap-2">
-                 <MapPin className="h-5 w-5" /> Google Maps Embed Placeholder
-               </span>
+            <div className="h-64 rounded-sm border border-slate-300 overflow-hidden">
+              <iframe
+                title="RSMC Location Map"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                
+                src="https://www.google.com/maps?q=-1.301452,36.759523(RSMC)&z=15&output=embed"
+                //src="https://www.google.com/maps?q=-1.301452,36.759523&z=15&output=embed"
+              />
             </div>
 
           </div>
