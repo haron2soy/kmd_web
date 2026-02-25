@@ -1,27 +1,32 @@
-import { useState, useEffect, useCallback } from "react";
-import DeckGL from "@deck.gl/react";
-import { BitmapLayer } from "@deck.gl/layers";
-import type { ViewStateChangeParameters, MapViewState } from "@deck.gl/core";
+import { useState, useEffect, useMemo } from "react";
 
 type MapViewProps = {
   variable: string;
-  datetime: string;
+  /** 
+   * ISO-like datetime string: "2025-02-25_06:00:00"  
+   * If falsy (undefined, "", null), uses current UTC hour automatically 
+   */
+  datetime?: string;
   opacity?: number;
   width?: number | string;
-  height?: number | string;
   className?: string;
 };
 
-const IMAGE_BOUNDS: [number, number, number, number] = [22, -15, 52, 20];
+/**
+ * Returns current UTC time, floored to the start of the hour
+ * Format: "YYYY-MM-DD_HH:00:00"
+ */
+function getCurrentUTCHour(): string {
+  const now = new Date();
 
-const INITIAL_VIEW_STATE: MapViewState = {
-  longitude: 37.8,
-  latitude: 1.0,
-  zoom: 3.5,
-  pitch: 0,
-  bearing: 0,
-  minZoom: 3.5,
-};
+  // Floor to start of current UTC hour
+  now.setUTCMinutes(0, 0, 0);
+
+  // Add 3 hours
+  now.setUTCHours(now.getUTCHours() + 3);
+
+  return now.toISOString().slice(0, 19).replace("T", "_");
+}
 
 export default function MapView({
   variable,
@@ -30,59 +35,70 @@ export default function MapView({
   width = "90%",
   className = "",
 }: MapViewProps) {
-  const [viewState, setViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
+  // Only compute once on mount
+  const autoDatetime = useMemo(() => getCurrentUTCHour(), []);
+
+  // Treat empty string / falsy values as "use automatic"
+  const effectiveDatetime = datetime?.trim() 
+    ? datetime.trim()
+    : autoDatetime;
+
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [imageAspect, setImageAspect] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);     // start as true for initial load
   const [error, setError] = useState<string | null>(null);
 
-  // Clamp map movements
-  const onViewStateChange = useCallback(
-    (params: ViewStateChangeParameters) => {
-      if ("longitude" in params.viewState) {
-        const next = clampViewState(params.viewState as MapViewState, IMAGE_BOUNDS);
-        setViewState(next);
-      }
-    },
-    []
-  );
-
-  // Pre-fetch image and handle missing data
   useEffect(() => {
+    let objectUrl: string | null = null;
+
     setLoading(true);
     setError(null);
     setImageUrl(null);
+    setImageAspect(null);
 
-    const url = `/api/nwp_models/field/?datetime=${datetime}&variable=${variable}`;
+    const url = `/api/nwp_models/field/?datetime=${effectiveDatetime}&variable=${encodeURIComponent(variable)}`;
+
     fetch(url)
       .then((res) => {
         if (!res.ok) {
-          throw new Error("No image available for this datetime");
+          throw new Error(
+            res.status === 400
+              ? `No data available for ${effectiveDatetime}`
+              : `Server error ${res.status} for ${effectiveDatetime}`
+          );
         }
         return res.blob();
       })
       .then((blob) => {
-        const objectUrl = URL.createObjectURL(blob);
+        if (blob.size === 0) {
+          throw new Error("Received empty image");
+        }
+        objectUrl = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+          setImageAspect(img.naturalWidth / img.naturalHeight);
+        };
+        img.onerror = () => {
+          setError("Failed to load image dimensions");
+        };
+        img.src = objectUrl;
+
         setImageUrl(objectUrl);
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
+        console.warn("Map image fetch failed:", err);
+        setError(err.message || "Failed to load map image");
         setLoading(false);
       });
-  }, [datetime, variable]);
 
-  // Only create BitmapLayer when image is loaded
-  const layers = imageUrl
-    ? [
-        new BitmapLayer({
-          id: "wrf-field-layer",
-          image: imageUrl,
-          bounds: IMAGE_BOUNDS,
-          opacity,
-          pickable: true,
-        }),
-      ]
-    : [];
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [effectiveDatetime, variable]);
 
   return (
     <div
@@ -90,72 +106,55 @@ export default function MapView({
       style={{
         width,
         maxWidth: "1200px",
-        aspectRatio: "16 / 9",
-        margin: "0px auto",
+        margin: "0 auto",
         border: "1px solid #e5e7eb",
         borderRadius: "10px",
         overflow: "hidden",
         background: "#f8fafc",
         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        touchAction: "none",
       }}
     >
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center text-gray-700 font-semibold">
-          Loading...
-        </div>
-      )}
-
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center text-red-600 font-semibold">
-          {error}
-        </div>
-      )}
-
-      {!loading && !error && imageUrl && (
-        <DeckGL
-          viewState={viewState}
-          onViewStateChange={onViewStateChange}
-          controller={true}
-          layers={layers}
-          getCursor={({ isDragging }) => (isDragging ? "grabbing" : "grab")}
-          style={{ width: "100%", height: "100%" }}
-        />
-      )}
-
       <div
         style={{
-          position: "absolute",
-          bottom: 12,
-          left: 12,
-          background: "rgba(0,0,0,0.55)",
-          color: "white",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          pointerEvents: "none",
-          userSelect: "none",
+          width: "100%",
+          aspectRatio: imageAspect ? `${imageAspect}` : "4 / 5",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: loading ? "#f1f5f9" : undefined,
         }}
       >
-        zoom: {viewState.zoom.toFixed(1)}
+        {loading && (
+          <div className="text-gray-600 font-medium flex items-center gap-2">
+            <span className="animate-pulse">Loading map...</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-red-600 font-medium px-4 text-center">
+            {error}
+            <br />
+            <small className="text-gray-500 mt-1 block">
+              {effectiveDatetime}
+            </small>
+          </div>
+        )}
+
+        {!loading && !error && imageUrl && (
+          <img
+            src={imageUrl}
+            alt={`${variable} — ${effectiveDatetime}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              opacity,
+              imageRendering: "crisp-edges", // optional – helps with map sharpness
+            }}
+            decoding="async"
+          />
+        )}
       </div>
     </div>
   );
-}
-
-function clampViewState(viewState: MapViewState, bounds: [number, number, number, number]): MapViewState {
-  const [west, south, east, north] = bounds;
-  const lonSpan = 360 / Math.pow(2, viewState.zoom);
-  const latSpan = 170 / Math.pow(2, viewState.zoom);
-
-  const minLon = west + lonSpan / 2;
-  const maxLon = east - lonSpan / 2;
-  const minLat = south + latSpan / 2;
-  const maxLat = north - latSpan / 2;
-
-  return {
-    ...viewState,
-    longitude: Math.min(maxLon, Math.max(minLon, viewState.longitude)),
-    latitude: Math.min(maxLat, Math.max(minLat, viewState.latitude)),
-  };
 }
