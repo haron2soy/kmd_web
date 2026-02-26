@@ -1,26 +1,14 @@
-#nwp_models/wind_mapper.py
-"""
-----------------------------------------------------------
-Spatial Wind Map Class (Full Grid, Single Time)
-- Loads NetCDF
-- Uses the only timestep
-- Uses full spatial grid
-- Uses USER GeoJSON as base map
-- Creates ONE wind speed + direction map
-----------------------------------------------------------
-"""
-
 import xarray as xr
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
-from matplotlib import colormaps
+from matplotlib.colors import ListedColormap, BoundaryNorm
 import cartopy.crs as ccrs
-from cartopy.feature import ShapelyFeature
-import geopandas as gpd
+import cartopy.feature as cfeature
 import numpy as np
 import os
+
 
 class WindMapper:
     def __init__(self, ds, out_dir):
@@ -30,194 +18,160 @@ class WindMapper:
         self.u = None
         self.v = None
         self.wind_speed = None
-        self.selected_time = None
-        self.geo_feature = None
+        self.selected_time = "WRF single timestep"
 
-    # ---------------------------
-    # Load dataset
-    # ---------------------------
     def load_data(self):
-        #self.ds = xr.open_dataset(self.nc_path, engine="netcdf4")
+        # Normalize names
         self.ds = self.ds.rename(
-            {name: name.lower() for name in list(self.ds.data_vars) + list(self.ds.coords)}
+            {name: name.lower() for name in list(self.ds.variables)}
         )
 
-        # -----------------------------------------
-        # ONE timestep → 2D
-        # Prefer 10 m winds if available
-        # -----------------------------------------
+        # Wind components
         if "u10" in self.ds and "v10" in self.ds:
             self.u = self.ds["u10"].isel(Time=0)
             self.v = self.ds["v10"].isel(Time=0)
         else:
-            # fallback: lowest model level
             self.u = self.ds["u"].isel(Time=0, bottom_top=0)
             self.v = self.ds["v"].isel(Time=0, bottom_top=0)
 
-        # --- Wind speed magnitude (m/s) ---
         self.wind_speed = np.sqrt(self.u**2 + self.v**2)
 
-        self.selected_time = "WRF single timestep"
-
-    # ---------------------------
-    # Create map (FULL GRID)
-    # ---------------------------
     def generate_map(self):
-        # Check if data exists
         if self.wind_speed is None or np.all(np.isnan(self.wind_speed)):
-            print(f"[WindMapper] No valid Wind data at timestep. Skipping map.")
+            print("[WindMapper] No valid wind data.")
             return
-        fig = plt.figure(figsize=(12, 8))
+
+        fig = plt.figure(figsize=(13, 9))
         ax = plt.axes(projection=ccrs.PlateCarree())
 
-        # -----------------------------------------
-        # Full grid extent
-        # -----------------------------------------
-        lats = self.ds["xlat"].isel(Time=0)
-        lons = self.ds["xlong"].isel(Time=0)
+        # Coordinates
+        lons = self.ds["xlong"].isel(Time=0).values
+        lats = self.ds["xlat"].isel(Time=0).values
 
         ax.set_extent(
-            [
-                float(lons.min()),
-                float(lons.max()),
-                float(lats.min()),
-                float(lats.max())
-            ],
+            [lons.min(), lons.max(), lats.min(), lats.max()],
             crs=ccrs.PlateCarree()
         )
 
+        # ─────────────────────────────
+        # FIX 1: REMOVE WHITE DOT GRID
+        # ─────────────────────────────
+        levels = [0, 1, 3, 5, 7, 10, 14, 21, 29, 40, 50]
 
-        # -----------------------------------------
-        # Wind speed shading
-        # -----------------------------------------
-        #wmin = float(self.wind_speed.min())
-        #wmax = float(self.wind_speed.max())
-        wmin = float(self.wind_speed.min(skipna=True))
-        wmax = float(self.wind_speed.max(skipna=True))
-        # -----------------------------------------
-        # Validate contour levels
-        # -----------------------------------------
-        if (
-            not np.isfinite(wmin)
-            or not np.isfinite(wmax)
-            or wmin >= wmax
-        ):
-            print(
-                f"[WindMapper] Invalid wind range (wmin={wmin}, wmax={wmax}) — skipping map."
-            )
-            return
+        colors = [
+            "#8a2be2", "#4169e1", "#1e90ff", "#4ab2ff",
+            "#03e82a", "#1c862d", "#f4dd1d",
+            "#debc1a", "#ff00ff", "#ff1493", "#ff0000"
+        ]
 
-        N_COLORS = 30
-        #levels = np.linspace(wmin, wmax, N_COLORS + 1)
+        cmap = ListedColormap(colors)
+        norm = BoundaryNorm(levels, len(colors))
 
-        #cmap = colormaps["turbo"].resampled(N_COLORS)
-        # -----------------------------------------
-        # Wind speed levels (fixed, operational)
-        # -----------------------------------------
-        
-        levels = np.array(
-            [0, 1, 3, 5, 7, 10, 15, 20, 25, 30, 40, 50]
-        )
-
-        cmap = colormaps["turbo"].resampled(len(levels) - 1)
-
-
+        # KEY FIX: no antialias, no rasterized
         cf = ax.contourf(
-            lons.values,
-            lats.values,
-            self.wind_speed,
+            lons, lats, self.wind_speed.values,
             levels=levels,
             cmap=cmap,
-            extend="max",
-            transform=ccrs.PlateCarree(),
-            zorder=1
+            norm=norm,
+            extend='max',
+            transform=ccrs.PlateCarree()
         )
 
-        plt.colorbar(
-            cf,
-            shrink=0.7,
-            pad=0.05,
-            label="Wind Speed (m s⁻¹)"
-        )
+        # Colorbar
+        cbar = fig.colorbar(cf, ax=ax, shrink=0.7, pad=0.04)
+        cbar.set_label("Wind Speed (m s⁻¹)")
 
-        # -----------------------------------------
-        # Wind vectors (THINNED)
-        # -----------------------------------------
-        skip = 10  # vector density control
+        # ─────────────────────────────
+        # FIX 2: PROPER WIND ARROWS
+        # ─────────────────────────────
+        skip = max(1, int(lons.shape[0] / 35))  # dynamic density
 
         ax.quiver(
-            lons.values[::skip, ::skip],
-            lats.values[::skip, ::skip],
+            lons[::skip, ::skip],
+            lats[::skip, ::skip],
             self.u.values[::skip, ::skip],
             self.v.values[::skip, ::skip],
+
+            # CRITICAL SETTINGS
+            color='black',
+            scale=None,                # auto scale → length reflects magnitude
+            scale_units='xy',          # use data coordinates
+            angles='xy',               # true direction
+            width=0.0028,
+            headwidth=4,
+            headlength=5,
+
             transform=ccrs.PlateCarree(),
-            scale=700,
-            width=0.0025,
-            color="black",
             zorder=3
         )
 
-        # -----------------------------------------
-        # Gridlines only
-        # -----------------------------------------
-        ax.gridlines(draw_labels=True, linestyle="--", alpha=0.5)
+        # ─────────────────────────────
+        # MAP FEATURES (like rainfall)
+        # ─────────────────────────────
+        ax.coastlines(resolution='10m', linewidth=0.7)
+        ax.add_feature(cfeature.BORDERS, linewidth=0.8)
+        ax.add_feature(cfeature.OCEAN, facecolor='#d8e8f5', zorder=0)
+        ax.add_feature(cfeature.LAND, facecolor='#f5f5eb', zorder=0)
+        ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
 
-        # -----------------------------------------
-        # Title & output
-        # -----------------------------------------
+        ax.add_feature(cfeature.NaturalEarthFeature(
+            'cultural', 'admin_0_countries', '10m',
+            edgecolor='black', facecolor='none', linewidth=0.9
+        ))
+
+        ax.gridlines(draw_labels=True, linestyle='--', alpha=0.35)
+
+        # Title
         ax.set_title(
             f"10 m Wind Speed & Direction – Full Domain\n{self.selected_time}",
-            fontsize=14,
-            pad=20
+            fontsize=14
         )
 
-        #out_file = "WRF_single_timestep_full_domain_wind_map.png"
+        # North arrow
+        self.add_north_arrow(ax)
+
+        # Save
+        os.makedirs(self.out_dir, exist_ok=True)
         out_file = os.path.join(
             self.out_dir,
             f"{os.path.basename(self.out_dir)}_wind_map.png"
         )
-        self.add_north_arrow(ax)
+
         plt.tight_layout()
-        plt.savefig(out_file, dpi=300, bbox_inches="tight")
-        plt.close()
+        plt.savefig(out_file, dpi=300)
+        plt.close(fig)
 
         print(f"Saved: {out_file}")
 
-    # ---------------------------
-    # North arrow
-    # ---------------------------
-    def add_north_arrow(self, ax, position=(0.95, 0.15), size=14):
+    def add_north_arrow(self, ax, position=(0.95, 0.14), size=15):
         ax.annotate(
-            "N",
-            xy=(position[0], position[1] + 0.1),
-            xycoords="axes fraction",
-            ha="center",
-            va="center",
+            'N',
+            xy=(position[0], position[1] + 0.09),
+            xycoords='axes fraction',
+            ha='center',
             fontsize=size,
-            fontweight="bold",
-            zorder=10
+            fontweight='bold'
         )
-
         ax.annotate(
-            "",
-            xy=(position[0], position[1] + 0.05),
+            '',
+            xy=(position[0], position[1] + 0.04),
             xytext=(position[0], position[1]),
-            xycoords="axes fraction",
-            arrowprops=dict(facecolor="black", width=3, headwidth=10),
-            zorder=10
+            xycoords='axes fraction',
+            arrowprops=dict(facecolor='black', width=3, headwidth=10)
         )
 
 
-# ----------------------------------------------------------
-# __main__
-# ----------------------------------------------------------
-'''if __name__ == "__main__":
+# RUN
+if __name__ == "__main__":
+    ds = xr.open_dataset(
+        "/home/haron/kmd/nwp_models_data/wrfout_d01_2026-02-25_15:00:00",
+        engine="netcdf4"
+    )
 
     mapper = WindMapper(
-        nc_path="/home/haron/kmd/nwp_models_data/wrfout_d01_2026-02-11_13:00:00",
-        
+        ds,
+        out_dir="/home/haron/kmd/generated_maps/2026_02_25_1500"
     )
 
     mapper.load_data()
-
-    mapper.generate_map()'''
+    mapper.generate_map()

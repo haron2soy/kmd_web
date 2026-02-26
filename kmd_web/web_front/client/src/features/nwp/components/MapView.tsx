@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 type MapViewProps = {
   variable: string;
@@ -35,17 +36,12 @@ export default function MapView({
   width = "90%",
   className = "",
 }: MapViewProps) {
-  // Only compute once on mount
   const autoDatetime = useMemo(() => getCurrentUTCHour(), []);
-
-  // Treat empty string / falsy values as "use automatic"
-  const effectiveDatetime = datetime?.trim() 
-    ? datetime.trim()
-    : autoDatetime;
+  const effectiveDatetime = datetime?.trim() ? datetime.trim() : autoDatetime;
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageAspect, setImageAspect] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);     // start as true for initial load
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -118,41 +114,63 @@ export default function MapView({
         style={{
           width: "100%",
           aspectRatio: imageAspect ? `${imageAspect}` : "4 / 5",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: loading ? "#f1f5f9" : undefined,
         }}
       >
         {loading && (
-          <div className="text-gray-600 font-medium flex items-center gap-2">
+          <div className="absolute inset-0 flex items-center justify-center text-gray-600 font-medium">
             <span className="animate-pulse">Loading map...</span>
           </div>
         )}
 
         {error && (
-          <div className="text-red-600 font-medium px-4 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-red-600 font-medium px-4 text-center">
             {error}
             <br />
-            <small className="text-gray-500 mt-1 block">
-              {effectiveDatetime}
-            </small>
+            <small className="text-gray-500 mt-2">{effectiveDatetime}</small>
           </div>
         )}
 
         {!loading && !error && imageUrl && (
-          <img
-            src={imageUrl}
-            alt={`${variable} — ${effectiveDatetime}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              opacity,
-              imageRendering: "crisp-edges", // optional – helps with map sharpness
-            }}
-            decoding="async"
-          />
+          <TransformWrapper
+            initialScale={1}
+            minScale={1}
+            maxScale={8}
+            limitToBounds={false}
+            wheel={{ disabled: false, step: 0.15 }}
+            doubleClick={{ disabled: false, step: 1.8 }}
+            panning={{ disabled: false }}
+            pinch={{ disabled: false }}
+          >
+            <TransformComponent
+              wrapperStyle={{
+                width: "100%",
+                height: "100%",
+                background: loading ? "#f1f5f9" : undefined,
+              }}
+              contentStyle={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <img
+                src={imageUrl}
+                alt={`${variable} — ${effectiveDatetime}`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  opacity,
+                  imageRendering: "crisp-edges",
+                  // Important: disable default browser drag behavior
+                  pointerEvents: "auto",
+                  userSelect: "none",
+                  touchAction: "none", // helps mobile consistency
+                }}
+                decoding="async"
+                draggable={false}
+              />
+            </TransformComponent>
+          </TransformWrapper>
         )}
       </div>
     </div>

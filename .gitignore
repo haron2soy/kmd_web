@@ -11,6 +11,7 @@ static/
 nwp_models_data/
 nwp_models_data_test/
 generated_maps/
+generatedaps12/
 
 # Virtual environments
 venv/

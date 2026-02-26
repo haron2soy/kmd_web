@@ -211,7 +211,7 @@ class CountyRainfallMapper:
 # ----------------------------------------------------------
 if __name__ == "__main__":
     mapper = CountyRainfallMapper(
-        nc_path="/home/haron/kmd/nwp_models_data/wrfout_d01_2026-02-11_13:00:00",
+        nc_path="/home/haron/kmd/nwp_models_data/wrfout_d01_2026-02-25_13:00:00",
         geojson_path="/home/haron/kmd/nwp_models_data/eastafrica.geojson"
     )
 
