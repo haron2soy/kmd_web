@@ -27,12 +27,9 @@ SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    #"localhost",
-    #"127.0.0.1",
-    "172.18.28.18",
+    
     "172.168.2.34",
-    #"rsmc.test",
-    #"172.168.2.143",
+    
 ]
 
 
@@ -79,7 +76,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://172.18.28.18",
     "http://rsmc.test",
     "http://localhost",
-    "http://172.168.2.143",
+    "http://172.168.2.34",
 ]
 TEMPLATES = [
     {
