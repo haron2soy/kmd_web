@@ -67,7 +67,7 @@ def list_files(request):
             "name": f,
             "url": f"/uploads/rsmc/{year}/{month}/{day}/{f}"
         })
-    
+    print("Trying:", url)
     return JsonResponse({"files": files})
     
 

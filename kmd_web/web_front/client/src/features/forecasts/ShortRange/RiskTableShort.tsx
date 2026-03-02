@@ -1,6 +1,6 @@
 // src/features/forecasts/pages/Day2.tsx
 import { Link } from "wouter";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { FileViewer } from "../components/FileViewer";
 import { useEffect, useState } from "react";
 import { useScrollToHeaderDoc } from "../components/scrollToHeaderDoc";
@@ -62,19 +62,19 @@ export default function ShortRangeRiskTable() {
 
   if (loading) {
     return (
-      <PageLayout>
+      //<PageLayout>
         <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
           <div className="text-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading Short Range Risk Table...</p>
           </div>
         </div>
-      </PageLayout>
+      //</PageLayout>
     );
   }
 
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
           {/* Main content area */}
@@ -131,6 +131,6 @@ export default function ShortRangeRiskTable() {
           </aside>
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

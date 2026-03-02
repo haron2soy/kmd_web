@@ -1,5 +1,5 @@
 // src/features/services/RegionalInternationalLanding.tsx
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 import type { ServiceItem } from "./RegionalInternational"; // import central config
 import {RegionalInternational} from "./RegionalInternational";
@@ -24,7 +24,7 @@ export default function RegionalInternationalLanding() {
   const { headerRef } = useScrollToHeader(80);
 
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <header ref={headerRef} className="mb-12">
@@ -43,6 +43,6 @@ export default function RegionalInternationalLanding() {
           ))}
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

@@ -1,6 +1,6 @@
 // src/features/products/pages/ProductDetails.tsx
 
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 
 interface Props {
   title: string;
@@ -14,7 +14,7 @@ export default function ProductDetails({
   externalUrl,
 }: Props) {
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-3xl font-serif font-bold text-primary mb-6">
           {title}
@@ -33,6 +33,6 @@ export default function ProductDetails({
           </a>
         )}
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

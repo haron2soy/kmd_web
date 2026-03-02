@@ -46,55 +46,83 @@ import RedirectPage from "@/features/national_met_services/pages/RedirectPage";
 import RegionalInternationalLanding  from "@/features/regional_and_international/RegionalInternationalLanding";
 import RedirectRegionalInternational from "@/features/regional_and_international/pages/RedirectRegionalInternational";
 
+import { AuthProvider } from "../features/user_authentication/AuthContext";
+import Login from "../features/user_authentication/Login";
+import ProtectedRoute from "../features/user_authentication/ProtectedRoute";
+import ForgotPassword from "@/features/ForgotPassword";
+import {PageLayout} from "@/shared/components/layout/PageLayout";
+
+import Register from "@/features/user_authentication/User_Registeration";
+import VerifyEmail from "@/features/user_authentication/VerifyEmail";
+
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/pages/:slug" component={DynamicPage} />
+    <AuthProvider>
+      <PageLayout>
+        <Switch>
+          <Route path="/register" component={Register} />
+          {/* Auth routes */}
+          <Route path="/login" component={Login} />
+          <Route path="/verify-email/:token?" component={VerifyEmail} />
+          <Route path="/forgot-password" component={ForgotPassword} />
+          
+          <ProtectedRoute path="/"> <Home /> </ProtectedRoute> 
+          <Route path="/contact" component={Contact} />
+          <ProtectedRoute path="/pages/:slug"> <DynamicPage /> </ProtectedRoute> 
+          
+          
+          
+          <Route path="/news">
+            <PlaceholderPage title="News & Announcements" />
+          </Route>
 
-      <Route path="/news">
-        <PlaceholderPage title="News & Announcements" />
-      </Route>
+          <Route path="/publications">
+            <PlaceholderPage title="Publications & Documents" />
+          </Route>
+          <ProtectedRoute path="/products"> <ProductsLanding /> </ProtectedRoute>
+          <Route path="/products/uk-tephigrams" component={UKTephigrams} />
+          <Route path="/products/uk-eps" component={UKEPS} />
+          <Route path="/products/lake-victoria" component={LakeVictoria} />
+          <Route path="/products/noaa-ncep" component={NOAANCEP} />
+          <Route path="/products/uk-africa-vcp" component={UKAfricaVCP} />
+          
+          <ProtectedRoute path="/nwp-models"> <NWPLanding /> </ProtectedRoute> 
+          <ProtectedRoute path="/nwp-models/wrf"> <WrfViewer /> </ProtectedRoute> 
 
-      <Route path="/publications">
-        <PlaceholderPage title="Publications & Documents" />
-      </Route>
-      <Route path="/products" component={ProductsLanding} />
-      <Route path="/products/uk-tephigrams" component={UKTephigrams} />
-      <Route path="/products/uk-eps" component={UKEPS} />
-      <Route path="/products/lake-victoria" component={LakeVictoria} />
-      <Route path="/products/noaa-ncep" component={NOAANCEP} />
-      <Route path="/products/uk-africa-vcp" component={UKAfricaVCP} />
-      <Route path="/nwp-models" component={NWPLanding} />
-      <Route path="/nwp-models/wrf" component={WrfViewer} />
+          <ProtectedRoute path="/forecasts" > <ForecastLanding /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-1" > <Day1 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-2" > <Day2 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/risk-table-short" > <RiskTableShort /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/discussion-short" > <DiscussionShort /> </ProtectedRoute>
+     
 
-      <Route path="/forecasts" component={ForecastLanding} />
-      <Route path="/forecasts/day-1" component={Day1} />
-      <Route path="/forecasts/day-2" component={Day2} />
-      <Route path="/forecasts/risk-table-short" component={RiskTableShort} />
-      <Route path="/forecasts/discussion-short" component={DiscussionShort} />
-
-      <Route path="/forecasts/day-3" component={Day3} />
-      <Route path="/forecasts/day-4" component={Day4} />
-      <Route path="/forecasts/day-5" component={Day5} />
-      <Route path="/forecasts/risk-table-medium" component={RiskTableMedium} />
-      <Route path="/forecasts/discussion-medium" component={DiscussionMedium} />
-
-      <Route path="/forecasts/archive" component={ArchivePage} />
-      <Route path="/swfp-evaluation" component={SWFPLanding} />
-      <Route path="/swfp-evaluation/event-table" component={EventTable} />
-      <Route path="/swfp-evaluation/quarterly-report" component={QuarterlyReport} />
-      
-      <Route path = "/news/:slug" component={NewsDetail} />
-      <Route path = "/national" component={NationalMetServicesLanding} />
-      <Route path = "/national/:slug" component={RedirectPage} />
-      
-      <Route path = "/regional-international" component={RegionalInternationalLanding} />
-      <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
-      <Route component={NotFound} />
-      
-    </Switch>
+          <ProtectedRoute path="/forecasts/day-3" > <Day3 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-4" > <Day4 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-5" > <Day5 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/risk-table-medium" > <RiskTableMedium /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/discussion-medium" > <DiscussionMedium /> </ProtectedRoute>
+          
+          <ProtectedRoute path="/forecasts/archive" > <ArchivePage /> </ProtectedRoute> 
+          <ProtectedRoute path="/swfp-evaluation" > <SWFPLanding /> </ProtectedRoute>
+          <ProtectedRoute path="/swfp-evaluation/event-table" > <EventTable /> </ProtectedRoute> 
+          <ProtectedRoute path="/swfp-evaluation/quarterly-report" > <QuarterlyReport /> </ProtectedRoute>
+        
+                    
+          <Route path = "/news/:slug" component={NewsDetail} />
+          <Route path = "/national" component={NationalMetServicesLanding} />
+          <Route path = "/national/:slug" component={RedirectPage} />
+          
+          <Route path = "/regional-international" component={RegionalInternationalLanding} />
+          <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
+          
+          
+          
+          <Route component={NotFound} />
+          
+        </Switch>
+      </PageLayout>
+    </AuthProvider>
   );
 }
 

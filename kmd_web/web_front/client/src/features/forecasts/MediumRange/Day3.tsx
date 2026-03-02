@@ -1,6 +1,6 @@
 // src/features/forecasts/pages/Day3.tsx
 import { Link } from "wouter";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect } from "react";
 import { useScrollToHeader } from "../components/scrollToHeader";
 
@@ -51,7 +51,7 @@ export default function Day3() {
     }, []);
 
   return (
-    <PageLayout>  {/* ← uses Header + Navbar, but skips extra hero because no title prop */}
+    //<PageLayout>  {/* ← uses Header + Navbar, but skips extra hero because no title prop */}
       <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
           {/* Main content area */}
@@ -107,6 +107,6 @@ export default function Day3() {
           </aside>
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

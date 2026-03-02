@@ -24,11 +24,13 @@ SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962
 #SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 #DATABASES["default"]["PASSWORD"] = os.getenv("DB_PASSWORD")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     
-    "172.168.2.34",
+    "172.168.2.26",
+    "localhost:5173",
+    "127.0.0.1",
     
 ]
 
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     "pages",
     "wrfapi",
     "news",
+    "user_accounts",
 ]
 
 MIDDLEWARE = [
@@ -74,9 +77,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://172.18.28.18",
-    "http://rsmc.test",
-    "http://localhost",
-    "http://172.168.2.34",
+    #"http://rsmc.test",
+    "http://localhost:5173",
+    "http://127.0.0.1:8000",
+    "http://172.168.2.26",
 ]
 TEMPLATES = [
     {
@@ -197,3 +201,23 @@ CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TIME_LIMIT = 1800
 CELERY_TASK_SOFT_TIME_LIMIT = 1500
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 10
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # True in HTTPS
+CSRF_COOKIE_SECURE = False     # True in HTTPS
+CSRF_COOKIE_HTTPONLY = False   # must be False for React
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"  # or your provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "haron1soy@gmail.com"
+EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
+
+DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
+
+SITE_NAME = "RSMC"
+CURRENT_YEAR = 2026
+
+FRONTEND_URL = "http://localhost:5173"

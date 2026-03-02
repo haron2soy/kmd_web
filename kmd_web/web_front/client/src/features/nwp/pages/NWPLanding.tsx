@@ -1,7 +1,7 @@
 // src/features/nwp/pages/NWPLanding.tsx
 import { useQuery } from "@tanstack/react-query";
 import { getNWPModels } from "../api";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Clock, AlertCircle } from "lucide-react";
 import { Link } from "wouter";
@@ -83,7 +83,7 @@ export default function NWPLanding() {
   });
 
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
         <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-10">
           Numerical Weather Prediction (NWP) Models
@@ -126,6 +126,6 @@ export default function NWPLanding() {
           </div>
         )}
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

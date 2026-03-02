@@ -1,6 +1,6 @@
 // src/features/swfp/SWFPLanding.tsx
 import { Link } from "wouter";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "../../shared/components/ScrollToHeader/useScrollToHeader";
 const Card = ({ href, label }: { href: string; label: string }) => (
   <Link href={href}>
@@ -20,7 +20,7 @@ const links = [
 export default function SWFPLanding() {
     const { headerRef } = useScrollToHeader(80);
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <header ref={headerRef} className="mb-12">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
@@ -37,6 +37,6 @@ export default function SWFPLanding() {
           ))}
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

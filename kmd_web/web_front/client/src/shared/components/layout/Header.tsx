@@ -10,8 +10,8 @@ export function Header() {
         <Link href="/"
            className="relative flex items-center gap-4 group cursor-pointer select-none caret-transparent">
             <img
-              src={logo}
-              alt="Regional Specialized Meteorological Centre (RSMC) Logo"
+              src={flagOfKenya}
+              alt="Flag of Kenya"
               className="h-28 md:h-32 w-[150px] md:w-[200px] object-contain opacity-100 z-0 transition-opacity duration-300 group-hover:opacity-80"
             />
 
@@ -28,8 +28,9 @@ export function Header() {
 
         <div className="ml-auto hidden lg:block select-none caret-transparent">
           <img
-            src={flagOfKenya}
-            alt="Flag of Kenya"
+            src={logo}
+            alt="Regional Specialized Meteorological Centre (RSMC) Logo"
+            
             className="h-28 md:h-32 w-auto object-contain pointer-events-none"
           />
         </div>

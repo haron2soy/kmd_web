@@ -1,6 +1,6 @@
 // src/features/swfp/eventtable/EventTable.tsx
 import { Link } from "wouter";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect, useState } from "react";
 import { useScrollToHeader } from "../../../shared/components/ScrollToHeader/useScrollToHeader";
 
@@ -48,7 +48,7 @@ export default function EventTable() {
   }, []);
 
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
 
@@ -99,6 +99,6 @@ export default function EventTable() {
 
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

@@ -1,6 +1,6 @@
 // src/features/products/pages/ProductsLanding.tsx
 import { Link } from "wouter";
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 
 // Optional: if you want card-like styling consistency
 const ProductCard = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -16,7 +16,7 @@ const ProductCard = ({ href, children }: { href: string; children: React.ReactNo
 
 export default function ProductsLanding() {
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
         <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-10">
           Products
@@ -65,6 +65,6 @@ export default function ProductsLanding() {
           </div>
         </section>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }

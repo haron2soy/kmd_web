@@ -1,5 +1,5 @@
 // src/features/met-services/MetServicesLanding.tsx
-import { PageLayout } from "@/shared/components/layout/PageLayout";
+//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 import type { ServiceItem } from "./services"; // import central config
 import {services} from "./services";
@@ -23,7 +23,7 @@ export default function NationalMetServicesLanding() {
   const { headerRef } = useScrollToHeader(80);
 
   return (
-    <PageLayout>
+    //<PageLayout>
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <header ref={headerRef} className="mb-12">
@@ -42,6 +42,6 @@ export default function NationalMetServicesLanding() {
           ))}
         </div>
       </div>
-    </PageLayout>
+    //</PageLayout>
   );
 }
