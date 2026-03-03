@@ -45,7 +45,7 @@ export default function Home() {
       {/* ==================================================
          HERO SECTION
       ================================================== */}
-      <section className="relative h-[420px] text-white overflow-hidden">
+      <section className="relative h-[350px] text-white overflow-hidden">
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 z-10" />
 

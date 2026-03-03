@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     
-    "172.168.2.26",
+    "154.79.145.83",
     "localhost:5173",
     "127.0.0.1",
     
@@ -80,7 +80,7 @@ CSRF_TRUSTED_ORIGINS = [
     #"http://rsmc.test",
     "http://localhost:5173",
     "http://127.0.0.1:8000",
-    "http://172.168.2.26",
+    "http://154.79.145.83",
 ]
 TEMPLATES = [
     {
