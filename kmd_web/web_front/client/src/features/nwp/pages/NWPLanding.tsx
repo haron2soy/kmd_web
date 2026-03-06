@@ -85,9 +85,9 @@ export default function NWPLanding() {
   return (
     //<PageLayout>
       <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-10">
+        <h2 className="text-xl md:text-2xl font-serif font-bold text-primary mb-10">
           Numerical Weather Prediction (NWP) Models
-        </h1>
+        </h2>
 
         <p className="text-lg text-gray-600 mb-12 max-w-3xl">
           Operational and research numerical models currently supporting forecasting services.

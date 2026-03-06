@@ -4,12 +4,13 @@ import { Link } from "wouter";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 const ForecastCard = ({ href, label }: { href: string; label: string }) => (
   <Link href={href}>
-    <div className="group relative p-6 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white">
+    <div className="group relative p-3 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white">
       <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
       <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors">
         {label}
       </h3>
     </div>
+    
   </Link>
 );
 
@@ -38,7 +39,7 @@ export default function ForecastLanding() {
   return (
     //<PageLayout>
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
-        <header ref={headerRef} className="mb-6 md:mb-8">
+        <header ref={headerRef} className="mb-4 md:mb-4">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
             Forecasts
           </h1>
@@ -48,11 +49,11 @@ export default function ForecastLanding() {
         </header>
 
         {/* Short Range */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-primary mb-6">
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold text-primary mb-6">
             Short Range Forecasts (1–2 days)
           </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {shortRangeLinks.map((link) => (
               <ForecastCard key={link.href} href={link.href} label={link.label} />
             ))}
@@ -60,11 +61,11 @@ export default function ForecastLanding() {
         </section>
 
         {/* Medium Range */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-primary mb-6">
+        <section className="mb-4">
+          <h2 className="text-xl font-semibold text-primary mb-3">
             Medium Range Forecasts (3–5 days)
           </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {mediumRangeLinks.map((link) => (
               <ForecastCard key={link.href} href={link.href} label={link.label} />
             ))}

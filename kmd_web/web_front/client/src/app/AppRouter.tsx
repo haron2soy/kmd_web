@@ -9,18 +9,16 @@ import { BackendGuard } from "@/shared/guards/BackendGuards";
 
 import NotFound from "@/features/home/not-found";
 import Home from "@/features/home/Home";
-import DynamicPage from "@/features/cms/pages/DynamicPage";
+import DynamicPage from "@/features/home/pages/DynamicPage";
 import Contact from "@/features/home/Contact";
 import PlaceholderPage from "@/features/home/PlaceholderPage";
-import ProductsLanding from "@/features/products/pages/ProductsLanding";
-import UKTephigrams from "@/features/products/pages/Regional/UKTephigrams";
-import UKEPS from "@/features/products/pages/Regional/UKEPS";
-import LakeVictoria from "@/features/products/pages/Regional/LakeVictoria";
-import NOAANCEP from "@/features/products/pages/Global/NOAANCEP";
-import UKAfricaVCP from "@/features/products/pages/Global/UKAfricaVCP";
+import ProductsLanding from "@/features/products/Global/ProductsLanding";
+
+
 import NWPLanding from "@/features/nwp/pages/NWPLanding";
 
 import ForecastLanding from "@/features/forecasts/ForecastLanding";
+import GuidanceLanding from "@/features/forecasts/Guidance/GuidanceLanding";
 import Day1 from "@/features/forecasts/ShortRange/Day1";
 import Day2 from "@/features/forecasts/ShortRange/Day2";
 import RiskTableShort from "@/features/forecasts/ShortRange/RiskTableShort";
@@ -55,6 +53,8 @@ import {PageLayout} from "@/shared/components/layout/PageLayout";
 import Register from "@/features/user_authentication/User_Registeration";
 import VerifyEmail from "@/features/user_authentication/VerifyEmail";
 
+import RedirectProducts from "@/features/products/pages/RedirectProducts";
+
 
 function Router() {
   return (
@@ -81,12 +81,10 @@ function Router() {
             <PlaceholderPage title="Publications & Documents" />
           </Route>
           <ProtectedRoute path="/products"> <ProductsLanding /> </ProtectedRoute>
-          <Route path="/products/uk-tephigrams" component={UKTephigrams} />
-          <Route path="/products/uk-eps" component={UKEPS} />
-          <Route path="/products/lake-victoria" component={LakeVictoria} />
-          <Route path="/products/noaa-ncep" component={NOAANCEP} />
-          <Route path="/products/uk-africa-vcp" component={UKAfricaVCP} />
           
+          <Route path = "/products/:slug" component={RedirectProducts} />
+          
+
           <ProtectedRoute path="/nwp-models"> <NWPLanding /> </ProtectedRoute> 
           <ProtectedRoute path="/nwp-models/wrf"> <WrfViewer /> </ProtectedRoute> 
 
@@ -104,18 +102,25 @@ function Router() {
           <ProtectedRoute path="/forecasts/discussion-medium" > <DiscussionMedium /> </ProtectedRoute>
           
           <ProtectedRoute path="/forecasts/archive" > <ArchivePage /> </ProtectedRoute> 
+          
+          <ProtectedRoute path="/guidance" > <GuidanceLanding /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-1" > <Day1 /> </ProtectedRoute> 
+          <ProtectedRoute path="/forecasts/day-2" > <Day2 /> </ProtectedRoute> 
+          
           <ProtectedRoute path="/swfp-evaluation" > <SWFPLanding /> </ProtectedRoute>
           <ProtectedRoute path="/swfp-evaluation/event-table" > <EventTable /> </ProtectedRoute> 
           <ProtectedRoute path="/swfp-evaluation/quarterly-report" > <QuarterlyReport /> </ProtectedRoute>
-        
-                    
+          <ProtectedRoute path="/national" > <NationalMetServicesLanding /> </ProtectedRoute>
+          <ProtectedRoute path="/national/:slug" > <RedirectPage /> </ProtectedRoute>
+                            
           <Route path = "/news/:slug" component={NewsDetail} />
-          <Route path = "/national" component={NationalMetServicesLanding} />
-          <Route path = "/national/:slug" component={RedirectPage} />
-          
+
+                    
           <Route path = "/regional-international" component={RegionalInternationalLanding} />
           <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
-          
+
+          <Route path = "/regional-international" component={RegionalInternationalLanding} />
+          <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
           
           
           <Route component={NotFound} />
@@ -127,6 +132,7 @@ function Router() {
 }
 
 function App() {
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

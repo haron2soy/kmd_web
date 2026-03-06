@@ -1,0 +1,25 @@
+[Unit]
+Description=Celery Worker for Django WRF Processing
+After=network.target
+
+[Service]
+Type=simple
+
+User=%u
+Group=%u
+
+WorkingDirectory=%h/kmd/kmd_web/web_service
+
+Environment=DJANGO_SETTINGS_MODULE=rsmc_config.config.settings
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/bin/bash -c "source %h/miniconda3/etc/profile.d/conda.sh && \
+conda activate rsmc-env && \
+exec %h/miniconda3/envs/rsmc-env/bin/celery -A rsmc_config.config worker \
+--loglevel=INFO --concurrency=3"
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

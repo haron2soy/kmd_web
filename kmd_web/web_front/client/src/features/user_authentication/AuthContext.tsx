@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import apiClient from "@/lib/apiClient";
 
@@ -242,7 +236,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     logout,
     refreshSession,
   };
+      // ────────────────────────────────────────────────
+      // Auto-logout on inactivity / session expiry
+      // ────────────────────────────────────────────────
+      useEffect(() => {
+        const interval = setInterval(async () => {
+          try {
+            const response = await apiClient.get<SessionResponse>("/session/", {
+              withCredentials: true,
+            });
 
+            // If session expired, log out
+            if (!response.data.authenticated) {
+              setUser(null);
+              navigate("/login", { replace: true });
+            }
+          } catch (err) {
+            console.error("Session check failed", err);
+            setUser(null);
+            navigate("/login", { replace: true });
+          }
+        }, 60000); // check every 60 seconds
+
+        return () => clearInterval(interval);
+      }, [navigate]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

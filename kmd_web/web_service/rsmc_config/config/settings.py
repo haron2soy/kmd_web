@@ -27,11 +27,9 @@ SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    
-    "154.79.145.83",
-    "localhost:5173",
-    "127.0.0.1",
-    
+    "172.168.2.103",
+    "localhost",
+    "127.0.0.1",   
 ]
 
 
@@ -75,12 +73,15 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'rsmc_config.config.urls'
 CORS_ALLOW_ALL_ORIGINS = True
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
 CSRF_TRUSTED_ORIGINS = [
     "http://172.18.28.18",
     #"http://rsmc.test",
     "http://localhost:5173",
     "http://127.0.0.1:8000",
-    "http://154.79.145.83",
+    "http://172.168.2.103",
 ]
 TEMPLATES = [
     {
@@ -153,30 +154,23 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 MEDIA_URL = "/uploads/"
-WRF_DATA_DIR = "/home/haron/kmd/nwp_models_data/"
+WRF_DATA_DIR = BASE_DIR / "nwp_models_data/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-#MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-#MEDIA_ROOT = BASE_DIR / "media"
-#MEDIA_URL = "/media/"
+# WRF input directory
+WRF_DATA_DIR = BASE_DIR / "nwp_models_data"
+
+# Generated maps directory
+GENERATED_MAPS_DIR = BASE_DIR / "generated_maps"
+
+# Auto-create directories if missing
+for directory in [WRF_DATA_DIR, GENERATED_MAPS_DIR]:
+    directory.mkdir(parents=True, exist_ok=True)
 MEDIA_ROOT = "/home/haron/uploads"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-'''CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-    }
-}
-
-CACHES = {
-  "default": {
-    "BACKEND": "django.core.cache.backends.locmem.LocMemCache"
-  }
-}'''
 
 CACHES = {
     "default": {
@@ -201,10 +195,16 @@ CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TIME_LIMIT = 1800
 CELERY_TASK_SOFT_TIME_LIMIT = 1500
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 10
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = False  # True in HTTPS
-CSRF_COOKIE_SECURE = False     # True in HTTPS
+#SESSION_COOKIE_HTTPONLY = True
+
 CSRF_COOKIE_HTTPONLY = False   # must be False for React
+SESSION_COOKIE_AGE = 900        # 15 minutes
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -220,4 +220,5 @@ DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 SITE_NAME = "RSMC"
 CURRENT_YEAR = 2026
 
-FRONTEND_URL = "http://localhost:5173"
+FRONTEND_URL = "http:172.168.2.103"
+

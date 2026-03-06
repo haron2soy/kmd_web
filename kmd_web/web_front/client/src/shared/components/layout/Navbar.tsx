@@ -27,45 +27,26 @@ export function Navbar() {
   // Main navigation items
   // ────────────────────────────────────────────────
   const mainNav = [
-    { href: '/nwp-models', label: 'NWP Models', submenu: null },
+    { href: '/nwp-models', label: 'NWP', submenu: null },
     {
       href: '/products',
       label: 'Products',
-      submenu: [
-        { label: 'Regional Products', items: [
-          { href: '/products/uk-tephigrams', label: 'UK Met Office Tephigrams' },
-          { href: '/products/uk-eps', label: 'UK Met Office EPS' },
-          { href: '/products/lake-victoria', label: 'Lake Victoria Products' },
-        ]},
-        { label: 'Global Products', items: [
-          { href: '/products/noaa-ncep', label: 'NOAA NCEP African Desk' },
-          { href: '/products/uk-africa-vcp', label: 'UK Africa VCP' },
-        ]},
-      ],
+      submenu: null,
     },
     {
       href: '/forecasts',
       label: 'Forecasts',
-      submenu: [
-        { label: 'Short Range Forecasts (1-2 days)', items: [
-          { href: '/forecasts/day-1', label: 'Day 1' },
-          { href: '/forecasts/day-2', label: 'Day 2' },
-          { href: '/forecasts/risk-table-short', label: 'Risk Table' },
-          { href: '/forecasts/discussion-short', label: 'Discussion' },
-        ]},
-        { label: 'Medium Range Forecasts (3-5 days)', items: [
-          { href: '/forecasts/day-3', label: 'Day 3' },
-          { href: '/forecasts/day-4', label: 'Day 4' },
-          { href: '/forecasts/day-5', label: 'Day 5' },
-          { href: '/forecasts/risk-table-medium', label: 'Risk Table' },
-          { href: '/forecasts/discussion-medium', label: 'Discussion' },
-        ]},
-        { href: '/forecasts/archive', label: 'RSMC Guidance Archive' },
-      ],
+      submenu: null
+    },
+    {
+      href: '/guidance',
+      label: 'Guidance',
+      submenu: null
+
     },
     {
       href: '/swfp-evaluation',
-      label: 'SWFP Evaluation',
+      label: 'SWFP Evaluations',
       submenu: [
         { label: 'Evaluations', items: [
           { href: '/swfp-evaluation/quarterly-report', label: 'Quarterly Report' },
@@ -75,15 +56,8 @@ export function Navbar() {
     },
     {
       href: '/national',
-      label: 'National Met Services',
-      submenu: [
-        { label: 'National Met Services', items: [
-          { href: '/national/kenya', label: 'Kenya' },
-          { href: '/national/ethiopia', label: 'Ethiopia' },
-          { href: '/national/rwanda', label: 'Rwanda' },
-          { href: '/national/tanzania', label: 'Tanzania' },
-        ]},
-      ],
+      label: 'National Met',
+      submenu: null,
     },
     {
       href: '/regional-international',
@@ -130,7 +104,7 @@ export function Navbar() {
           </button>
 
           {/* Desktop menu – hidden on mobile */}
-          <ul className="hidden lg:flex flex-nowrap items-center gap-1 md:gap-2 text-sm font-medium uppercase tracking-wider">
+          <ul className="hidden lg:flex flex-nowrap items-center gap-1 md:gap-2 text-normal font-medium  tracking-wider">
             {/* Home */}
             <li className="relative group">
               <Link
@@ -163,10 +137,11 @@ export function Navbar() {
 
             {/* Main items */}
             {mainNav.map(item => {
-              const itemActive = isActive(item.href) ||
-                (item.submenu && item.submenu.some(sub =>
-                  sub.href ? isActive(sub.href) : sub.items?.some(i => isActive(i.href))
-                ));
+              const itemActive =
+                (item.href && isActive(item.href)) ||
+                (item.submenu?.some(sub =>
+                  (sub.items?.some(i => i.href && isActive(i.href)))
+                  ) ?? false);
 
               return (
                 <li key={item.href} className="relative group">

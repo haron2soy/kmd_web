@@ -21,8 +21,8 @@ export default function SWFPLanding() {
     const { headerRef } = useScrollToHeader(80);
   return (
     //<PageLayout>
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <header ref={headerRef} className="mb-12">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <header ref={headerRef} className="mb-6">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
             SWFP Evaluation
           </h1>

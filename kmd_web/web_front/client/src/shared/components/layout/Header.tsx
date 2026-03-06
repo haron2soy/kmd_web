@@ -12,13 +12,14 @@ export function Header() {
             <img
               src={flagOfKenya}
               alt="Flag of Kenya"
-              className="h-28 md:h-32 w-[150px] md:w-[200px] object-contain opacity-100 z-0 transition-opacity duration-300 group-hover:opacity-80"
+              className="h-10 sm:h-12 md:h-16 w-auto object-contain pointer-events-none"
             />
 
             <div className="relative z-10 flex flex-col">
-              <h1 className="text-2xl md:text-3xl font-serif font-bold text-primary uppercase tracking-wide text-center">
+              <h2 className=" text-blue-900 text-lg md:text-2xl font-serif text-center font-bold tracking-wide">
                 Regional Specialized Meteorological Centre (RSMC) Nairobi
-              </h1>
+              </h2>
+
               <p className="mt-1 text-sm md:text-base font-medium text-muted-foreground">
                 Serving the Region with Excellence in Meteorology
               </p>
@@ -26,12 +27,11 @@ export function Header() {
           
         </Link>
 
-        <div className="ml-auto hidden lg:block select-none caret-transparent">
+        <div className="ml-auto select-none caret-transparent">
           <img
             src={logo}
             alt="Regional Specialized Meteorological Centre (RSMC) Logo"
-            
-            className="h-28 md:h-32 w-auto object-contain pointer-events-none"
+            className="h-12 sm:h-14 md:h-16 w-auto object-contain pointer-events-none"
           />
         </div>
 

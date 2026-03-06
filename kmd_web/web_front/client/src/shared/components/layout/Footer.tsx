@@ -36,10 +36,10 @@ export function Footer() {
             Quick Links
           </h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-white hover:underline decoration-accent">WMO Website</a></li>
-            <li><a href="#" className="hover:text-white hover:underline decoration-accent">National Meteorological Services</a></li>
-            <li><a href="#" className="hover:text-white hover:underline decoration-accent">Severe Weather Information Centre</a></li>
-            <li><a href="#" className="hover:text-white hover:underline decoration-accent">World Weather Information Service</a></li>
+            <li><a href="https://wmo.int/" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline decoration-accent">WMO Website</a></li>
+            <li><a href="https://meteo.go.ke/" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline decoration-accent">National Meteorological Services</a></li>
+            <li><a href="https://severeweather.wmo.int/index.html" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline decoration-accent">Severe Weather Information Centre</a></li>
+            <li><a href="https://worldweather.wmo.int/" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline decoration-accent">World Weather Information Service</a></li>
           </ul>
         </div>
 

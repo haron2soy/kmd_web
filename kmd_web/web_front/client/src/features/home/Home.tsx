@@ -1,9 +1,9 @@
 // src/features/home/pages/Home.tsx
-
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/shared/components/ui/button";
-import { CloudRain, AlertTriangle, Calendar } from "lucide-react";
+import { CloudRain, Calendar } from "lucide-react";
+import ActiveWarnings from "@/features/Alerts/ActiveWarnings";
 import { cn } from "@/lib/utils";
 
 import background1 from "@/shared/assets/background/image1.jpg";
@@ -14,21 +14,100 @@ import background4 from "@/shared/assets/background/beautiful-clouds.jpg";
 import AnnouncementList from "./Announcements";
 import NewsList from "./News";
 
-const HERO_IMAGES = [
-  background1,
-  background2,
-  background3,
-  background4,
-];
-
+/* ===============================
+   Hero Images & Interval
+=============================== */
+const HERO_IMAGES = [background1, background2, background3, background4];
 const HERO_INTERVAL = 10000; // 10s
 
+/* ===============================
+   Sidebar Types & Data
+=============================== */
+interface Product {
+  label: string;
+  href: string;
+  icon?: React.ReactNode;
+}
+
+const products: Product[] = [
+  { label: "Forecasts", href: "/forecasts" },
+  { label: "NWP Model", href: "/nwp-models" },
+  { label: "Marine Bulletin", href: "/marine-bulletin" },
+  { label: "Guidance", href: "/guidance" },
+  { label: "Climate Quarterly Outlook", href: "/swfp-evaluation" },
+];
+
+/* ===============================
+   Sidebar Component
+=============================== */
+function Sidebar() {
+  return (
+    <aside className="space-y-10">
+      {/* Meteorological Products */}
+      <div className="bg-primary text-white p-6 rounded-sm shadow-md">
+        <h3 className="font-serif font-bold text-xl mb-4 border-b border-white/20 pb-2">
+          Meteorological Products
+        </h3>
+        <ul className="space-y-3">
+          {products.map((item) => (
+            <li key={item.label}>
+              <Link href={item.href}>
+                <a className="flex items-center gap-3 p-3 bg-white/10 hover:bg-accent hover:text-accent-foreground transition-colors rounded-sm text-sm font-medium">
+                  <CloudRain className="h-4 w-4" />
+                  {item.label}
+                </a>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Active Warnings */}
+      <div className="bg-amber-50 border border-amber-200 p-6 rounded-sm max-h-[400px] overflow-y-auto">
+        <ActiveWarnings />
+      </div>
+
+      {/* Upcoming Events */}
+      <div className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
+        <h3 className="font-serif font-bold text-xl text-primary mb-4 flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-accent" />
+          Upcoming Events
+        </h3>
+
+        <ul className="divide-y divide-slate-100">
+          {[
+            { day: 11, title: "Capacity Building Workshop" },
+            { day: 12, title: "Annual Scientific Conference" },
+          ].map((event) => (
+            <li key={event.day} className="py-3 flex gap-3">
+              <div className="bg-slate-100 text-slate-600 px-3 py-1 text-center rounded-sm h-fit">
+                <span className="block text-xs uppercase font-bold">Oct</span>
+                <span className="block text-xl font-bold">{event.day}</span>
+              </div>
+              <div>
+                <h4 className="font-bold text-primary text-sm hover:underline cursor-pointer">
+                  {event.title}
+                </h4>
+                <p className="text-xs text-slate-500 mt-1">Nairobi, Kenya</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+    </aside>
+  );
+}
+
+
+
+/* ===============================
+   Home Component
+=============================== */
 export default function Home() {
   const [index, setIndex] = useState(0);
 
-  /* --------------------------------------------------
-     Hero Auto-Slider (cleaner interval logic)
-  -------------------------------------------------- */
+  /* Hero Slider */
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
@@ -37,14 +116,9 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  /* --------------------------------------------------
-     Render
-  -------------------------------------------------- */
   return (
     <>
-      {/* ==================================================
-         HERO SECTION
-      ================================================== */}
+      {/* HERO SECTION */}
       <section className="relative h-[350px] text-white overflow-hidden">
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 z-10" />
@@ -67,7 +141,7 @@ export default function Home() {
               Official Monitoring
             </span>
 
-            <h1 className="text-white/90 text-3xl md:text-4xl lg:text-5xl font-serif font-bold leading-snug mb-6 max-w-3xl">
+            <h1 className="text-white/90 text-2xl font-serif font-bold mb-4">
               Leading the Region in Meteorological Excellence
             </h1>
 
@@ -100,15 +174,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-         MAIN CONTENT
-      ================================================== */}
+      {/* MAIN CONTENT */}
       <section className="container mx-auto px-4 py-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* MAIN COLUMN */}
           <div className="lg:col-span-2 space-y-14">
-            
             {/* Mission */}
             <div className="bg-white p-8 border-l-4 border-primary shadow-sm">
               <h2 className="text-2xl font-serif font-bold text-primary mb-4">
@@ -125,7 +196,7 @@ export default function Home() {
             {/* News */}
             <section>
               <h2 className="text-2xl font-serif font-bold text-primary mb-6">
-                Latest News
+                
               </h2>
               <NewsList />
             </section>
@@ -140,111 +211,10 @@ export default function Home() {
           </div>
 
           {/* SIDEBAR */}
-          <aside className="space-y-10">
+          <Sidebar />
 
-            {/* Products */}
-            <div className="bg-primary text-white p-6 rounded-sm shadow-md">
-              <h3 className="font-serif font-bold text-xl mb-4 border-b border-white/20 pb-2">
-                Meteorological Products
-              </h3>
-              <ul className="space-y-3">
-                {[
-                  "Synoptic Analysis",
-                  "Tropical Cyclone Guidance",
-                  "Marine Bulletins",
-                  "Aviation Forecasts",
-                  "Climate Monthly Outlooks",
-                ].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="flex items-center gap-3 p-3 bg-white/10 hover:bg-accent hover:text-accent-foreground transition-colors rounded-sm text-sm font-medium"
-                    >
-                      <CloudRain className="h-4 w-4" />
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Warnings */}
-            <div className="bg-amber-50 border border-amber-200 p-6 rounded-sm">
-              <h3 className="font-serif font-bold text-xl text-amber-800 mb-4 flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-amber-600" />
-                Active Warnings
-              </h3>
-
-              <div className="space-y-4 text-sm">
-                <WarningCard
-                  title="Heavy Rainfall Alert"
-                  description="Coastal regions expected to receive >50mm over next 24hrs."
-                  color="amber"
-                />
-                <WarningCard
-                  title="Small Craft Advisory"
-                  description="Strong winds expected offshore. Fishermen advised to stay close to shore."
-                  color="yellow"
-                />
-              </div>
-            </div>
-
-            {/* Events */}
-            <div className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
-              <h3 className="font-serif font-bold text-xl text-primary mb-4 flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-accent" />
-                Upcoming Events
-              </h3>
-
-              <ul className="divide-y divide-slate-100">
-                {[
-                  { day: 11, title: "Capacity Building Workshop" },
-                  { day: 12, title: "Annual Scientific Conference" },
-                ].map((event) => (
-                  <li key={event.day} className="py-3 flex gap-3">
-                    <div className="bg-slate-100 text-slate-600 px-3 py-1 text-center rounded-sm h-fit">
-                      <span className="block text-xs uppercase font-bold">
-                        Oct
-                      </span>
-                      <span className="block text-xl font-bold">
-                        {event.day}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-primary text-sm hover:underline cursor-pointer">
-                        {event.title}
-                      </h4>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Nairobi, Kenya
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
         </div>
       </section>
     </>
-  );
-}
-
-/* ==================================================
-   Small Reusable Warning Card
-================================================== */
-
-function WarningCard({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-  color: "amber" | "yellow";
-}) {
-  return (
-    <div className="p-3 bg-white border-l-4 border-amber-500 shadow-sm">
-      <strong className="block mb-1">{title}</strong>
-      <span className="text-slate-600">{description}</span>
-    </div>
   );
 }
