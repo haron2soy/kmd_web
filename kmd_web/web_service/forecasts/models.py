@@ -23,6 +23,12 @@ class Forecast(models.Model):
         ('medium-discussion', 'Medium Range Discussion'),
         ('medium-risktable', 'Medium Range Risk Table'),
         ('short-risktable', 'Short Range Risk Table'),
+            # Marine forecasts
+        ('marine-forecast-daily', 'Marine Forecast Daily'),
+        ('marine-forecast-weekly', 'Marine Forecast Weekly'),
+
+        # EASFWP products
+        ('easfwp-discussions-daily', 'EASFWP Daily Discussion'),
     ]
 
     category = models.ForeignKey(
@@ -50,7 +56,7 @@ class Forecast(models.Model):
     description = models.TextField(blank=True)
 
     # Single file field for both images AND documents
-    file = models.FileField(max_length=500)  # 🔥 no upload_to - files already exist
+    file_path = models.CharField(max_length=500)  # 🔥 no upload_to - files already exist
     issue_date = models.DateField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

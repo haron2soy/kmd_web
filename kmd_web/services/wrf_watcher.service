@@ -14,14 +14,14 @@ WorkingDirectory=%h/kmd/kmd_web/web_service
 Environment="PATH=%h/miniconda3/envs/rsmc-env/bin"
 Environment=DJANGO_SETTINGS_MODULE=rsmc_config.config.settings
 
-ExecStart=%h/miniconda3/envs/rsmc-env/bin/python watch_wrf.py
+ExecStart=%h/miniconda3/envs/rsmc-env/bin/python %h/kmd/kmd_web/web_service/watch_wrf.py
 
 Restart=always
 RestartSec=10
 TimeoutStartSec=120
 
-StandardOutput=append:/var/log/wrf_watcher.log
-StandardError=append:/var/log/wrf_watcher.err
+StandardOutput=append:%h/wrf_watcher.log
+StandardError=append:%h/wrf_watcher.err
 
 [Install]
 WantedBy=multi-user.target

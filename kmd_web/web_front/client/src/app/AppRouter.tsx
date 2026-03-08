@@ -13,8 +13,9 @@ import DynamicPage from "@/features/home/pages/DynamicPage";
 import Contact from "@/features/home/Contact";
 import PlaceholderPage from "@/features/home/PlaceholderPage";
 import ProductsLanding from "@/features/products/Global/ProductsLanding";
-
-
+import MarineForecastDaily from "@/features/forecasts/Guidance/MarineForecastDaily";
+import MarineForecastSevenDays from "@/features/forecasts/Guidance/MarineForecastSevenDays";
+import EAsfwpDiscussion from "@/features/forecasts/Guidance/EAsfwpDiscussion";
 import NWPLanding from "@/features/nwp/pages/NWPLanding";
 
 import ForecastLanding from "@/features/forecasts/ForecastLanding";
@@ -104,8 +105,9 @@ function Router() {
           <ProtectedRoute path="/forecasts/archive" > <ArchivePage /> </ProtectedRoute> 
           
           <ProtectedRoute path="/guidance" > <GuidanceLanding /> </ProtectedRoute> 
-          <ProtectedRoute path="/forecasts/day-1" > <Day1 /> </ProtectedRoute> 
-          <ProtectedRoute path="/forecasts/day-2" > <Day2 /> </ProtectedRoute> 
+          <ProtectedRoute path="/guidance/marine-forecast-daily" > <MarineForecastDaily /> </ProtectedRoute> 
+          <ProtectedRoute path="/guidance/marine-forecast-seven-days" > <MarineForecastSevenDays /> </ProtectedRoute> 
+          <ProtectedRoute path="/guidance/easfwp-daily-discussion" > <EAsfwpDiscussion /> </ProtectedRoute> 
           
           <ProtectedRoute path="/swfp-evaluation" > <SWFPLanding /> </ProtectedRoute>
           <ProtectedRoute path="/swfp-evaluation/event-table" > <EventTable /> </ProtectedRoute> 

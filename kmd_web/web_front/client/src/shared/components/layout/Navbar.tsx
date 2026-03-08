@@ -36,14 +36,13 @@ export function Navbar() {
     {
       href: '/forecasts',
       label: 'Forecasts',
-      submenu: null
+      submenu: [
+        { label: 'Guidance', items: [
+          { href: '/guidance', label: 'Guidance' },
+        ]},
+      ],
     },
-    {
-      href: '/guidance',
-      label: 'Guidance',
-      submenu: null
-
-    },
+    
     {
       href: '/swfp-evaluation',
       label: 'SWFP Evaluations',

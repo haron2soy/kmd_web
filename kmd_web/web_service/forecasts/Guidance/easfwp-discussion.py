@@ -36,7 +36,7 @@ def latest_forecast(request):
 
     if forecast:
         return Response({
-            "image": forecast.file_path.url,
+            "image": forecast.file.url,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
             "day": day_int
         })
@@ -72,13 +72,13 @@ def latest_forecast(request):
         issue_date=today,
         defaults={
             "title": f"Short Range Forecast - Day {day_int}",
-            "file_path": f"rsmc/{year}/{month}/{day_folder}/{filename}",
+            "file": f"rsmc/{year}/{month}/{day_folder}/{filename}",
             "is_active": True,
         }
     )
 
     return Response({
-        "image": forecast.file_path,
+        "image": forecast.file.url,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
         "day": day_int
     })

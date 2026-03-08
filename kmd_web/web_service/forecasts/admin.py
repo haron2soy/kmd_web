@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Forecast, ForecastCategory
 
-# Register your models here.
+admin.site.register(Forecast)
+admin.site.register(ForecastCategory)

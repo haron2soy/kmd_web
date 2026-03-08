@@ -31,15 +31,21 @@ const SidebarLink = ({
   </Link>
 );
 
-export default function MarineForecast() {
+export default function EAsfwpDiscussion() {
   const [file, setFile] = useState<string | null>(null);
   const { headerRef } = useScrollToHeader(80);
-  const year = 2026;
-
-  const Date = 1;
-
+ 
   useEffect(() => {
-    fetch(`/api/swfp_evaluation/reports/daily/?year=${year}&date=${Date}`)
+    const today = new Date();
+
+    const year: number = today.getFullYear();
+    const dayint: number = today.getDate();
+    
+    const day: string = String(dayint).padStart(2, '0');
+    const month: string = today
+      .toLocaleString("en-US", { month: "long" })
+      .toLowerCase();
+    fetch(`/api/guidance/reports/daily/?year=${year}&month=${month}&day=${day}`)
       .then(res => res.json())
       .then(data => {
         if (data?.file) {
@@ -59,10 +65,10 @@ export default function MarineForecast() {
           <div className="lg:col-span-9">
             <header ref={headerRef} className="mb-6">
               <h1 className="text-3xl font-serif font-bold text-primary mb-3">
-                Quarterly Report
+                EA SWFP Daily Discussion
               </h1>
               <p className="text-gray-600">
-                Official SWFP Quarterly Report.
+                Official SWFP Daily Discussion
               </p>
             </header>
 

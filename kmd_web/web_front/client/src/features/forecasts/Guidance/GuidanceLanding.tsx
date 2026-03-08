@@ -1,12 +1,13 @@
 // src/features/forecasts/ForecastLanding.tsx
-import LinkCard from "./LinkCard";
+import  LinkCard  from "./LinkCard";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 
 
 const shortRangeLinks = [
-  { href: "/guidance/marine-forecast", label: "Marine Forecast" },
-  { href: "/guidance/easfwp-daily-discussion", label: "EAsfwp Discussion" },
+  { href: "/guidance/marine-forecast-daily", label: "Marine Forecast Daily" },
+  { href: "/guidance/marine-forecast-seven-days", label: "Marine Forecast Weekly" },
+  { href: "/guidance/easfwp-discussion-daily", label: "EAsfwp Discussion" },
 ];
 
 
@@ -32,7 +33,7 @@ export default function GuidanceLanding() {
         {/* Short Range */}
         <section className="mb-8">
           <h2 className="text-xl font-semibold text-primary mb-6">
-            Short Range Forecasts (1–2 days)
+            Marine Forecasts and EAswfp Discussions
           </h2>
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {shortRangeLinks.map((link) => (
