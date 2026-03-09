@@ -557,3 +557,70 @@
 [2026-03-08 16:10:12 +0000] [1499] [INFO] Worker exiting (pid: 1499)
 [2026-03-08 19:10:33 +0300] [347] [ERROR] Worker (pid:1499) was sent SIGKILL! Perhaps out of memory?
 [2026-03-08 19:10:53 +0300] [86645] [INFO] Booting worker with pid: 86645
+[2026-03-09 08:28:06 +0300] [418] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 08:28:06 +0300] [418] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (418)
+[2026-03-09 08:28:06 +0300] [418] [INFO] Using worker: sync
+[2026-03-09 08:28:06 +0300] [1256] [INFO] Booting worker with pid: 1256
+[2026-03-09 08:28:06 +0300] [1267] [INFO] Booting worker with pid: 1267
+[2026-03-09 08:28:06 +0300] [1295] [INFO] Booting worker with pid: 1295
+[2026-03-09 08:38:46 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1267)
+[2026-03-09 08:39:03 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1295)
+[2026-03-09 05:39:03 +0000] [1295] [INFO] Worker exiting (pid: 1295)
+[2026-03-09 05:39:03 +0000] [1267] [INFO] Worker exiting (pid: 1267)
+[2026-03-09 08:39:05 +0300] [418] [ERROR] Worker (pid:1295) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:39:05 +0300] [418] [ERROR] Worker (pid:1267) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:39:05 +0300] [1554] [INFO] Booting worker with pid: 1554
+[2026-03-09 08:39:05 +0300] [1555] [INFO] Booting worker with pid: 1555
+[2026-03-09 08:56:16 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1256)
+[2026-03-09 08:56:25 +0300] [418] [ERROR] Worker (pid:1256) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:56:32 +0300] [5944] [INFO] Booting worker with pid: 5944
+[2026-03-09 09:00:00 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1555)
+[2026-03-09 06:00:00 +0000] [1555] [INFO] Worker exiting (pid: 1555)
+[2026-03-09 09:00:01 +0300] [418] [ERROR] Worker (pid:1555) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 09:02:14 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1554)
+[2026-03-09 06:02:14 +0000] [1554] [INFO] Worker exiting (pid: 1554)
+[2026-03-09 09:02:29 +0300] [6828] [INFO] Booting worker with pid: 6828
+[2026-03-09 09:02:52 +0300] [418] [ERROR] Worker (pid:1554) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 09:02:52 +0300] [6850] [INFO] Booting worker with pid: 6850
+[2026-03-09 09:42:19 +0300] [307] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 09:42:19 +0300] [307] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (307)
+[2026-03-09 09:42:19 +0300] [307] [INFO] Using worker: sync
+[2026-03-09 09:42:19 +0300] [1225] [INFO] Booting worker with pid: 1225
+[2026-03-09 09:42:19 +0300] [1245] [INFO] Booting worker with pid: 1245
+[2026-03-09 09:42:20 +0300] [1286] [INFO] Booting worker with pid: 1286
+[2026-03-09 15:48:05 +0300] [329] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 15:48:05 +0300] [329] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (329)
+[2026-03-09 15:48:05 +0300] [329] [INFO] Using worker: sync
+[2026-03-09 15:48:05 +0300] [1108] [INFO] Booting worker with pid: 1108
+[2026-03-09 15:48:05 +0300] [1124] [INFO] Booting worker with pid: 1124
+[2026-03-09 15:48:05 +0300] [1149] [INFO] Booting worker with pid: 1149
+[2026-03-09 16:03:28 +0300] [309] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:03:28 +0300] [309] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (309)
+[2026-03-09 16:03:28 +0300] [309] [INFO] Using worker: sync
+[2026-03-09 16:03:28 +0300] [1738] [INFO] Booting worker with pid: 1738
+[2026-03-09 16:03:28 +0300] [1739] [INFO] Booting worker with pid: 1739
+[2026-03-09 16:03:28 +0300] [1740] [INFO] Booting worker with pid: 1740
+[2026-03-09 16:08:48 +0300] [349] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:08:48 +0300] [349] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (349)
+[2026-03-09 16:08:48 +0300] [349] [INFO] Using worker: sync
+[2026-03-09 16:08:48 +0300] [1674] [INFO] Booting worker with pid: 1674
+[2026-03-09 16:08:48 +0300] [1677] [INFO] Booting worker with pid: 1677
+[2026-03-09 16:08:49 +0300] [1678] [INFO] Booting worker with pid: 1678
+[2026-03-09 16:11:12 +0300] [335] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:11:12 +0300] [335] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (335)
+[2026-03-09 16:11:12 +0300] [335] [INFO] Using worker: sync
+[2026-03-09 16:11:12 +0300] [1345] [INFO] Booting worker with pid: 1345
+[2026-03-09 16:11:12 +0300] [1364] [INFO] Booting worker with pid: 1364
+[2026-03-09 16:11:12 +0300] [1384] [INFO] Booting worker with pid: 1384
+[2026-03-09 16:13:05 +0300] [318] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:13:05 +0300] [318] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (318)
+[2026-03-09 16:13:05 +0300] [318] [INFO] Using worker: sync
+[2026-03-09 16:13:05 +0300] [930] [INFO] Booting worker with pid: 930
+[2026-03-09 16:13:05 +0300] [931] [INFO] Booting worker with pid: 931
+[2026-03-09 16:13:05 +0300] [932] [INFO] Booting worker with pid: 932
+[2026-03-09 16:27:49 +0300] [303] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:27:49 +0300] [303] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (303)
+[2026-03-09 16:27:49 +0300] [303] [INFO] Using worker: sync
+[2026-03-09 16:27:49 +0300] [1335] [INFO] Booting worker with pid: 1335
+[2026-03-09 16:27:49 +0300] [1369] [INFO] Booting worker with pid: 1369
+[2026-03-09 16:27:50 +0300] [1380] [INFO] Booting worker with pid: 1380

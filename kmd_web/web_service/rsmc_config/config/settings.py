@@ -77,10 +77,10 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://172.18.28.18",
+    #"http://172.18.28.18",
     #"http://rsmc.test",
     "http://localhost:5173",
-    "http://127.0.0.1:8000",
+    #"http://127.0.0.1:8000",
     "http://172.168.2.103",
 ]
 TEMPLATES = [
@@ -208,7 +208,7 @@ SESSION_COOKIE_SECURE = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = "smtp.gmail.com"  # or your provider
+EMAIL_HOST = "smtp.gmail.com"  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -222,3 +222,7 @@ CURRENT_YEAR = 2026
 
 FRONTEND_URL = "http:172.168.2.103"
 
+# Allow your frontend origin
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

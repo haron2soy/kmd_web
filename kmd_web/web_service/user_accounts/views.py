@@ -78,28 +78,28 @@ This link expires in 24 hours.
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login_view(request):
-    """
-    Authenticates user and creates session.
-    """
+
     username = request.data.get("username")
     password = request.data.get("password")
-    
-    
+
     if not username or not password:
         return Response(
-            {"error": "Username and password are required"},
+            {"non_field_errors": ["Username and password are required"]},
             status=status.HTTP_400_BAD_REQUEST
         )
 
     user = authenticate(request, username=username, password=password)
-    
-    if not user.is_active:
-        return Response({"error": "Please verify your email first"}, status=403)
-    
+
     if user is None:
         return Response(
-            {"error": "Invalid credentials"},
+            {"non_field_errors": ["Invalid username or password"]},
             status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not user.is_active:
+        return Response(
+            {"non_field_errors": ["Please verify your email first"]},
+            status=status.HTTP_403_FORBIDDEN
         )
 
     login(request, user)
@@ -156,8 +156,8 @@ def session_view(request):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def verify_email_view(request):
-    token = request.data.get("token")
+def verify_email_view(request, token=None):
+
     code = request.data.get("code")
 
     try:
@@ -166,13 +166,22 @@ def verify_email_view(request):
         elif code:
             verification = EmailVerification.objects.get(code=code)
         else:
-            return Response({"error": "Token or code required"}, status=400)
+            return Response(
+                {"non_field_errors": ["Token or code required"]},
+                status=400
+            )
 
     except EmailVerification.DoesNotExist:
-        return Response({"error": "Invalid verification"}, status=400)
+        return Response(
+            {"non_field_errors": ["Invalid verification"]},
+            status=400
+        )
 
     if verification.is_expired():
-        return Response({"error": "Verification expired"}, status=400)
+        return Response(
+            {"non_field_errors": ["Verification expired"]},
+            status=400
+        )
 
     user = verification.user
     user.is_active = True
@@ -180,4 +189,6 @@ def verify_email_view(request):
 
     verification.delete()
 
-    return Response({"message": "Account verified successfully"})
+    return Response({
+        "message": "Account verified successfully"
+    })

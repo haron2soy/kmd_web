@@ -4,7 +4,8 @@ from .views import (
     NewsListView,
     NewsDetailView,
     ActiveAnnouncementListView,
-    ActiveAnnouncementDetailView
+    ActiveAnnouncementDetailView,
+    UpcomingEventsView
 )
 
 urlpatterns = [
@@ -18,4 +19,6 @@ urlpatterns = [
    
     #Alerts
     path("warnings/active/", ActiveWarningList.as_view(), name="active-warnings"),
+    
+    path("events/upcoming/", UpcomingEventsView.as_view()),
 ]

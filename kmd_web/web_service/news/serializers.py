@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import News, Announcement
 from .alerts_models import Warning
+from .event_models import Event
 
 class NewsSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -55,4 +56,20 @@ class WarningSerializer(serializers.ModelSerializer):
             "priority",
             "icon",
             "color",
+        ]
+
+
+class EventSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "description",
+            "location",
+            "start_date",
+            "end_date",
+            "is_active",
         ]

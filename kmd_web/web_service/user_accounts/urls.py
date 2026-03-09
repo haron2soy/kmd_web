@@ -19,4 +19,6 @@ urlpatterns = [
     path("auth/register/", register_view),
     path("auth/forgot-password/", forgot_password),
     path("auth/verify-email/", verify_email_view),
+    path("auth/verify-email/<uuid:token>/", verify_email_view),
+    path("auth/verify-code/", verify_email_view),
 ]

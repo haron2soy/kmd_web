@@ -2,9 +2,9 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from django.utils import timezone
 from django.db.models import Q
-
+from .event_models import Event
 from .models import News, Announcement
-from .serializers import NewsSerializer, AnnouncementSerializer
+from .serializers import NewsSerializer, AnnouncementSerializer, EventSerializer
 
 
 # -------------------
@@ -57,3 +57,20 @@ class ActiveAnnouncementDetailView(RetrieveAPIView):
 
     def get_queryset(self):
         return Announcement.objects.filter(is_published=True)
+
+
+
+class UpcomingEventsView(ListAPIView):
+
+    serializer_class = EventSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+
+        now = timezone.now()
+
+        return (
+            Event.objects
+            .filter(is_active=True, start_date__gte=now)
+            .order_by("start_date")[:5]
+        )
