@@ -686,3 +686,9 @@
 [2026-03-10 12:12:56 +0300] [1437] [INFO] Booting worker with pid: 1437
 [2026-03-10 12:12:56 +0300] [1438] [INFO] Booting worker with pid: 1438
 [2026-03-10 12:12:56 +0300] [1439] [INFO] Booting worker with pid: 1439
+[2026-03-10 15:39:18 +0000] [1437] [INFO] Worker exiting (pid: 1437)
+[2026-03-10 18:39:18 +0300] [340] [INFO] Handling signal: term
+[2026-03-10 15:39:18 +0000] [1439] [INFO] Worker exiting (pid: 1439)
+[2026-03-10 15:39:18 +0000] [1438] [INFO] Worker exiting (pid: 1438)
+[2026-03-10 18:39:18 +0300] [340] [INFO] Worker (pid:1437) was sent SIGTERM!
+[2026-03-10 18:39:20 +0300] [340] [INFO] Shutting down: Master
