@@ -105,7 +105,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "rsmc_db",
         "USER": "haron",
-        "PASSWORD": "haron12345",
+        #"PASSWORD": "haron12345",
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -208,7 +208,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "haron1soy@gmail.com"
-EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
+#EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
 
 DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 

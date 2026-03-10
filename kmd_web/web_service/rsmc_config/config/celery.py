@@ -4,7 +4,7 @@ from celery import Celery
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
-    "rsmc_config.config.settings"
+    "rsmc_config.config.settings.prod"
 )
 
 app = Celery("rsmc_config")
