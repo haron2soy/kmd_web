@@ -4,10 +4,10 @@ from celery import Celery
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
-    "rsmc_config.config.settings.prod"
+    "rsmc_config.config.prod"
 )
 
-app = Celery("rsmc_config")
+app = Celery("rsmc_config.config")
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
