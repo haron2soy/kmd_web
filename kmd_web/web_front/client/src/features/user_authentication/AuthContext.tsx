@@ -1,10 +1,17 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { useLocation } from "wouter";
 import apiClient from "@/lib/apiClient";
 
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 // Types
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 
 interface User {
   id: number;
@@ -19,17 +26,18 @@ interface SessionResponse {
 
 interface AuthContextType {
   user: User | null;
-  isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 
+  isAuthenticated: boolean;
+
   login: (username: string, password: string) => Promise<void>;
   register: (
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     email: string,
     password: string,
-    password_confirm: string
+    passwordConfirm: string
   ) => Promise<void>;
 
   verifyWithToken: (token: string) => Promise<void>;
@@ -40,239 +48,245 @@ interface AuthContextType {
   refreshSession: () => Promise<void>;
 }
 
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 // Context
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
+// Error Helper
+// ─────────────────────────────────────────
+
+function extractError(err: unknown, fallback: string) {
+  const data = (err as any)?.response?.data;
+
+  if (!data) return fallback;
+
+  if (typeof data === "string") return data;
+  if (data?.detail) return data.detail;
+
+  if (typeof data === "object") {
+    return Object.values(data).flat().join(" ");
+  }
+
+  return fallback;
+}
+
+// ─────────────────────────────────────────
 // Provider
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [, navigate] = useLocation();
 
-  // ────────────────────────────────────────────────
-  // Utility: Extract backend error safely
-  // ────────────────────────────────────────────────
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const extractError = (err: any, fallback: string): string => {
-    const data = err?.response?.data;
+  // ─────────────────────────────────────────
+  // Generic request wrapper
+  // ─────────────────────────────────────────
 
-    if (!data) return fallback;
-
-    if (typeof data === "string") return data;
-    if (data.detail) return data.detail;
-    if (data.error) return data.error;
-
-    if (typeof data === "object") {
-      return Object.values(data).flat().join(" ");
+  const request = useCallback(async (fn: () => Promise<any>, fallback: string) => {
+    try {
+      setError(null);
+      return await fn();
+    } catch (err) {
+      const message = extractError(err, fallback);
+      setError(message);
+      throw err;
     }
+  }, []);
 
-    return fallback;
-  };
-
-  // ────────────────────────────────────────────────
-  // Session Initialization
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
+  // Refresh Session
+  // ─────────────────────────────────────────
 
   const refreshSession = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
+      const res = await apiClient.get<SessionResponse>("/session/");
 
-      await apiClient.get("/csrf/");
-      const response = await apiClient.get<SessionResponse>("/session/");
-
-      if (response.data.authenticated && response.data.user) {
-        setUser(response.data.user);
-      } else {
-        setUser(null);
-      }
+      setUser(res.data.authenticated ? res.data.user ?? null : null);
     } catch {
       setUser(null);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
+  // ─────────────────────────────────────────
+  // Initial Load
+  // ─────────────────────────────────────────
+
   useEffect(() => {
-    refreshSession();
+    const init = async () => {
+      try {
+        await apiClient.get("/csrf/");
+        await refreshSession();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
   }, [refreshSession]);
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
   // Login
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
   const login = useCallback(
     async (username: string, password: string) => {
-      try {
-        setError(null);
-        await apiClient.post("/login/", { username, password });
-        await refreshSession();
-        navigate("/", { replace: true });
-      } catch (err: any) {
-        const message = extractError(err, "Login failed");
-        setError(message);
-        throw err;
-      }
+      await request(
+        () => apiClient.post("/login/", { username, password }),
+        "Login failed"
+      );
+
+      await refreshSession();
+
+      navigate("/", { replace: true });
     },
-    [refreshSession, navigate]
+    [navigate, refreshSession, request]
   );
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
   // Register
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
-  const register = useCallback(
-    async (
-      first_name: string,
-      last_name: string,
-      email: string,
-      password: string,
-      password_confirm: string
-    ) => {
-      try {
-        setError(null);
+const register = useCallback(
+  async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+    passwordConfirm: string
+  ) => {
+    try {
+      const res = await apiClient.post("/auth/register/", {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+        password_confirm: passwordConfirm,
+      });
 
-        await apiClient.post("/auth/register/", {
-          first_name,
-          last_name,
-          email,
-          password,
-          password_confirm,
-        });
+      return res.data;
 
-        navigate(`/verify-email?email=${encodeURIComponent(email)}`, {
-          replace: true,
-        });
-      } catch (err: any) {
-        const message = extractError(err, "Registration failed");
-        setError(message);
-        throw err;
-      }
+    } catch (err: any) {
+      console.log("Register error:", err?.response?.data);
+      console.log("Register error response:", err?.response?.data);
+      throw err;
+    }
+  },
+  []
+);
+
+  // ─────────────────────────────────────────
+  // Email Verification
+  // ─────────────────────────────────────────
+
+  const verifyWithToken = useCallback(
+    async (token: string) => {
+      await request(
+        () => apiClient.post(`/auth/verify-email/${token}/`),
+        "Invalid or expired verification link"
+      );
     },
-    [navigate]
+    [request]
   );
 
-  // ────────────────────────────────────────────────
-  // Email Verification
-  // ────────────────────────────────────────────────
+  const verifyWithCode = useCallback(
+    async (code: string) => {
+      await request(
+        () => apiClient.post("/auth/verify-code/", { code }),
+        "Invalid verification code"
+      );
+    },
+    [request]
+  );
 
-  const verifyWithToken = useCallback(async (token: string) => {
-    try {
-      setError(null);
-      await apiClient.post(`/auth/verify-email/${token}/`);
-    } catch (err: any) {
-      const message = extractError(err, "Invalid or expired verification link");
-      setError(message);
-      throw err;
-    }
-  }, []);
-
-  const verifyWithCode = useCallback(async (code: string) => {
-    try {
-      setError(null);
-      await apiClient.post("/auth/verify-code/", { code });
-    } catch (err: any) {
-      const message = extractError(err, "Invalid verification code");
-      setError(message);
-      throw err;
-    }
-  }, []);
-
-  const resendVerification = useCallback(async (email: string) => {
-    try {
-      setError(null);
-      await apiClient.post("/auth/resend-verification/", { email });
-    } catch (err: any) {
-      const message = extractError(
-        err,
+  const resendVerification = useCallback(
+    async (email: string) => {
+      await request(
+        () => apiClient.post("/auth/resend-verification/", { email }),
         "Failed to resend verification email"
       );
-      setError(message);
-      throw err;
-    }
-  }, []);
+    },
+    [request]
+  );
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
   // Logout
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
   const logout = useCallback(async () => {
     try {
-      setError(null);
       await apiClient.post("/logout/");
+    } finally {
       setUser(null);
       navigate("/login", { replace: true });
-    } catch (err: any) {
-      const message = extractError(err, "Logout failed");
-      setError(message);
-      throw err;
     }
   }, [navigate]);
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
+  // Refresh session when tab gains focus
+  // ─────────────────────────────────────────
+
+  useEffect(() => {
+    const onFocus = () => refreshSession();
+
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refreshSession]);
+
+  // ─────────────────────────────────────────
   // Context Value
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
-  const value: AuthContextType = {
-    user,
-    isAuthenticated: !!user,
-    loading,
-    error,
+  const value = useMemo<AuthContextType>(
+    () => ({
+      user,
+      loading,
+      error,
 
-    login,
-    register,
+      isAuthenticated: !!user,
 
-    verifyWithToken,
-    verifyWithCode,
-    resendVerification,
+      login,
+      register,
 
-    logout,
-    refreshSession,
-  };
-      // ────────────────────────────────────────────────
-      // Auto-logout on inactivity / session expiry
-      // ────────────────────────────────────────────────
-      useEffect(() => {
-        const interval = setInterval(async () => {
-          try {
-            const response = await apiClient.get<SessionResponse>("/session/", {
-              withCredentials: true,
-            });
+      verifyWithToken,
+      verifyWithCode,
+      resendVerification,
 
-            // If session expired, log out
-            if (!response.data.authenticated) {
-              setUser(null);
-              navigate("/login", { replace: true });
-            }
-          } catch (err) {
-            console.error("Session check failed", err);
-            setUser(null);
-            navigate("/login", { replace: true });
-          }
-        }, 60000); // check every 60 seconds
+      logout,
+      refreshSession,
+    }),
+    [
+      user,
+      loading,
+      error,
+      login,
+      register,
+      verifyWithToken,
+      verifyWithCode,
+      resendVerification,
+      logout,
+      refreshSession,
+    ]
+  );
 
-        return () => clearInterval(interval);
-      }, [navigate]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 // Hook
-// ────────────────────────────────────────────────
+// ─────────────────────────────────────────
 
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
+export function useAuth() {
+  const ctx = useContext(AuthContext);
 
-  if (!context) {
+  if (!ctx) {
     throw new Error("useAuth must be used within AuthProvider");
   }
 
-  return context;
+  return ctx;
 }

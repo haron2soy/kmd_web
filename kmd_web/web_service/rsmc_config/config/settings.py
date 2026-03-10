@@ -220,7 +220,7 @@ DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 SITE_NAME = "RSMC"
 CURRENT_YEAR = 2026
 
-FRONTEND_URL = "http:172.168.2.103"
+FRONTEND_URL = "http://localhost:5173"
 
 # Allow your frontend origin
 CORS_ALLOWED_ORIGINS = [

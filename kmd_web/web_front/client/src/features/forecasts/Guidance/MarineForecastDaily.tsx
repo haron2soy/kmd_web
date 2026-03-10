@@ -1,51 +1,38 @@
-// src/features/forecasts/pages/Day2.tsx
+// src/features/forecasts/guidance/MarineDailyForecast.tsx
 import { Link } from "wouter";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
-import { FileViewer } from "../components/FileViewer";
 import { useEffect, useState } from "react";
 import { useScrollToHeaderDoc } from "../components/scrollToHeaderDoc";
 
 const relatedLinks = [
-  { href: "/forecasts/day-1", label: "Day 1 Forecast" },
-  { href: "/forecasts/day-2", label: "Day 2 Forecast" },
-  { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
-  { href: "/forecasts/archive", label: "Forecast Archive" },
+  { href: "/guidance/marine-forecast-seven-days", label: "Marine 7 Day Forecast" },
+  { href: "/guidance/easwfp-discussion-daily", label: "EA SWFP Daily Forecast" },
+  { href: "/guidance/archive", label: "Guidance Forecast Archive" },
 ];
 
 const SidebarLink = ({ href, label, isActive = false }: { href: string; label: string; isActive?: boolean }) => (
   <Link href={href}>
     <div
-      className={`
-        block py-2.5 px-4 rounded-md transition-colors text-base
+      className={`block py-2.5 px-4 rounded-md text-base transition
         ${isActive
           ? "bg-blue-50 text-blue-900 font-medium border-l-4 border-blue-700 pl-3"
           : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/70"
-        }
-      `}
+        }`}
     >
       {label}
     </div>
   </Link>
 );
 
-export default function ShortRangeDiscussion() {
-  interface DocumentData {
-  url: string;
-  fileType: string;
-  filename: string;
-  }
-  const [document_path, setDocument] = useState<DocumentData | null>(null);
+export default function MarineDailyForecast() {
+  const [documentPath, setDocumentPath] = useState<string | null>(null);
+  const [fileType, setFileType] = useState<string>("docx");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { headerRef } = useScrollToHeaderDoc(80, !loading);
-  
 
-  // Fetch Latest marine forecasts document
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    setDocument(null);
-
+    document.title = "Forecasts | RSMC Nairobi";
     fetch("/api/forecasts/latest-doc/?slug=marine-forecast-daily")
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -53,94 +40,95 @@ export default function ShortRangeDiscussion() {
       })
       .then(data => {
         if (data?.document) {
-          setDocument({
-            url: data.document,
-            fileType: data.file_type,
-            filename: data.filename,
-          });
+          setDocumentPath(
+            data.document.startsWith("/uploads/") ? data.document : `/uploads/${data.document}`
+          );
+          setFileType(data.file_type || "docx");
         } else {
           setError(data?.error || "Document not found");
         }
       })
       .catch(err => {
-        console.error("Failed to fetch latest forecast:", err);
+        console.error("Failed to fetch latest marine forecast:", err);
         setError("Failed to load document");
       })
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) {
-    return (
-      //<PageLayout>
-        <div className="container mx-auto px-4 py-10 md:py-12 lg:py-16 max-w-6xl">
-          <div className="text-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading Marine Forecasts...</p>
-          </div>
-        </div>
-      //</PageLayout>
-    );
-  }
-
   return (
     //<PageLayout>
-      <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-10">
-          {/* Main content area */}
-          <div className="lg:col-span-9">
-            <header ref= {headerRef} className="mb-6 md:mb-12">
-              <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
-                Marine Forecast Daily
-              </h1>
-              <p className="text-lg text-gray-600 max-w-3xl">
-                Marine forecast discussion document.
-              </p>
-            </header>
+    <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-10">
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              {error ? (
-                <div className="p-8 text-center">
-                  <div className="text-red-600 mb-4">⚠️</div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Document Unavailable</h3>
-                  <p className="text-gray-600 mb-6">{error}</p>
-                  <p className="text-sm text-gray-500">
-                    Check back later or contact support if this persists.
-                  </p>
-                </div>
-              ) : (
-                <FileViewer
-                  title="Marine Forecast Discussion"
-                  description="Daily marine forecast discussion document"
-                  fileUrl={document_path?.url || ''}
-                  fileType={document_path?.fileType || 'docx'}
-                  
+        {/* Main content */}
+        <div className="lg:col-span-9">
+          <header ref={headerRef} className="mb-6">
+            <h1 className="text-3xl font-serif font-bold text-primary mb-4">
+              Marine Daily Forecast
+            </h1>
+            <p className="text-lg text-gray-600 max-w-3xl">
+              Daily marine forecast discussion document.
+            </p>
+          </header>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            {loading ? (
+              <p className="text-center py-10">Loading...</p>
+            ) : error ? (
+              <div className="p-8 text-center">
+                <div className="text-red-600 mb-4">⚠️</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Document Unavailable</h3>
+                <p className="text-gray-600 mb-6">{error}</p>
+                <p className="text-sm text-gray-500">
+                  Check back later or contact support if this persists.
+                </p>
+              </div>
+            ) : documentPath ? (
+              <>
+                <iframe
+                  src={
+                    fileType === "docx" || fileType === "doc"
+                      ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(documentPath)}`
+                      : documentPath
+                  }
+                  className="w-full h-[600px]"
+                  title="Marine Forecast Document"
                 />
-              )}
+                <div className="mt-4 flex justify-center">
+                  <a
+                    href={documentPath}
+                    download
+                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Download Document
+                  </a>
+                </div>
+              </>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <aside className="lg:col-span-3 mt-12 lg:mt-0">
+          <div className="sticky top-32 lg:top-40 bg-white border rounded-xl p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
+              Related Links
+            </h3>
+            <div className="space-y-1">
+              {relatedLinks.map(link => (
+                <SidebarLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  isActive={link.href === "/guidance/marine-forecast-daily"}
+                />
+              ))}
             </div>
           </div>
+        </aside>
 
-          {/* Related Links sidebar */}
-          <aside className="lg:col-span-3 mt-12 lg:mt-0">
-            <div className="sticky top-32 lg:top-40">
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
-                  Related Links
-                </h3>
-                <div className="space-y-1">
-                  {relatedLinks.map((link) => (
-                    <SidebarLink
-                      key={link.href}
-                      href={link.href}
-                      label={link.label}
-                      isActive={link.href === "/forecasts/day-2"} // Active for this page
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </aside>
-        </div>
       </div>
+    </div>
     //</PageLayout>
   );
 }

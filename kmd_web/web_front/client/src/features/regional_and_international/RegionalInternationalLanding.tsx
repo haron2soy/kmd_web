@@ -3,11 +3,12 @@
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 import type { ServiceItem } from "./RegionalInternational"; // import central config
 import {RegionalInternational} from "./RegionalInternational";
+import { useEffect } from "react";
 
-const Card = ({ name, slug }: ServiceItem) => (
+const Card = ({ name, url }: ServiceItem) => (
   <a
-    href={`/regional-international/${slug}`}       // use the route, redirect page handles new tab
-    target="_blank"                 // open in new tab
+    href={url}                // direct external URL
+    target="_blank"           // open in new tab
     rel="noopener noreferrer"
     className="group block p-6 border rounded-lg bg-white hover:shadow-md hover:border-primary/40 transition"
   >
@@ -22,6 +23,9 @@ const Card = ({ name, slug }: ServiceItem) => (
 
 export default function RegionalInternationalLanding() {
   const { headerRef } = useScrollToHeader(80);
+   useEffect(() => {
+    document.title = "Regional | RSMC Nairobi";
+  }, []);
 
   return (
     //<PageLayout>

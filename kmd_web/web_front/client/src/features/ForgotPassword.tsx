@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import apiClient from "@/lib/apiClient";
 
 export default function ForgotPassword() {
+   useEffect(() => {
+    document.title = "Reset-Password | RSMC Nairobi";
+  }, []);
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -32,11 +35,11 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-16">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
 
         {/* Header */}
-        <div className="bg-primary text-primary-foreground px-8 py-6 text-center">
+        <div className="bg-primary text-primary-foreground px-8 py-2 text-center">
           <h2 className="text-2xl font-bold">Reset Password</h2>
           <p className="mt-2 text-sm opacity-80">
             Enter your email to receive a reset link

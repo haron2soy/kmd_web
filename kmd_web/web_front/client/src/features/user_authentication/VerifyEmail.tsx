@@ -39,10 +39,14 @@ export default function VerifyEmail() {
 
         setMessage("Account verified successfully! Redirecting...");
         setTimeout(() => navigate("/login"), 2000);
-      } catch {
-        if (!isMounted) return;
-        setError("Verification link is invalid or expired.");
-      } finally {
+      } catch (err: any) {
+          const msg =
+            err?.response?.data?.detail ||
+            err?.response?.data?.message ||
+            "Verification failed.";
+
+          setError(msg);
+        } finally {
         if (isMounted) setLoading(false);
       }
     };

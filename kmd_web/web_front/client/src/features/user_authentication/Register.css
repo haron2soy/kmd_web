@@ -32,13 +32,13 @@ h1 {
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 0.8rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
 
 label {
@@ -47,12 +47,19 @@ label {
   color: #333;
 }
 
-input {
-  padding: 0.9rem 1rem;
+input,
+textarea {
+  padding: 0.5rem 0.75rem; /* smaller padding makes text sit naturally */
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.2s;
+  line-height: 1.4;
+  box-sizing: border-box; /* important to prevent extra height */
+}
+
+textarea {
+  min-height: 100px; /* reasonable height for typing */
+  resize: vertical;   /* allow user to adjust height */
 }
 
 input:focus {

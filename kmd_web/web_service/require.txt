@@ -1,0 +1,117 @@
+affine==2.4.0
+amqp==5.3.1
+asgiref==3.11.0
+attrs==25.4.0
+billiard==4.2.4
+build==1.4.0
+cachetools==7.0.1
+Cartopy==0.25.0
+celery==5.6.2
+certifi==2026.2.25
+cftime @ file:///home/task_176156099881315/conda-bld/cftime_1761561581885/work
+charset-normalizer==3.4.4
+click @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_click_1764518652/work
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
+cligj==0.7.2
+cloudpickle==3.1.2
+cogeo-mosaic==8.2.0
+color-operations==0.2.0
+contourpy==1.3.3
+cramjam==2.11.0
+cycler==0.12.1
+dask==2026.1.2
+Django==5.2.10
+django-cors-headers==4.9.0
+django-redis==6.0.0
+djangorestframework==3.16.1
+fonttools==4.61.1
+fsspec==2026.2.0
+geojson-pydantic==2.1.0
+geopandas==1.1.2
+git-filter-repo==2.47.0
+googleapis-common-protos==1.72.0
+grpcio==1.78.0
+gunicorn==25.0.3
+h11 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h11_1767729720/work
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.11
+ImageIO==2.37.2
+importlib_metadata==8.7.1
+Jinja2==3.1.6
+kiwisolver==1.4.9
+kombu==5.6.2
+lazy_loader==0.4
+locket==1.0.0
+MarkupSafe==3.0.3
+matplotlib==3.10.8
+mercantile==1.2.1
+mkl-service==2.5.2
+mkl_fft @ file:///home/task_176159258761192/conda-bld/mkl_fft_1761592901799/work
+mkl_random @ file:///home/task_176159293348456/conda-bld/mkl_random_1761592947335/work
+morecantile==6.2.0
+netCDF4 @ file:///home/task_176943221728156/croot/netcdf4_1769433147669/work
+networkx==3.6.1
+numexpr==2.14.1
+numpy==2.4.2
+opentelemetry-api==1.39.1
+opentelemetry-exporter-otlp==1.39.1
+opentelemetry-exporter-otlp-proto-common==1.39.1
+opentelemetry-exporter-otlp-proto-grpc==1.39.1
+opentelemetry-exporter-otlp-proto-http==1.39.1
+opentelemetry-instrumentation==0.60b1
+opentelemetry-instrumentation-logging==0.60b1
+opentelemetry-proto==1.39.1
+opentelemetry-sdk==1.39.1
+opentelemetry-semantic-conventions==0.60b1
+opentelemetry-util-http==0.60b1
+packaging==26.0
+pandas @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pandas_1769076306/work
+partd==1.4.2
+pillow==12.1.1
+pip-tools==7.5.3
+prompt_toolkit==3.0.52
+protobuf==6.33.5
+psycopg2-binary==2.9.11
+pydantic==2.12.5
+pydantic-settings==2.12.0
+pydantic_core==2.41.5
+pyogrio==0.12.1
+pyparsing==3.3.2
+pyproj==3.7.2
+pyproject_hooks==1.2.0
+pyshp==3.0.3
+pystac==1.14.3
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.1
+PyYAML==6.0.3
+rasterio==1.4.4
+redis==7.1.1
+requests==2.32.5
+rio-cogeo==5.4.2
+rio-stac==0.12.0
+rio-tiler==7.9.3
+rioxarray==0.19.0
+scikit-image==0.26.0
+scipy==1.17.0
+shapely==2.1.2
+simplejson==3.20.2
+six==1.17.0
+sqlparse==0.5.5
+supermorecado==0.1.2
+tifffile==2026.1.28
+toolz==1.1.0
+typing-inspection==0.4.2
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_typing_extensions_1756220668/work
+tzdata==2025.3
+tzlocal==5.3.1
+urllib3==2.6.3
+vine==5.1.0
+watchdog==6.0.0
+wcwidth==0.6.0
+wrapt==1.17.3
+wrf-python @ file:///home/conda/feedstock_root/build_artifacts/wrf-python_1766100268315/work
+xarray @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_xarray_1769665430/work
+zipp==3.23.0

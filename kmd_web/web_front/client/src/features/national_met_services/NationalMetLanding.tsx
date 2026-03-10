@@ -3,6 +3,8 @@
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 import type { ServiceItem } from "./services"; // import central config
 import {services} from "./services";
+import { useEffect } from "react";
+
 const Card = ({ name, slug }: ServiceItem) => (
   <a
     href={`/national/${slug}`}       // use the route, redirect page handles new tab
@@ -20,8 +22,11 @@ const Card = ({ name, slug }: ServiceItem) => (
 );
 
 export default function NationalMetServicesLanding() {
-  const { headerRef } = useScrollToHeader(80);
 
+  const { headerRef } = useScrollToHeader(80);
+    useEffect(() => {
+        document.title = "National Met Services | RSMC Nairobi";
+      }, []);
   return (
     //<PageLayout>
       <div className="container mx-auto px-4 py-12 max-w-6xl">

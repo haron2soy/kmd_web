@@ -1,4 +1,5 @@
 // src/features/met-services/pages/RedirectRegionalInternational.tsx
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { ProductDetails } from "../Global/ProductDetails";
 
@@ -6,6 +7,13 @@ export default function RedirectProducts() {
   const path = useLocation()[0]; // current path
   const slug = path.replace(/^\/products\//, "");
   const service = ProductDetails.find((s) => s.slug === slug);
+
+  useEffect(() => {
+    if (service) {
+      // Redirect immediately to the official site
+      window.location.href = service.url;
+    }
+  }, [service]);
 
   if (!service) {
     return (
@@ -15,28 +23,10 @@ export default function RedirectProducts() {
     );
   }
 
-  const handleClick = () => {
-    // Open official site in a new tab
-    window.open(service.url, "_blank", "noopener,noreferrer");
-
-    // Close this redirect tab
-    window.close();
-  };
-
+  // Optionally, you can show a tiny "Redirecting..." message while the browser navigates
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6">Go to {service.name}</h1>
-
-      <button
-        onClick={handleClick}
-        className="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow transition"
-      >
-        Visit {service.name} →
-      </button>
-
-      <p className="mt-8 text-gray-500 text-sm text-center max-w-sm">
-        Click the button above to open the official website. This tab will close automatically.
-      </p>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+      <p className="text-gray-500">Redirecting to {service.name}...</p>
     </div>
   );
 }

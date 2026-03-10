@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/shared/components/ui/button";
-import { CloudRain, Calendar } from "lucide-react";
+import { CloudRain } from "lucide-react";
 import ActiveWarnings from "@/features/Alerts/ActiveWarnings";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ import background4 from "@/shared/assets/background/beautiful-clouds.jpg";
 
 import AnnouncementList from "./Announcements";
 import NewsList from "./News";
+import Events from "@/features/home/Events";
 
 /* ===============================
    Hero Images & Interval
@@ -32,7 +33,7 @@ interface Product {
 const products: Product[] = [
   { label: "Forecasts", href: "/forecasts" },
   { label: "NWP Model", href: "/nwp-models" },
-  { label: "Marine Bulletin", href: "/marine-bulletin" },
+  { label: "Marine Bulletin", href: "/guidance/marine-forecast-daily" },
   { label: "Guidance", href: "/guidance" },
   { label: "Climate Quarterly Outlook", href: "/swfp-evaluation" },
 ];
@@ -51,11 +52,10 @@ function Sidebar() {
         <ul className="space-y-3">
           {products.map((item) => (
             <li key={item.label}>
-              <Link href={item.href}>
-                <a className="flex items-center gap-3 p-3 bg-white/10 hover:bg-accent hover:text-accent-foreground transition-colors rounded-sm text-sm font-medium">
+              <Link href={item.href} className="flex items-center gap-3 p-3 bg-white/10 hover:bg-accent hover:text-accent-foreground transition-colors rounded-sm text-sm font-medium">
                   <CloudRain className="h-4 w-4" />
                   {item.label}
-                </a>
+                
               </Link>
             </li>
           ))}
@@ -67,33 +67,7 @@ function Sidebar() {
         <ActiveWarnings />
       </div>
 
-      {/* Upcoming Events */}
-      <div className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
-        <h3 className="font-serif font-bold text-xl text-primary mb-4 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-accent" />
-          Upcoming Events
-        </h3>
-
-        <ul className="divide-y divide-slate-100">
-          {[
-            { day: 11, title: "Capacity Building Workshop" },
-            { day: 12, title: "Annual Scientific Conference" },
-          ].map((event) => (
-            <li key={event.day} className="py-3 flex gap-3">
-              <div className="bg-slate-100 text-slate-600 px-3 py-1 text-center rounded-sm h-fit">
-                <span className="block text-xs uppercase font-bold">Oct</span>
-                <span className="block text-xl font-bold">{event.day}</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-primary text-sm hover:underline cursor-pointer">
-                  {event.title}
-                </h4>
-                <p className="text-xs text-slate-500 mt-1">Nairobi, Kenya</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Events />
 
     </aside>
   );
@@ -109,6 +83,7 @@ export default function Home() {
 
   /* Hero Slider */
   useEffect(() => {
+    document.title = "Home | RSMC Nairobi";
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
     }, HERO_INTERVAL);
@@ -141,13 +116,12 @@ export default function Home() {
               Official Monitoring
             </span>
 
-            <h1 className="text-white/90 text-2xl font-serif font-bold mb-4">
-              Leading the Region in Meteorological Excellence
+            <h1 className="text-white/90 text-2xl font-serif font-normal mb-4">
+              Providing guidance for whole Eastern Africa domain
             </h1>
 
             <p className="text-lg md:text-xl text-slate-200 mb-8 leading-relaxed">
-              Providing timely, accurate, and reliable weather services
-              for disaster risk reduction and sustainable development.
+             Focusing on Heavy rain, strong winds, large waves (coastal areas of western Indian Ocean)
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -195,9 +169,7 @@ export default function Home() {
 
             {/* News */}
             <section>
-              <h2 className="text-2xl font-serif font-bold text-primary mb-6">
-                
-              </h2>
+              
               <NewsList />
             </section>
 

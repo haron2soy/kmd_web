@@ -37,8 +37,11 @@ export function Navbar() {
       href: '/forecasts',
       label: 'Forecasts',
       submenu: [
-        { label: 'Guidance', items: [
+        { label: null, items: [
           { href: '/guidance', label: 'Guidance' },
+        ]},
+        { label: null, items: [
+          { href: '/forecasts', label: 'Forecasts' },
         ]},
       ],
     },
@@ -61,19 +64,7 @@ export function Navbar() {
     {
       href: '/regional-international',
       label: 'Regional',
-      submenu: [
-        { label: 'Regional and International Centers', items: [
-          { href: '/regional-international/ecmwf', label: 'ECMWF' },
-          { href: '/regional-international/noaa-ncep', label: 'NOAA NCEP African Desk' },
-          { href: '/regional-international/uk-met', label: 'UK MET Office' },
-          { href: '/regional-international/dwd', label: 'DWD' },
-        ]},
-        { label: 'Long Range Forecast Centers', items: [
-          { href: '/regional-international/acmad', label: 'ACMAD' },
-          { href: '/regional-international/kma', label: 'KMA' },
-          { href: '/regional-international/icpac', label: 'ICPAC' },
-        ]},
-      ],
+      submenu: null,
     },
   ];
 

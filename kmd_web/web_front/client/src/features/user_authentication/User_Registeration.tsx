@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
-import apiClient from "@/lib/apiClient";
+import { useAuth } from "./AuthContext";
 import "./Register.css";
 
 interface RegisterForm {
@@ -11,105 +11,106 @@ interface RegisterForm {
   password_confirm: string;
 }
 
-interface FieldErrors {
-  first_name?: string[];
-  last_name?: string[];
-  email?: string[];
-  password?: string[];
-  password_confirm?: string[];
+type FieldErrors = Partial<Record<keyof RegisterForm, string[]>> & {
   non_field_errors?: string[];
-}
+};
+
+const initialForm: RegisterForm = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  password_confirm: "",
+};
 
 export default function Register() {
+
+   useEffect(() => {
+    document.title = "Register | RSMC Nairobi";
+  }, []);
   const [, navigate] = useLocation();
+  const { register } = useAuth();
 
-  const [form, setForm] = useState<RegisterForm>({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-    password_confirm: "",
-  });
-
+  const [form, setForm] = useState<RegisterForm>(initialForm);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
 
-  // ────────────────────────────────────────────────
-  // Handle Input Change
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
+  // Handle Input
+  // ─────────────────────────────────────────
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
 
-    // Clear only the modified field error
     setErrors((prev) => {
       if (!prev[name as keyof FieldErrors]) return prev;
-
       const updated = { ...prev };
       delete updated[name as keyof FieldErrors];
       return updated;
     });
   };
 
-  // ────────────────────────────────────────────────
-  // Client-Side Validation
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
+  // Validation
+  // ─────────────────────────────────────────
 
   const validateForm = (): boolean => {
     const newErrors: FieldErrors = {};
 
-    if (form.password.length < 8) {
-      newErrors.password = ["Password must be at least 8 characters."];
-    }
-
-    if (form.password !== form.password_confirm) {
-      newErrors.password_confirm = ["Passwords do not match."];
-    }
-
-    if (!form.first_name.trim()) {
+    if (!form.first_name.trim())
       newErrors.first_name = ["First name is required."];
-    }
 
-    if (!form.last_name.trim()) {
+    if (!form.last_name.trim())
       newErrors.last_name = ["Last name is required."];
-    }
 
     if (!form.email.trim()) {
       newErrors.email = ["Email is required."];
+    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+      newErrors.email = ["Invalid email address."];
     }
 
+    if (form.password.length < 8)
+      newErrors.password = ["Password must be at least 8 characters."];
+
+    if (form.password !== form.password_confirm)
+      newErrors.password_confirm = ["Passwords do not match."];
+
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
   // Submit
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (loading) return; // Prevent double submit
-
+    if (loading) return;
     if (!validateForm()) return;
 
-    setLoading(true);
-    setErrors({});
-
     try {
-      await apiClient.post("/auth/register/", form);
+      setLoading(true);
+      setErrors({});
 
-      navigate(
-        `/verify-email?email=${encodeURIComponent(form.email)}`,
-        { replace: true }
+      await register(
+        form.first_name.trim(),
+        form.last_name.trim(),
+        form.email.trim(),
+        form.password,
+        form.password_confirm
       );
+
+      // store email temporarily for verification page
+      sessionStorage.setItem("verify_email", form.email);
+
+      navigate("/verify-email", { replace: true });
+
     } catch (err: any) {
-      const data = err?.response?.data;
+      const data = err?.response?.data || err;
 
       if (data && typeof data === "object") {
         setErrors(data as FieldErrors);
@@ -123,9 +124,9 @@ export default function Register() {
     }
   };
 
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
   // UI
-  // ────────────────────────────────────────────────
+  // ─────────────────────────────────────────
 
   return (
     <div className="register-container">
@@ -134,102 +135,53 @@ export default function Register() {
         <p className="subtitle">Join us and start exploring</p>
 
         <form onSubmit={handleSubmit} noValidate className="register-form">
-          {/* First Name */}
-          <div className="form-group">
-            <label htmlFor="first_name">First Name</label>
-            <input
-              id="first_name"
-              name="first_name"
-              type="text"
-              value={form.first_name}
-              onChange={handleChange}
-              required
-              autoFocus
-            />
-            {errors.first_name && (
-              <div className="error-message">
-                {errors.first_name.join(" • ")}
-              </div>
-            )}
-          </div>
 
-          {/* Last Name */}
-          <div className="form-group">
-            <label htmlFor="last_name">Last Name</label>
-            <input
-              id="last_name"
-              name="last_name"
-              type="text"
-              value={form.last_name}
-              onChange={handleChange}
-              required
-            />
-            {errors.last_name && (
-              <div className="error-message">
-                {errors.last_name.join(" • ")}
-              </div>
-            )}
-          </div>
+          <Field
+            label="First Name"
+            name="first_name"
+            value={form.first_name}
+            onChange={handleChange}
+            errors={errors.first_name}
+            autoFocus
+          />
 
-          {/* Email */}
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="your@email.com"
-              value={form.email}
-              onChange={handleChange}
-              required
-              autoComplete="email"
-            />
-            {errors.email && (
-              <div className="error-message">
-                {errors.email.join(" • ")}
-              </div>
-            )}
-          </div>
+          <Field
+            label="Last Name"
+            name="last_name"
+            value={form.last_name}
+            onChange={handleChange}
+            errors={errors.last_name}
+          />
 
-          {/* Password */}
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={form.password}
-              onChange={handleChange}
-              required
-              autoComplete="new-password"
-            />
-            {errors.password && (
-              <div className="error-message">
-                {errors.password.join(" • ")}
-              </div>
-            )}
-          </div>
+          <Field
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="your@email.com"
+            value={form.email}
+            onChange={handleChange}
+            errors={errors.email}
+          />
 
-          {/* Confirm Password */}
-          <div className="form-group">
-            <label htmlFor="password_confirm">Confirm Password</label>
-            <input
-              id="password_confirm"
-              name="password_confirm"
-              type="password"
-              value={form.password_confirm}
-              onChange={handleChange}
-              required
-            />
-            {errors.password_confirm && (
-              <div className="error-message">
-                {errors.password_confirm.join(" • ")}
-              </div>
-            )}
-          </div>
+          <Field
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="At least 8 characters"
+            value={form.password}
+            onChange={handleChange}
+            errors={errors.password}
+          />
 
-          {/* Non-field errors */}
+          <Field
+            label="Confirm Password"
+            name="password_confirm"
+            type="password"
+            value={form.password_confirm}
+            onChange={handleChange}
+            errors={errors.password_confirm}
+          />
+
           {errors.non_field_errors && (
             <div className="error-block">
               {errors.non_field_errors.map((msg, i) => (
@@ -249,10 +201,58 @@ export default function Register() {
         </form>
 
         <p className="login-link">
-          Already have an account?{" "}
-          <Link href="/login">Log in</Link>
+          Already have an account? <Link href="/login">Log in</Link>
         </p>
       </div>
+    </div>
+  );
+}
+
+interface FieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: string[];
+  type?: string;
+  placeholder?: string;
+  autoFocus?: boolean;
+}
+
+function Field({
+  label,
+  name,
+  value,
+  onChange,
+  errors,
+  type = "text",
+  placeholder,
+  autoFocus,
+}: FieldProps) {
+  const errorId = `${name}-error`;
+
+  return (
+    <div className="form-group">
+      <label htmlFor={name}>{label}</label>
+
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+        required
+        autoFocus={autoFocus}
+        aria-invalid={!!errors}
+        aria-describedby={errors ? errorId : undefined}
+      />
+
+      {errors && (
+        <div id={errorId} className="error-message">
+          {errors.join(" • ")}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // src/features/forecasts/ForecastLanding.tsx
 import { Link } from "wouter";
+import { useEffect } from "react";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 const ForecastCard = ({ href, label }: { href: string; label: string }) => (
@@ -36,6 +37,11 @@ const archiveLinks = [
 
 export default function ForecastLanding() {
   const { headerRef } = useScrollToHeader(80);
+  // Set browser tab title
+  useEffect(() => {
+    document.title = "Forecasts | RSMC Nairobi";
+  }, []);
+
   return (
     //<PageLayout>
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">

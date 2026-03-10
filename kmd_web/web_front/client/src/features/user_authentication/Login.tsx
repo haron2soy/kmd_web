@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {Link} from "wouter";
 import { useLocation } from "wouter";
 import { useAuth } from "./AuthContext";
@@ -7,6 +7,9 @@ import { Loader2 } from "lucide-react"; // ← add lucide-react if not already i
 export default function Login() {
   const { login } = useAuth();
   const [, navigate] = useLocation();
+   useEffect(() => {
+    document.title = "Login | RSMC Nairobi";
+  }, []);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,11 +33,11 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-16 md:py-24">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-4">
       {/* Card container – centered and max-width constrained */}
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
         {/* Header area */}
-        <div className="bg-primary text-primary-foreground px-8 py-6 text-center">
+        <div className="bg-primary text-primary-foreground px-8 py-2 text-center">
           <h2 className="text-2xl font-bold tracking-tight">RSMC Login</h2>
           <p className="mt-2 text-primary-foreground/80 text-sm">
             Sign in to access forecasting tools and products

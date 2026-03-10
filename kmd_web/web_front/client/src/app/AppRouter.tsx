@@ -15,8 +15,9 @@ import PlaceholderPage from "@/features/home/PlaceholderPage";
 import ProductsLanding from "@/features/products/Global/ProductsLanding";
 import MarineForecastDaily from "@/features/forecasts/Guidance/MarineForecastDaily";
 import MarineForecastSevenDays from "@/features/forecasts/Guidance/MarineForecastSevenDays";
-import EAsfwpDiscussion from "@/features/forecasts/Guidance/EAsfwpDiscussion";
+import EAswfpDiscussion from "@/features/forecasts/Guidance/EAswfpDiscussion";
 import NWPLanding from "@/features/nwp/pages/NWPLanding";
+import GuidanceArchive from "@/features/forecasts/Guidance/GuidanceArchive";
 
 import ForecastLanding from "@/features/forecasts/ForecastLanding";
 import GuidanceLanding from "@/features/forecasts/Guidance/GuidanceLanding";
@@ -56,6 +57,9 @@ import VerifyEmail from "@/features/user_authentication/VerifyEmail";
 
 import RedirectProducts from "@/features/products/pages/RedirectProducts";
 
+import ResetPassword from "@/features/user_authentication/ResetPassword";
+
+
 
 function Router() {
   return (
@@ -66,7 +70,9 @@ function Router() {
           {/* Auth routes */}
           <Route path="/login" component={Login} />
           <Route path="/verify-email/:token?" component={VerifyEmail} />
+          <Route path="/verify-email" component={VerifyEmail} />
           <Route path="/forgot-password" component={ForgotPassword} />
+          <Route path="/reset-password/:uid/:token" component={ResetPassword} />
           
           <ProtectedRoute path="/"> <Home /> </ProtectedRoute> 
           <Route path="/contact" component={Contact} />
@@ -101,13 +107,14 @@ function Router() {
           <ProtectedRoute path="/forecasts/day-5" > <Day5 /> </ProtectedRoute> 
           <ProtectedRoute path="/forecasts/risk-table-medium" > <RiskTableMedium /> </ProtectedRoute> 
           <ProtectedRoute path="/forecasts/discussion-medium" > <DiscussionMedium /> </ProtectedRoute>
-          
           <ProtectedRoute path="/forecasts/archive" > <ArchivePage /> </ProtectedRoute> 
+          <ProtectedRoute path="/guidance/archive" > <GuidanceArchive /> </ProtectedRoute> 
+          
           
           <ProtectedRoute path="/guidance" > <GuidanceLanding /> </ProtectedRoute> 
           <ProtectedRoute path="/guidance/marine-forecast-daily" > <MarineForecastDaily /> </ProtectedRoute> 
           <ProtectedRoute path="/guidance/marine-forecast-seven-days" > <MarineForecastSevenDays /> </ProtectedRoute> 
-          <ProtectedRoute path="/guidance/easfwp-daily-discussion" > <EAsfwpDiscussion /> </ProtectedRoute> 
+          <ProtectedRoute path="/guidance/easwfp-discussion-daily" > <EAswfpDiscussion /> </ProtectedRoute> 
           
           <ProtectedRoute path="/swfp-evaluation" > <SWFPLanding /> </ProtectedRoute>
           <ProtectedRoute path="/swfp-evaluation/event-table" > <EventTable /> </ProtectedRoute> 
@@ -115,14 +122,14 @@ function Router() {
           <ProtectedRoute path="/national" > <NationalMetServicesLanding /> </ProtectedRoute>
           <ProtectedRoute path="/national/:slug" > <RedirectPage /> </ProtectedRoute>
                             
-          <Route path = "/news/:slug" component={NewsDetail} />
+          <ProtectedRoute path = "/news/:slug"> <NewsDetail /> </ProtectedRoute>
 
                     
-          <Route path = "/regional-international" component={RegionalInternationalLanding} />
-          <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
+          <ProtectedRoute path = "/regional-international"> <RegionalInternationalLanding /> </ProtectedRoute>
+          <ProtectedRoute path = "/regional-international/:slug"> <RedirectRegionalInternational /> </ProtectedRoute>
 
-          <Route path = "/regional-international" component={RegionalInternationalLanding} />
-          <Route path = "/regional-international/:slug" component={RedirectRegionalInternational} />
+          <ProtectedRoute path = "/regional-international"> <RegionalInternationalLanding /> </ProtectedRoute>
+          <ProtectedRoute path = "/regional-international/:slug"> <RedirectRegionalInternational /> </ProtectedRoute>
           
           
           <Route component={NotFound} />

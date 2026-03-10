@@ -1,6 +1,7 @@
 // src/features/nwp/pages/NWPLanding.tsx
 import { useQuery } from "@tanstack/react-query";
 import { getNWPModels } from "../api";
+import { useEffect } from "react";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Clock, AlertCircle } from "lucide-react";
@@ -76,6 +77,9 @@ const ModelSkeleton = () => (
 );
 
 export default function NWPLanding() {
+   useEffect(() => {
+    document.title = "NWP | RSMC Nairobi";
+  }, []);
   const { data, isLoading, isError } = useQuery<NWPModel[]>({
     queryKey: ["nwp-models"],
     queryFn: getNWPModels,

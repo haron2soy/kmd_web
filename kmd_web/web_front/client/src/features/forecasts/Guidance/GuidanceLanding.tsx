@@ -7,7 +7,7 @@ import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollT
 const shortRangeLinks = [
   { href: "/guidance/marine-forecast-daily", label: "Marine Forecast Daily" },
   { href: "/guidance/marine-forecast-seven-days", label: "Marine Forecast Weekly" },
-  { href: "/guidance/easfwp-discussion-daily", label: "EAsfwp Discussion" },
+  { href: "/guidance/easwfp-discussion-daily", label: "EAsfwp Discussion" },
 ];
 
 
