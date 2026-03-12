@@ -240,7 +240,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "haron1soy@gmail.com"
-#EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
+EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
 
 DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 

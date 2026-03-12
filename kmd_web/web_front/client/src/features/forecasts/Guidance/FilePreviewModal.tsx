@@ -1,11 +1,7 @@
 // src/features/forecasts/components/FilePreviewModal.tsx
+import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
-import { useState, useEffect } from "react";
-import Draggable from "react-draggable";
-import { ResizableBox, type ResizeCallbackData } from "react-resizable";
-
-import "react-resizable/css/styles.css";
-import type {Dispatch, SetStateAction} from "react";
 interface FileItem {
   name: string;
   url: string;
@@ -18,166 +14,132 @@ interface FilePreviewModalProps {
   files: FileItem[];
 }
 
+
 export default function FilePreviewModal({
   previewFileIndex,
   setPreviewFileIndex,
   files,
 }: FilePreviewModalProps) {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [width, setWidth] = useState(860);
-  const [height, setHeight] = useState(680);
-
-  useEffect(() => {
-    setWidth(860);
-    setHeight(680);
-    setIsFullscreen(false);
-  }, [previewFileIndex]);
-
   if (previewFileIndex === null) return null;
+    const sortedFiles = [...files].sort((a, b) => {
+      const getDate = (name: string) => {
+        const match = name.match(/(\d{1,2})_([A-Za-z]+)_(\d{4})/);
+        if (!match) return 0;
 
-  const file = files[previewFileIndex];
+        const [, day, month, year] = match;
+        return new Date(`${month} ${day}, ${year}`).getTime();
+      };
+
+      return getDate(a.name) - getDate(b.name);
+    });
+  const file = sortedFiles[previewFileIndex];
+  if (!file) return null;
+
   const isPdf = file.name.toLowerCase().endsWith(".pdf");
   const isImage = file.type === "image";
 
-  const handleClose = () => setPreviewFileIndex(null);
-  const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
+  const close = () => setPreviewFileIndex(null);
 
-  const goPrev = () =>
-    setPreviewFileIndex((prev) =>
-      prev === null ? null : (prev - 1 + files.length) % files.length
+  const prev = () =>
+    setPreviewFileIndex(
+      (prevIndex) =>
+        prevIndex === null ? null : (prevIndex - 1 + sortedFiles.length) % sortedFiles.length
     );
 
-  const goNext = () =>
-    setPreviewFileIndex((prev) =>
-      prev === null ? null : (prev + 1) % files.length
+  const next = () =>
+    setPreviewFileIndex(
+      (prevIndex) => (prevIndex === null ? null : (prevIndex + 1) % sortedFiles.length)
     );
 
-  const content = (
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  return (
     <div
-      className={`bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden ${
-        isFullscreen ? "h-screen w-screen rounded-none" : "h-full"
-      }`}
+      onClick={close}
+      className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3"
     >
-      {/* Header */}
       <div
-        className={`bg-gray-100 px-4 py-3 flex items-center justify-between border-b ${
-          !isFullscreen ? "cursor-move select-none" : ""
-        }`}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white w-full max-w-5xl h-[95vh] rounded-xl overflow-hidden flex flex-col shadow-2xl"
       >
-        <div className="font-medium truncate max-w-[70%] text-gray-800">
-          {file.name}
+        {/* Header */}
+        <div className="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
+          <span className="font-medium truncate max-w-[70%]">{file.name}</span>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={file.url}
+              download={file.name}
+              className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+            >
+              Download
+            </a>
+
+            <button
+              onClick={close}
+              className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+            >
+              Close
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={toggleFullscreen}
-            className="p-1.5 text-gray-600 hover:text-gray-900 rounded hover:bg-gray-200 transition"
-            title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-          >
-            {isFullscreen ? "↙" : "↗"}
-          </button>
-
-          <button
-            onClick={handleClose}
-            className="p-1.5 text-gray-600 hover:text-red-600 rounded hover:bg-gray-200 transition"
-          >
-            ✕
-          </button>
+        {/* Viewer (takes remaining height) */}
+        <div className="flex-1 bg-gray-100">
+          {isPdf ? (
+            <iframe
+              src={`${file.url}#toolbar=1`}
+              title={file.name}
+              className="w-full h-full"
+            />
+          ) : isImage ? (
+            <img
+              src={file.url}
+              alt={file.name}
+              className="object-contain w-full h-full"
+            />
+          ) : (
+            <iframe
+              src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+                file.url
+              )}`}
+              title={file.name}
+              className="w-full h-full border-none"
+            />
+          )}
         </div>
-      </div>
 
-      {/* Viewer */}
-      <div className="flex-1 bg-gray-900 relative overflow-hidden">
-        {isPdf ? (
-          <iframe
-            src={file.url}
-            className="absolute inset-0 w-full h-full border-0"
-            title={file.name}
-          />
-        ) : isImage ? (
-          <img
-            src={file.url}
-            alt={file.name}
-            className="absolute inset-0 w-full h-full object-contain"
-          />
-        ) : (
-          <iframe
-            src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-              file.url
-            )}`}
-            className="absolute inset-0 w-full h-full border-0"
-            title={file.name}
-          />
+        {/* Navigation */}
+        {sortedFiles.length > 1 && (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
+              }}
+              className="absolute left-5 top-1/2 -translate-y-1/2 bg-black/70 text-white w-11 h-11 rounded-full flex items-center justify-center hover:bg-black/90"
+            >
+              ◀
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
+              className="absolute right-5 top-1/2 -translate-y-1/2 bg-black/70 text-white w-11 h-11 rounded-full flex items-center justify-center hover:bg-black/90"
+            >
+              ▶
+            </button>
+          </>
         )}
       </div>
-
-      {/* Footer */}
-      <div className="px-5 py-3 border-t bg-gray-50 flex justify-center">
-        <a
-          href={file.url}
-          download
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
-        >
-          Download
-        </a>
-      </div>
-
-      {/* Navigation */}
-      {files.length > 1 && !isFullscreen && (
-        <>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goPrev();
-            }}
-            className="absolute left-6 top-1/2 -translate-y-1/2 bg-black/65 hover:bg-black/85 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow-md z-20 transition"
-          >
-            ◀
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goNext();
-            }}
-            className="absolute right-6 top-1/2 -translate-y-1/2 bg-black/65 hover:bg-black/85 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow-md z-20 transition"
-          >
-            ▶
-          </button>
-        </>
-      )}
     </div>
   );
-
-  if (!isFullscreen) {
-    const maxWidth = typeof window !== "undefined" ? window.innerWidth * 0.96 : 1200;
-    const maxHeight = typeof window !== "undefined" ? window.innerHeight * 0.96 : 900;
-
-    return (
-      <div
-        onClick={handleClose}
-        className="fixed inset-0 bg-black/75 flex items-center justify-center p-5 z-[1000]"
-      >
-        <Draggable handle=".cursor-move" bounds="parent">
-          <div onClick={(e) => e.stopPropagation()}>
-            <ResizableBox
-              width={width}
-              height={height}
-              minConstraints={[480, 360]}
-              maxConstraints={[maxWidth, maxHeight]}
-              resizeHandles={["se", "sw", "ne", "nw"]}
-              onResize={(_e: React.SyntheticEvent, data: ResizeCallbackData) => {
-                setWidth(data.size.width);
-                setHeight(data.size.height);
-              }}
-            >
-              {content}
-            </ResizableBox>
-          </div>
-        </Draggable>
-      </div>
-    );
-  }
-
-  return <div className="fixed inset-0 bg-black z-[1000]">{content}</div>;
 }

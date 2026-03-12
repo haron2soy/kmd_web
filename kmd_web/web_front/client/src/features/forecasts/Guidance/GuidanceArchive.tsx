@@ -146,9 +146,11 @@ const detectFileType = (name: string): "image" | "document" =>
             data.files.map((file: any) => ({
               name: file.name,
               url: file.url,
+              
               type: detectFileType(file.name),
             }))
           );
+          console.log("FILES FROM API:", data.files);
         } else {
           setFiles([]);
         }
