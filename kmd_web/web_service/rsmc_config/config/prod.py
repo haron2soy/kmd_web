@@ -20,15 +20,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962'
-#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-#DATABASES["default"]["PASSWORD"] = os.getenv("DB_PASSWORD")
+#SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+#DATABASES["rsmc_db"]["PASSWORD"] = os.getenv("DB_PASSWORD")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "www.example.com",
-    "example.com",  
+    "example.com",
+    "172.168.2.103",
+    "localhost",
+    "127.0.0.1",
+    "django", 
 ]
 
 
@@ -43,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "rest_framework",
-    "home.home",
+    "home",
     'corsheaders',
     "products",
     "nwp_models",
@@ -71,13 +75,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'rsmc_config.config.urls'
 
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://www.example.com",
-   
-    "https://example.com",
+CSRF_TRUSTED_ORIGINS = [ 
+    "http://172.168.2.103",
+    "http://localhost",
+    "http://127.0.0.1",
 ]
 TEMPLATES = [
     {
@@ -105,8 +106,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "rsmc_db",
         "USER": "haron",
-        #"PASSWORD": "haron12345",
-        "HOST": "localhost",
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": "db",
         "PORT": "5432",
     }
 }
@@ -169,7 +170,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -177,11 +178,11 @@ CACHES = {
 }
 
 # Celery
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # Celery Enhancements
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
@@ -196,10 +197,14 @@ SESSION_COOKIE_AGE = 900        # 15 minutes
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+USE_X_FORWARDED_HOST = True
+CSRF_COOKIE_SECURE = False # true in production
+SESSION_COOKIE_SECURE = False #true in production
 CSRF_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SAMESITE = "Lax"
+#CSRF_COOKIE_DOMAIN = "172.168.2.103"
+#SESSION_COOKIE_DOMAIN = "172.168.2.103"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -209,20 +214,28 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "haron1soy@gmail.com"
 #EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 
 SITE_NAME = "RSMC"
 CURRENT_YEAR = 2026
 
-FRONTEND_URL = "https://www.example.com"
+FRONTEND_URL = "http://172.168.2.103"
 
 # Allow your frontend origin
 CORS_ALLOWED_ORIGINS = [
-    "https://www.example.com",
+    #"https://www.example.com",
+    "http://172.168.2.103",
+    "http://172.168.2.103:5173",
+    "http://localhost",
+    "http://localhost:5173",
+    "http://127.0.0.1"
+    "http://127.0.0.1:5173",
+    "http://django",
 ]
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False  #True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True

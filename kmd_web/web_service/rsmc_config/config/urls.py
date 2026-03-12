@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", include("home.home.urls")),
+    path("api/", include("home.urls")),
     path("api/", include("pages.urls")),
     path("api/nwp_models/", include("nwp_models.urls")),
     path("api/forecasts/", include("forecasts.urls")),

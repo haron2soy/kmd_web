@@ -1,0 +1,48 @@
+#version: "3.9"
+
+services:
+  django:
+    build:
+      context: ..
+      dockerfile: docker/django/Dockerfile
+    container_name: kmd_django
+    env_file:
+      - envfile.env
+    volumes:
+      - ./web_service:/app/web_service
+      - ./uploads:/app/web_service/uploads
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile
+    container_name: kmd_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django
+    volumes:
+      - ./web_front/client/dist:/usr/share/nginx/html
+      - ./web_service/staticfiles:/app/web_service/staticfiles
+      - ./web_service/uploads:/app/web_service/uploads
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: haron
+      POSTGRES_PASSWORD: haron12345
+      POSTGRES_DB: rsmc_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
