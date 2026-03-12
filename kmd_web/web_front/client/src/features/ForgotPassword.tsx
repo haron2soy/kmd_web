@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import apiClient from "@/lib/apiClient";
+import { ScrolltoHeader } from "./user_authentication/ScrolltoHeader";
 
 export default function ForgotPassword() {
+  const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
+    //<header ref={headerRef} 
    useEffect(() => {
     document.title = "Reset-Password | RSMC Nairobi";
   }, []);
@@ -36,7 +39,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-16">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div ref={headerRef} className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
 
         {/* Header */}
         <div className="bg-primary text-primary-foreground px-8 py-2 text-center">

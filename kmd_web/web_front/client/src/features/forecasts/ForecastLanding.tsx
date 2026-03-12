@@ -37,6 +37,7 @@ const archiveLinks = [
 
 export default function ForecastLanding() {
   const { headerRef } = useScrollToHeader(80);
+  //<header ref={headerRef} className="mb-4 md:mb-4"></header>
   // Set browser tab title
   useEffect(() => {
     document.title = "Forecasts | RSMC Nairobi";

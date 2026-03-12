@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "./AuthContext";
 import "./Register.css";
+import { ScrolltoHeader } from "./ScrolltoHeader";
 
 interface RegisterForm {
   first_name: string;
@@ -24,7 +25,8 @@ const initialForm: RegisterForm = {
 };
 
 export default function Register() {
-
+const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
+  //<header ref={headerRef} 
    useEffect(() => {
     document.title = "Register | RSMC Nairobi";
   }, []);
@@ -130,10 +132,11 @@ export default function Register() {
 
   return (
     <div className="register-container">
-      <div className="register-card">
-        <h1>Create Account</h1>
-        <p className="subtitle">Join us and start exploring</p>
-
+      <div ref={headerRef} className="register-card ">
+        <div className="bg-primary text-primary-foreground px-6 py-2 text-center">
+          <h1>Create Account</h1>
+          <p className="bg-primary text-center">Join us and start exploring</p>
+        </div>
         <form onSubmit={handleSubmit} noValidate className="register-form">
 
           <Field

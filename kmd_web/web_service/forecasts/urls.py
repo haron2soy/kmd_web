@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .views import latest_forecast
 from .doc_views import guidance_documents
+from .guidance_archive_views import guidance_files
 from .archive_views import list_years, list_months, list_days, list_files, archive_files  # Added archive_files
 
 app_name = "forecasts"
@@ -15,5 +16,8 @@ urlpatterns = [
     path("archive/months/", list_months, name="archive-months"),
     path("archive/days/", list_days, name="archive-days"),
     path("archive/files/", list_files, name="archive-files"),  # OLD: all files
+    path("guidance_archive/files/", guidance_files, name="guidance_archive-files"),  # OLD: all files
     path("archive/filtered-files/", archive_files, name="archive-filtered-files"),  # NEW: type-filtered files
+
+   
 ]

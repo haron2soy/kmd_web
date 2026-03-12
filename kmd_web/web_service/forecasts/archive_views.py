@@ -70,8 +70,51 @@ def list_files(request):
     print("Trying:", url)
     return JsonResponse({"files": files})
     
-
 @api_view(["GET"])
+def archive_files(request):
+    year = request.GET.get("year")
+    month = request.GET.get("month")
+    file_type = request.GET.get("type")
+
+    if not all([year, month, file_type]):
+        return Response({"error": "year, month and type required"}, status=400)
+
+    base_path = os.path.join(settings.MEDIA_ROOT, "rsmc", year, month)
+
+    if not os.path.exists(base_path):
+        return Response({"files": []})
+
+    files = []
+
+    # iterate through ALL days inside the month
+    for day in os.listdir(base_path):
+
+        day_path = os.path.join(base_path, day)
+
+        if not os.path.isdir(day_path):
+            continue
+
+        for filename in os.listdir(day_path):
+
+            full_path = os.path.join(day_path, filename)
+
+            if file_type == "Marine_Forecast":
+                if re.match(r"rsmc0[1-5]\.(jpg|jpeg|png)$", filename, re.IGNORECASE):
+                    files.append({
+                        "name": filename,
+                        "url": f"/uploads/rsmc/{year}/{month}/{day}/{filename}"
+                    })
+
+            elif file_type == "Easwfp_Discussion":
+                if "discussion" in filename.lower():
+                    files.append({
+                        "name": filename,
+                        "url": f"/uploads/rsmc/{year}/{month}/{day}/{filename}"
+                    })
+
+    return Response({"files": files})
+
+'''@api_view(["GET"])
 def archive_files(request):
     year = request.GET.get('year')
     month = request.GET.get('month') 
@@ -114,5 +157,5 @@ def archive_files(request):
             "url": f"/uploads/rsmc/{year}/{month}/{day.lower()}/{filename}"  # Fixed /uploads → /media
         })
     
-    return Response({"files": files})
+    return Response({"files": files})'''
 

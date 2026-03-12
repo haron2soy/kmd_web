@@ -29,12 +29,8 @@ DEBUG = True
 #correct DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "172.168.2.103",
-    "localhost:5173",
-    "127.0.0.1:5173",
-    "localhost",
-    "127.0.0.1",
-    "django"      
+    "*"
+      
 ]
 
 
@@ -83,8 +79,6 @@ ROOT_URLCONF = 'rsmc_config.config.urls'
 
 CSRF_TRUSTED_ORIGINS = [
     "http://172.168.2.103",
-    "http://localhost:5173",
-    "http://127.0.0.1",
 ]
 TEMPLATES = [
     {
@@ -176,44 +170,32 @@ GENERATED_MAPS_DIR = BASE_DIR / "generated_maps"
 # Auto-create directories if missing
 for directory in [WRF_DATA_DIR, GENERATED_MAPS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
-MEDIA_ROOT = "/home/haron/uploads/"
+MEDIA_ROOT = BASE_DIR / "uploads"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-'''CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        #"LOCATION": "redis://redis:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}'''
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # Celery
-#CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 #for dockerCELERY_BROKER_URL = "redis://redis:6379/0"
 #forr dockerCELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # Celery Enhancements
-#CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
@@ -251,9 +233,7 @@ FRONTEND_URL = "http://localhost:5173"
 
 # Allow your frontend origin
 CORS_ALLOWED_ORIGINS = [
-    "http://172.168.2.103",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:5173"
 ]
 
 #SECURE_SSL_REDIRECT = True #for production

@@ -75,6 +75,7 @@ export default function Archive() {
      Fetch Years (on mount)
   -------------------------------------------------- */
   useEffect(() => {
+    document.title = "Forecasts | RSMC Nairobi";
     const fetchYears = async () => {
       try {
         setLoading(true);

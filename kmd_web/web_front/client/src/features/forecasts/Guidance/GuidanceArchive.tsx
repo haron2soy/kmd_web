@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import apiClient from "@/lib/apiClient";
 import { useScrollToHeaderArc } from "../components/scrollToHeaderArc";
-
+import FilePreviewModal from "./FilePreviewModal";
 type FileItem = {
   name: string;
   url: string;
@@ -12,9 +12,9 @@ type FileItem = {
 };
 
 const relatedLinks = [
-  { href: "/guidance/easwfp-discussion-daily", label: "Day 1 Forecast" },
-  { href: "/guidance/marine-forecast-seven-days", label: "Day 2 Forecast" },
-  { href: "/guidance/marine-forecast-daily", label: "Day 3 Forecast" },
+  { href: "/guidance/easwfp-discussion-daily", label: "EA SWFP Discusion" },
+  { href: "/guidance/marine-forecast-seven-days", label: "Marine Forecast Seven Day" },
+  { href: "/guidance/marine-forecast-daily", label: "Marine Forecast Daily" },
 ];
 
 const SidebarLink = ({
@@ -36,48 +36,52 @@ export default function GuidanceArchive() {
 
   const [years, setYears] = useState<string[]>([]);
   const [months, setMonths] = useState<string[]>([]);
-  const [days, setDays] = useState<string[]>([]);
+  //const [days, setDays] = useState<string[]>([]);
   const [files, setFiles] = useState<FileItem[]>([]);
 
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedDay, setSelectedDay] = useState("");
+  //const [selectedDay, setSelectedDay] = useState("");
   const [selectedType, setSelectedType] = useState("forecasts");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
-
+  const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null);
   /* --------------------------------------------------
      Helper
   -------------------------------------------------- */
-  const detectFileType = (name: string): "image" | "document" =>
-    /\.(jpg|jpeg|png)$/i.test(name) ? "image" : "document";
+  //const detectFileType = (name: string): "image" | "document" =>
+   // /\.(jpg|jpeg|png)$/i.test(name) ? "image" : "document";
+
+const detectFileType = (name: string): "image" | "document" =>
+  name.toLowerCase().endsWith(".pdf") ? "document" :
+  /\.(jpg|jpeg|png)$/i.test(name) ? "image" : "document";
 
   const resetBelowYear = () => {
     setMonths([]);
-    setDays([]);
+    //setDays([]);
     setFiles([]);
     setSelectedMonth("");
-    setSelectedDay("");
+    //setSelectedDay("");
   };
 
   const resetBelowMonth = () => {
-    setDays([]);
+    //setDays([]);
     setFiles([]);
-    setSelectedDay("");
+    //setSelectedDay("");
   };
 
   /* --------------------------------------------------
      Fetch Years (on mount)
   -------------------------------------------------- */
   useEffect(() => {
-    document.title = "Forecasts | RSMC Nairobi";
+    document.title = "Guidance | RSMC Nairobi";
     const fetchYears = async () => {
       try {
         setLoading(true);
-        const { data } = await apiClient.get("/guidance/archive/years/");
+        const { data } = await apiClient.get("/forecasts/archive/years/");
         if (Array.isArray(data?.years)) setYears(data.years);
       } catch (err) {
         console.error(err);
@@ -103,7 +107,7 @@ export default function GuidanceArchive() {
       try {
         setLoading(true);
         const { data } = await apiClient.get(
-          `/guidance/archive/months/?year=${selectedYear}`
+          `/forecasts/archive/months/?year=${selectedYear}`
         );
         if (Array.isArray(data?.months)) setMonths(data.months);
         resetBelowMonth();
@@ -118,42 +122,12 @@ export default function GuidanceArchive() {
     fetchMonths();
   }, [selectedYear]);
 
-  /* --------------------------------------------------
-     Fetch Days
-  -------------------------------------------------- */
-  useEffect(() => {
-    if (!selectedYear || !selectedMonth) {
-      resetBelowMonth();
-      return;
-    }
-
-    const fetchDays = async () => {
-      try {
-        setLoading(true);
-        const { data } = await apiClient.get(
-          `/guidance/archive/days/?year=${selectedYear}&month=${selectedMonth}`
-        );
-        if (Array.isArray(data?.days)) setDays(data.days);
-        setFiles([]);
-        setSelectedDay("");
-      } catch (err) {
-        console.error(err);
-        setError(
-          `Could not load days for ${selectedMonth} ${selectedYear}.`
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDays();
-  }, [selectedYear, selectedMonth]);
-
+  
   /* --------------------------------------------------
      Fetch Files
   -------------------------------------------------- */
   useEffect(() => {
-    if (!selectedYear || !selectedMonth || !selectedDay || !selectedType) {
+    if (!selectedYear || !selectedMonth  || !selectedType) {
       setFiles([]);
       return;
     }
@@ -164,9 +138,9 @@ export default function GuidanceArchive() {
         setError(null);
 
         const { data } = await apiClient.get(
-          `/guidance/archive/filtered-files/?year=${selectedYear}&month=${selectedMonth}&day=${selectedDay}&type=${selectedType}`
+          `/forecasts/guidance_archive/files/?year=${selectedYear}&month=${selectedMonth}&type=${selectedType}`
         );
-
+        
         if (Array.isArray(data?.files)) {
           setFiles(
             data.files.map((file: any) => ({
@@ -181,7 +155,7 @@ export default function GuidanceArchive() {
       } catch (err) {
         console.error(err);
         setError(
-          `No ${selectedType} found for ${selectedDay}/${selectedMonth}/${selectedYear}`
+          `No ${selectedType} found for ${selectedMonth}/${selectedYear}`
         );
       } finally {
         setLoading(false);
@@ -189,7 +163,7 @@ export default function GuidanceArchive() {
     };
 
     fetchFiles();
-  }, [selectedYear, selectedMonth, selectedDay, selectedType]);
+  }, [selectedYear, selectedMonth, selectedType]);
 
   /* --------------------------------------------------
      Modal UX Improvements
@@ -243,23 +217,17 @@ export default function GuidanceArchive() {
               options={months}
               disabled={!selectedYear || loading}
             />
-            <Select
-              label="Day"
-              value={selectedDay}
-              onChange={setSelectedDay}
-              options={days}
-              disabled={!selectedMonth || loading}
-            />
+            
             <Select
               label="Type"
               value={selectedType}
               onChange={setSelectedType}
               options={[
                 
-                { label: "Discussions (.doc)", value: "discussions" },
-                { label: "Risk Tables (.doc)", value: "tables" },
+                { label: "Marine_Forecast", value: "Marine_Forecast" },
+                { label: "Easwfp_Discussion", value: "Easwfp_Discussion" },
               ]}
-              disabled={!selectedDay}
+              disabled={!selectedMonth}
             />
           </div>
 
@@ -274,28 +242,26 @@ export default function GuidanceArchive() {
             <div className="text-center py-12">Loading...</div>
           ) : files.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {files.map((file) => (
-                <div
-                  key={file.url}
-                  onClick={() => setPreviewFile(file)}
-                  className="cursor-pointer border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
-                >
-                  {file.type === "image" ? (
-                    <img
-                      src={file.url}
-                      alt={file.name}
-                      className="w-full h-40 object-cover"
-                    />
-                  ) : (
-                    <div className="h-40 flex items-center justify-center bg-gray-100">
-                      <span>📄</span>
-                    </div>
-                  )}
-                  <div className="p-3 text-sm font-medium truncate">
-                    {file.name}
+              {files.map((file, idx) => (
+              <div
+                key={file.url}
+                onClick={() => setPreviewFileIndex(idx)} // <- use index
+                className="cursor-pointer border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
+              >
+                {file.type === "image" ? (
+                  <img
+                    src={file.url}
+                    alt={file.name}
+                    className="w-full h-40 object-cover"
+                  />
+                ) : (
+                  <div className="h-40 flex items-center justify-center bg-gray-100">
+                    <span>📄</span>
                   </div>
-                </div>
-              ))}
+                )}
+                <div className="p-3 text-sm font-medium truncate">{file.name}</div>
+              </div>
+            ))}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-500">
@@ -317,34 +283,15 @@ export default function GuidanceArchive() {
         </aside>
       </div>
 
-      {/* MODAL */}
-      {previewFile && (
-        <div
-          onClick={() => setPreviewFile(null)}
-          className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
-          >
-            {previewFile.type === "image" ? (
-              <img
-                src={previewFile.url}
-                alt={previewFile.name}
-                className="w-full h-[80vh] object-contain"
-              />
-            ) : (
-              <iframe
-                src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-                  previewFile.url
-                )}`}
-                className="w-full h-[80vh]"
-                title="Document Preview"
-              />
-            )}
-          </div>
-        </div>
-      )}
+      {/* --------------------------------------------------}
+     {/* MODAL for preview}
+    {/*-------------------------------------------------- */}
+      <FilePreviewModal
+        previewFileIndex={previewFileIndex}
+        setPreviewFileIndex={setPreviewFileIndex}
+        files={files}
+      />
+        
     </div>
   );
 }
