@@ -13,6 +13,9 @@ from .serializer import RegisterSerializer
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import EmailVerification
+from django.db import transaction
+
+
 
 # ---------------------------------------------------------
 # CSRF TOKEN VIEW
@@ -39,17 +42,25 @@ def csrf_token_view(request):
 def register_view(request):
     serializer = RegisterSerializer(data=request.data)
 
-    if serializer.is_valid():
-        user = serializer.save()
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create verification record
-        verification = EmailVerification.objects.create(user=user)
+    try:
+        # Ensure atomic operation
+        with transaction.atomic():
 
-        verification_link = f"http://localhost:5173/verify-email/{verification.token}"
+            # Create user
+            user = serializer.save()
 
-        send_mail(
-            subject="Verify Your Account",
-            message=f"""
+            # Create verification record
+            verification = EmailVerification.objects.create(user=user)
+
+            # Use dynamic frontend URL instead of localhost
+            verification_link = f"{settings.FRONTEND_URL}/verify-email/{verification.token}"
+
+            send_mail(
+                subject="Verify Your Account",
+                message=f"""
 Welcome!
 
 Click the link below to verify your account:
@@ -60,16 +71,21 @@ Or use this verification code:
 
 This link expires in 24 hours.
 """,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-        )
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False
+            )
 
         return Response(
             {"message": "Verification email sent. Please check your inbox."},
             status=status.HTTP_201_CREATED,
         )
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        return Response(
+            {"error": "Registration failed. Please try again later."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 # ---------------------------------------------------------

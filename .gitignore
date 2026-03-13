@@ -13,6 +13,9 @@ nwp_models_data_test/
 generated_maps/
 generatedaps12/
 
+# Windows metadata
+*:Zone.Identifier
+
 # Virtual environments
 venv/
 env/
