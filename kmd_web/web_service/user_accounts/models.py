@@ -13,11 +13,12 @@ def generate_code():
 
 
 class EmailVerification(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="verifications")
     token = models.UUIDField(default=uuid.uuid4, unique=True)
     code = models.CharField(max_length=10, default=generate_code)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
@@ -26,3 +27,13 @@ class EmailVerification(models.Model):
 
     def is_expired(self):
         return timezone.now() > self.expires_at
+
+class EmailDelivery(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    email_type = models.CharField(max_length=50)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[("sent","sent"), ("failed","failed")]
+    )
+    error_message = models.TextField(null=True, blank=True)

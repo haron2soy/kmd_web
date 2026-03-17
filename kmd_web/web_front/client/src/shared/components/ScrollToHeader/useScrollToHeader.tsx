@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-export function useScrollToHeader(navbarHeight: number = 80) {
-  const headerRef = useRef<HTMLElement | null>(null);
+export function useScrollToHeader<T extends HTMLElement> (navbarHeight: number = 80) {
+  const headerRef = useRef<T | null>(null);
 
   useEffect(() => {
     if (!headerRef.current) return;

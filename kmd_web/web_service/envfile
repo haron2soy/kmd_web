@@ -1,0 +1,5 @@
+DJANGO_SECRET_KEY=your-secret-key-here
+DB_PASSWORD=haron12345
+EMAIL_HOST_PASSWORD=your-email-password
+DJANGO_SETTINGS_MODULE=rsmc_config.config.prod
+REDIS_URL=redis://localhost:6379/0

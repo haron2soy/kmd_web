@@ -108,7 +108,7 @@ export function Navbar() {
                 <ChevronDown className="h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />
               </Link>
               <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
-                <div className="bg-primary/95 backdrop-blur-sm border border-white/10 rounded-md shadow-xl min-w-[220px] py-2">
+                <div className="bg-primary/95 backdrop-blur-sm border border-white/10 rounded-md shadow-xl min-w-[100px] py-2">
                   {homeSubmenu.map(link => (
                     <Link
                       key={link.href}

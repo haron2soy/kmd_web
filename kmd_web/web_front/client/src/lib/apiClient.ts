@@ -60,7 +60,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError<any>) => {
     if (error.response) {
       // Backend returned an error response (400, 401, etc.)
-      return Promise.reject(error.response.data);
+      return Promise.reject(error);
     }
 
     if (error.request) {

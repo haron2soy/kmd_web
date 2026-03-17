@@ -6,7 +6,7 @@ set -e
 # Validate argument
 # --------------------------------------------------
 if [ $# -ne 1 ]; then
-    echo "Usage: sudo ./generate-script.sh /path/to/envfile"
+    echo "Usage: sudo ./watch-and-celery.sh /path/to/envfile"
     exit 1
 fi
 
@@ -122,8 +122,8 @@ echo "✅ Created $RUN_SCRIPT"
 cat > "$CELERY_UNIT" <<EOL
 [Unit]
 Description=RSMC Celery Worker
-After=network.target redis.service
-Requires=redis.service
+After=network.target redis-server.service
+Requires=redis-server.service
 
 [Service]
 Type=simple
@@ -155,8 +155,8 @@ echo "✅ Created $CELERY_UNIT"
 cat > "$WRF_UNIT" <<EOL
 [Unit]
 Description=WRF Output Watchdog Service
-After=network.target redis.service
-Requires=redis.service
+After=network.target redis-server.service
+Requires=redis-server.service
 
 [Service]
 Type=simple

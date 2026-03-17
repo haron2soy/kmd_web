@@ -196,24 +196,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+#CELERY_BROKER_URL = "redis://redis:6379/0"
+#CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # Celery
-#CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 #for dockerCELERY_BROKER_URL = "redis://redis:6379/0"
 #forr dockerCELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # Celery Enhancements
-#CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+REDIS_URL="redis://localhost:6379/0"
+
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
@@ -224,7 +226,7 @@ CELERY_WORKER_MAX_TASKS_PER_CHILD = 10
 #SESSION_COOKIE_HTTPONLY = True
 
 CSRF_COOKIE_HTTPONLY = False   # must be False for React
-SESSION_COOKIE_AGE = 900        # 15 minutes
+SESSION_COOKIE_AGE = 600        # 10 minutes
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -257,6 +259,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 #SECURE_SSL_REDIRECT = True #for production
+CORS_ALLOW_CREDENTIALS = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True

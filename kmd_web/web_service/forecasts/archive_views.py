@@ -12,11 +12,11 @@ def list_years(request):
     
     try:
         years = sorted(os.listdir(BASE_DIR))
-        print("years:", years)
+        
         return JsonResponse({"years": years})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-    print("years:", years)
+    
 
 def list_months(request):
     year = request.GET.get("year")
@@ -65,11 +65,12 @@ def list_files(request):
     for f in os.listdir(path):
         files.append({
             "name": f,
-            "url": f"/uploads/rsmc/{year}/{month}/{day}/{f}"
+            #"url": f"/uploads/rsmc/{year}/{month}/{day}/{f}"
+            "url": f"/forecasts/download/?path=rsmc/{year}/{month}/{day}/{f}"
         })
-    print("Trying:", url)
-    return JsonResponse({"files": files})
     
+    return JsonResponse({"files": files})
+
 @api_view(["GET"])
 def archive_files(request):
     year = request.GET.get("year")
@@ -79,6 +80,7 @@ def archive_files(request):
     if not all([year, month, file_type]):
         return Response({"error": "year, month and type required"}, status=400)
 
+    month = month.lower()
     base_path = os.path.join(settings.MEDIA_ROOT, "rsmc", year, month)
 
     if not os.path.exists(base_path):
@@ -86,33 +88,52 @@ def archive_files(request):
 
     files = []
 
-    # iterate through ALL days inside the month
+    month_map = {
+        "jan": "01", "feb": "02", "mar": "03", "apr": "04",
+        "may": "05", "jun": "06", "jul": "07", "aug": "08",
+        "sep": "09", "oct": "10", "nov": "11", "dec": "12"
+    }
+
     for day in os.listdir(base_path):
-
         day_path = os.path.join(base_path, day)
-
         if not os.path.isdir(day_path):
             continue
 
+        day_parts = day.split("-")  # e.g., "mar-09" → ["mar","09"]
+        month_num = month_map.get(day_parts[0].lower(), "01")
+        day_num = day_parts[1] if len(day_parts) > 1 else "01"
+        iso_date = f"{year}-{month_num}-{day_num}"
+
         for filename in os.listdir(day_path):
+            f_lower = filename.lower()
 
-            full_path = os.path.join(day_path, filename)
+            match = False
+            if file_type == "forecasts" and re.match(r"rsmc0[1-5]\.(jpg|jpeg|png)$", f_lower):
+                match = True
+            elif file_type == "discussions" and f_lower.endswith((".doc", ".docx", ".pdf")) and "discussion" in f_lower:
+                match = True
+            elif file_type == "tables" and f_lower.endswith((".doc", ".docx", ".pdf")) and "table" in f_lower:
+                match = True
 
-            if file_type == "Marine_Forecast":
-                if re.match(r"rsmc0[1-5]\.(jpg|jpeg|png)$", filename, re.IGNORECASE):
-                    files.append({
-                        "name": filename,
-                        "url": f"/uploads/rsmc/{year}/{month}/{day}/{filename}"
-                    })
+            if match:
+                files.append({
+                    "name": filename,
+                    "url": f"/forecasts/download/?path=rsmc/{year}/{month}/{day}/{filename}",
+                    "date": iso_date
+                })
 
-            elif file_type == "Easwfp_Discussion":
-                if "discussion" in filename.lower():
-                    files.append({
-                        "name": filename,
-                        "url": f"/uploads/rsmc/{year}/{month}/{day}/{filename}"
-                    })
+    # Sort by date descending, then by filename ascending
+    files.sort(key=lambda x: (x["date"], x["name"]), reverse=True)
+    # Then sort by filename ascending within same date
+    from itertools import groupby
+    sorted_files = []
+    for date, group in groupby(files, key=lambda x: x["date"]):
+        group_list = sorted(list(group), key=lambda x: x["name"])  # ascending filenames
+        sorted_files.extend(group_list)
 
+    files = sorted_files
     return Response({"files": files})
+
 
 '''@api_view(["GET"])
 def archive_files(request):

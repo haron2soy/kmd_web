@@ -1,3 +1,5 @@
+//@features/user_authentication/AuthContext.tsx
+
 import {
   createContext,
   useContext,
@@ -17,6 +19,7 @@ interface User {
   id: number;
   username: string;
   email: string;
+  first_name: string;
 }
 
 interface SessionResponse {
@@ -24,11 +27,16 @@ interface SessionResponse {
   user?: User;
 }
 
+interface ResendVerificationResponse {
+  success: boolean;
+  message: string;
+  redirect?: string | null;
+}
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-
+  message: string | null;
   isAuthenticated: boolean;
 
   login: (username: string, password: string) => Promise<void>;
@@ -42,7 +50,7 @@ interface AuthContextType {
 
   verifyWithToken: (token: string) => Promise<void>;
   verifyWithCode: (code: string) => Promise<void>;
-  resendVerification: (email: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<ResendVerificationResponse >;
 
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
@@ -66,8 +74,12 @@ function extractError(err: unknown, fallback: string) {
   if (typeof data === "string") return data;
   if (data?.detail) return data.detail;
 
-  if (typeof data === "object") {
-    return Object.values(data).flat().join(" ");
+  if (data?.non_field_errors?.length) {
+    return data.non_field_errors[0];
+  }
+
+  if (data?.message) {
+    return data.message;
   }
 
   return fallback;
@@ -83,7 +95,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
+  const [message, setMessage] = useState<string | null>(null);
   // ─────────────────────────────────────────
   // Generic request wrapper
   // ─────────────────────────────────────────
@@ -91,6 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const request = useCallback(async (fn: () => Promise<any>, fallback: string) => {
     try {
       setError(null);
+      setMessage(null);
       return await fn();
     } catch (err) {
       const message = extractError(err, fallback);
@@ -160,51 +174,59 @@ const register = useCallback(
     password: string,
     passwordConfirm: string
   ) => {
-    try {
-      const res = await apiClient.post("/auth/register/", {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        password,
-        password_confirm: passwordConfirm,
-      });
+    const res = await request(
+      () =>
+        apiClient.post("/auth/register/", {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+          password_confirm: passwordConfirm,
+        }),
+      "Registration failed"
+    );
 
-      return res.data;
-
-    } catch (err: any) {
-      console.log("Register error:", err?.response?.data);
-      console.log("Register error response:", err?.response?.data);
-      throw err;
-    }
+    return res.data;
   },
-  []
+  [request]
 );
 
   // ─────────────────────────────────────────
   // Email Verification
   // ─────────────────────────────────────────
 
-  const verifyWithToken = useCallback(
+
+const verifyWithToken = useCallback(
     async (token: string) => {
-      await request(
+      const res = await request(
         () => apiClient.post(`/auth/verify-email/${token}/`),
         "Invalid or expired verification link"
       );
-    },
-    [request]
-  );
+    if (res?.data?.message) {
+      setMessage(res.data.message);
+    }
+
+    return res;
+  },
+  [request]
+);
 
   const verifyWithCode = useCallback(
     async (code: string) => {
-      await request(
+      const res = await request(
         () => apiClient.post("/auth/verify-code/", { code }),
         "Invalid verification code"
       );
-    },
-    [request]
-  );
+    if (res?.data?.message) {
+      setMessage(res.data.message);
+    }
 
-  const resendVerification = useCallback(
+    return res;
+  },
+  [request]
+);
+
+  /*const resendVerification = useCallback(
     async (email: string) => {
       await request(
         () => apiClient.post("/auth/resend-verification/", { email }),
@@ -212,18 +234,42 @@ const register = useCallback(
       );
     },
     [request]
-  );
+  );*/
+
+const resendVerification = useCallback(
+  async (email: string) => {
+    const res = await request(
+      () => apiClient.post("/auth/resend-verification/", { email }),
+      "Failed to resend verification email"
+    );
+
+    return res.data;
+  },
+  [request]
+);
+
+  //const resendVerification = async (email: string) => {
+  //return apiClient.post("/auth/resend-verification/", {
+  //  email
+  //});
+//};
 
   // ─────────────────────────────────────────
   // Logout
   // ─────────────────────────────────────────
 
   const logout = useCallback(async () => {
+    const isLoggedIn = !!user;
     try {
       await apiClient.post("/logout/");
     } finally {
       setUser(null);
-      navigate("/login", { replace: true });
+      if (isLoggedIn) {
+        setMessage("Invalid or expired link")
+      } else {
+        navigate("/login", { replace: true });
+    }
+      
     }
   }, [navigate]);
 
@@ -247,7 +293,7 @@ const register = useCallback(
       user,
       loading,
       error,
-
+      message,
       isAuthenticated: !!user,
 
       login,

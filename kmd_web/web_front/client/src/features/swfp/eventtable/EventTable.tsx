@@ -4,6 +4,8 @@ import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useScrollToHeader } from "../../../shared/components/ScrollToHeader/useScrollToHeader";
 
+
+
 const relatedLinks = [
   { href: "/swfp-evaluation", label: "SWFP Landing" },
   { href: "/swfp-evaluation/quarterly-report", label: "Quarterly Report" },
@@ -34,6 +36,8 @@ export default function EventTable() {
   const { headerRef } = useScrollToHeader(80);
   const year = 2026;
   const quarter = 1;
+  const [columns, setColumns] = useState<string[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
     fetch(`/api/swfp_evaluation/events-table/?year=${year}&quarter=${quarter}`)
@@ -45,6 +49,16 @@ export default function EventTable() {
             : `/uploads/${data.file}`);
         }
       });
+      
+      // 2️⃣ NEW: fetch table data
+      fetch(`/api/swfp_evaluation/events-table-data/?year=${year}&quarter=${quarter}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data?.columns && data?.rows) {
+            setColumns(data.columns);
+            setRows(data.rows);
+          }
+        });
   }, []);
 
   return (
@@ -62,11 +76,45 @@ export default function EventTable() {
                 SWFP event verification dataset.
               </p>
             </header>
+            
+            {rows.length > 0 && (
+              <div className="overflow-x-auto mt-4">
+                <table className="min-w-full border border-gray-200 text-sm">
+                  
+                  {/* Header */}
+                  <thead className="bg-gray-100">
+                    <tr>
+                      {columns.map((col) => (
+                        <th
+                          key={col}
+                          className="px-3 py-2 border text-left font-semibold"
+                        >
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+
+                  {/* Body */}
+                  <tbody>
+                    {rows.map((row, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        {columns.map((col) => (
+                          <td key={col} className="px-3 py-2 border">
+                            {row[col]}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+
+                </table>
+              </div>
+            )}
 
             <div className="bg-white border rounded-xl p-4">
               {file ? (
-                <>
-                  
+                <>                  
                   <div className="mt-4 flex justify-center">
                     <a href={file} download className="px-5 py-2 bg-green-600 text-white rounded-lg">
                       Download Excel

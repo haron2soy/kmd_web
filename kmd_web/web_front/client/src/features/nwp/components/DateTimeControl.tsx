@@ -12,78 +12,135 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
   const [day, setDay] = useState("");
   const [hour, setHour] = useState("");
 
-  // Prepopulate with current datetime on mount
   useEffect(() => {
     const now = new Date();
-    setYear(now.getFullYear().toString());
-    setMonth(String(now.getMonth() + 1).padStart(2, "0"));
-    setDay(String(now.getDate()).padStart(2, "0"));
-    setHour(String(now.getHours()).padStart(2, "0"));
+    syncFromDate(now);
   }, []);
 
-  // Only update datetime when user clicks "Check"
+  const syncFromDate = (date: Date) => {
+    setYear(date.getFullYear().toString());
+    setMonth(String(date.getMonth() + 1).padStart(2, "0"));
+    setDay(String(date.getDate()).padStart(2, "0"));
+    setHour(String(date.getHours()).padStart(2, "0"));
+  };
+
+  const getCurrentDate = (): Date | null => {
+    if (!year || !month || !day || !hour) return null;
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour)
+    );
+  };
+
   const handleCheck = () => {
     if (!year || !month || !day || !hour) return;
     setDatetime(`${year}-${month}-${day}_${hour}:00:00`);
   };
 
+  // 🔁 Increment / Decrement by 1 hour
+  const adjustHour = (delta: number) => {
+    const current = getCurrentDate();
+    if (!current) return;
+
+    current.setHours(current.getHours() + delta);
+
+    syncFromDate(current);
+     // Immediately update parent datetime
+        setDatetime(
+          `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}-${String(current.getDate()).padStart(2, "0")}_${String(
+            current.getHours()
+          ).padStart(2, "0")}:00:00`
+        );
+   };
+
   return (
     <div className="flex flex-col gap-2">
       <label className="text-lg font-bold mb-2 block">DateTime:</label>
 
-      {/* First row: Year & Month */}
-      <div className="flex gap-4 mb-2">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium mb-1">Year</label>
-          <input
-            type="number"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            className="border p-2 w-24"
-            placeholder="YYYY"
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium mb-1">Month</label>
-          <input
-            type="number"
-            value={month}
-            onChange={(e) => setMonth(e.target.value.padStart(2, "0"))}
-            className="border p-2 w-20"
-            placeholder="MM"
-            min={1}
-            max={12}
-          />
-        </div>
-      </div>
+      {/* Inputs */}
+        <div className="flex items-end gap-1 flex-nowrap overflow-x-auto max-w-full">
+          
+          {/* Year */}
+          <div className="flex flex-col items-center flex-shrink-0">
+            <label className="text-xs">Year</label>
+            <input
+              type="text"
+              value={year}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setYear(val);
+              }}
+              onBlur={() => {
+                if (!year) return;
+                setYear(year);
+              }}
+              className="border p-2 w-16"
+            />
+          </div>
 
-      {/* Second row: Day & Hour */}
-      <div className="flex gap-4">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium mb-1">Day</label>
-          <input
-            type="number"
-            value={day}
-            onChange={(e) => setDay(e.target.value.padStart(2, "0"))}
-            className="border p-2 w-20"
-            placeholder="DD"
-            min={1}
-            max={31}
-          />
+          {/* Month */}
+          <div className="flex flex-col items-center flex-shrink-0">
+            <label className="text-xs">Month</label>
+            <input
+              type="text"
+              value={month}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setMonth(val);
+              }}
+              onBlur={() => {
+                if (!month) return;
+                let m = Math.max(1, Math.min(12, parseInt(month)));
+                setMonth(String(m).padStart(2, "0"));
+              }}
+              className="border p-2 w-12"
+            />
+          </div>
+
+          {/* Day */}
+          <div className="flex flex-col items-center flex-shrink-0">
+            <label className="text-xs">Day</label>
+            <input
+              type="text"
+              value={day}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setDay(val);
+              }}
+              onBlur={() => {
+                if (!day) return;
+                let d = Math.max(1, Math.min(31, parseInt(day)));
+                setDay(String(d).padStart(2, "0"));
+              }}
+              className="border p-2 w-12"
+            />
+          </div>
+
+          {/* Hour */}
+          <div className="flex flex-col items-center flex-shrink-0">
+            <label className="text-xs">Hour</label>
+            <input
+              type="text"
+              value={hour}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setHour(val);
+              }}
+              onBlur={() => {
+                if (!hour) return;
+                let h = Math.max(0, Math.min(23, parseInt(hour)));
+                setHour(String(h).padStart(2, "0"));
+              }}
+              className="border p-2 w-12"
+            />
+          </div>
+
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium mb-1">Hour</label>
-          <input
-            type="number"
-            value={hour}
-            onChange={(e) => setHour(e.target.value.padStart(2, "0"))}
-            className="border p-2 w-20"
-            placeholder="HH"
-            min={0}
-            max={23}
-          />
-        </div>
-      </div>
 
       {/* Check button */}
       <button
@@ -92,6 +149,27 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
       >
         Check
       </button>
+
+      {/* ⬇️ Time Control Arrows */}
+      <div className="flex items-center gap-4 mt-3">
+            <button
+              onClick={() => adjustHour(-1)}
+              className="px-3 py-1 border rounded hover:bg-gray-200"
+            >
+              ◀
+            </button>
+
+            <span className="font-mono text-lg">
+              {year}:{month}:{day}:{hour}
+            </span>
+
+            <button
+              onClick={() => adjustHour(1)}
+              className="px-3 py-1 border rounded hover:bg-gray-200"
+            >
+              ▶
+            </button>
+      </div>
     </div>
   );
 }

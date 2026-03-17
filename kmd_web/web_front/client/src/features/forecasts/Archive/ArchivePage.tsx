@@ -38,12 +38,12 @@ export default function Archive() {
 
   const [years, setYears] = useState<string[]>([]);
   const [months, setMonths] = useState<string[]>([]);
-  const [days, setDays] = useState<string[]>([]);
+ 
   const [files, setFiles] = useState<FileItem[]>([]);
 
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedDay, setSelectedDay] = useState("");
+  
   const [selectedType, setSelectedType] = useState("forecasts");
 
   const [loading, setLoading] = useState(false);
@@ -59,16 +59,16 @@ export default function Archive() {
 
   const resetBelowYear = () => {
     setMonths([]);
-    setDays([]);
+    
     setFiles([]);
     setSelectedMonth("");
-    setSelectedDay("");
+    
   };
 
   const resetBelowMonth = () => {
-    setDays([]);
+    
     setFiles([]);
-    setSelectedDay("");
+    
   };
 
   /* --------------------------------------------------
@@ -120,42 +120,12 @@ export default function Archive() {
     fetchMonths();
   }, [selectedYear]);
 
-  /* --------------------------------------------------
-     Fetch Days
-  -------------------------------------------------- */
-  useEffect(() => {
-    if (!selectedYear || !selectedMonth) {
-      resetBelowMonth();
-      return;
-    }
-
-    const fetchDays = async () => {
-      try {
-        setLoading(true);
-        const { data } = await apiClient.get(
-          `/forecasts/archive/days/?year=${selectedYear}&month=${selectedMonth}`
-        );
-        if (Array.isArray(data?.days)) setDays(data.days);
-        setFiles([]);
-        setSelectedDay("");
-      } catch (err) {
-        console.error(err);
-        setError(
-          `Could not load days for ${selectedMonth} ${selectedYear}.`
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDays();
-  }, [selectedYear, selectedMonth]);
-
+  
   /* --------------------------------------------------
      Fetch Files
   -------------------------------------------------- */
   useEffect(() => {
-    if (!selectedYear || !selectedMonth || !selectedDay || !selectedType) {
+    if (!selectedYear || !selectedMonth || !selectedType) {
       setFiles([]);
       return;
     }
@@ -166,14 +136,14 @@ export default function Archive() {
         setError(null);
 
         const { data } = await apiClient.get(
-          `/forecasts/archive/filtered-files/?year=${selectedYear}&month=${selectedMonth}&day=${selectedDay}&type=${selectedType}`
+          `/forecasts/archive/filtered-files/?year=${selectedYear}&month=${selectedMonth}&type=${selectedType}`
         );
 
         if (Array.isArray(data?.files)) {
           setFiles(
             data.files.map((file: any) => ({
               name: file.name,
-              url: file.url,
+              url: `/api${file.url}`,
               type: detectFileType(file.name),
             }))
           );
@@ -183,7 +153,7 @@ export default function Archive() {
       } catch (err) {
         console.error(err);
         setError(
-          `No ${selectedType} found for ${selectedDay}/${selectedMonth}/${selectedYear}`
+          `No ${selectedType} found for ${selectedMonth}/${selectedYear}`
         );
       } finally {
         setLoading(false);
@@ -191,7 +161,7 @@ export default function Archive() {
     };
 
     fetchFiles();
-  }, [selectedYear, selectedMonth, selectedDay, selectedType]);
+  }, [selectedYear, selectedMonth, selectedType]);
 
   /* --------------------------------------------------
      Modal UX Improvements
@@ -212,6 +182,21 @@ export default function Archive() {
     };
   }, [previewFile]);
 
+  // Helper to extract month/day from URL
+function getFolderInfoFromUrl(url: string) {
+  try {
+    const params = new URLSearchParams(url.split("?")[1]);
+    const path = params.get("path"); // e.g., rsmc/2026/march/mar-09/rsmc05.jpg
+    if (!path) return "";
+    const parts = path.split("/"); // ["rsmc", "2026", "march", "mar-09", "rsmc05.jpg"]
+    const year = parts[1];
+    //const month = parts[2];
+    const day = parts[3];
+    return `${year}-${day}`; // you can format this as you like
+  } catch {
+    return "";
+  }
+}
   /* --------------------------------------------------
      Render
   -------------------------------------------------- */
@@ -245,13 +230,7 @@ export default function Archive() {
               options={months}
               disabled={!selectedYear || loading}
             />
-            <Select
-              label="Day"
-              value={selectedDay}
-              onChange={setSelectedDay}
-              options={days}
-              disabled={!selectedMonth || loading}
-            />
+            
             <Select
               label="Type"
               value={selectedType}
@@ -261,7 +240,7 @@ export default function Archive() {
                 { label: "Discussions (.doc)", value: "discussions" },
                 { label: "Risk Tables (.doc)", value: "tables" },
               ]}
-              disabled={!selectedDay}
+              
             />
           </div>
 
@@ -277,26 +256,52 @@ export default function Archive() {
           ) : files.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {files.map((file) => (
+                
                 <div
-                  key={file.url}
-                  onClick={() => setPreviewFile(file)}
-                  className="cursor-pointer border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
-                >
-                  {file.type === "image" ? (
-                    <img
-                      src={file.url}
-                      alt={file.name}
-                      className="w-full h-40 object-cover"
-                    />
-                  ) : (
-                    <div className="h-40 flex items-center justify-center bg-gray-100">
-                      <span>📄</span>
+                    key={file.url}
+                    onClick={() => {
+                      if (file.type === "image") {
+                        setPreviewFile(file); // preview images
+                      } else {
+                        // download documents directly
+                        const link = document.createElement("a");
+                        link.href = file.url;
+                        link.download = file.name;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                    className="cursor-pointer border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition"
+                  >
+                    {file.type === "image" ? (
+                      <img
+                        src={file.url}
+                        alt={file.name}
+                        className="w-full h-40 object-cover"
+                      />
+                    ) : (
+                      <div className="h-40 flex items-center justify-center bg-gray-100">
+                        <span className="text-4xl">📄</span>
+                      </div>)}
+                        <div className="p-3 text-sm font-medium truncate">
+                        {getFolderInfoFromUrl(file.url)} 
+                      </div>
+                    
+                    <div className="p-3 text-sm font-medium truncate">{file.name}</div>
+                    <div className="px-3 pb-3">
+                      <a
+                        href={file.url}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline"
+                        onClick={(e) => e.stopPropagation()} // prevent modal opening
+                      >
+                        Download
+                      </a>
                     </div>
-                  )}
-                  <div className="p-3 text-sm font-medium truncate">
-                    {file.name}
                   </div>
-                </div>
               ))}
             </div>
           ) : (
