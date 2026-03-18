@@ -132,8 +132,8 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
 
   return (
     <div className="register-container">
-      <div ref={headerRef} className="register-card ">
-        <div className="bg-primary text-primary-foreground px-6 py-2 text-center">
+      <div ref={headerRef} className="register-card">
+        <div className="bg-primary text-primary-foreground px-6 text-center">
           <h1>Create Account</h1>
           <p className="bg-primary text-center">Join us and start exploring</p>
         </div>

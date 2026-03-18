@@ -39,9 +39,9 @@ export default function Login() {
     }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-start justify-center px-4 border border-red py-4 md:py-8">
       {/* Card container – centered and max-width constrained */}
-      <div ref={headerRef} className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div ref={headerRef} className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mt-0">
         {/* Header area */}
         <div className="bg-primary text-primary-foreground px-6 py-2 text-center">
           <h2 className="text-2xl font-bold tracking-tight">RSMC Login</h2>
