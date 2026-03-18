@@ -20,6 +20,10 @@ export default function ProtectedRoute({ path, children }: Props) {
         if (!user) {
           return <Redirect to="/login" />;
         }
+        
+        if (user && !user.is_active) {
+          return <Redirect to="/verify-email" />;
+        }
 
         return children;
       }}

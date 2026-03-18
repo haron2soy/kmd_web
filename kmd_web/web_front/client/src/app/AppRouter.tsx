@@ -74,7 +74,7 @@ function Router() {
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password/:uid/:token" component={ResetPassword} />
           
-          <ProtectedRoute path="/"> <Home /> </ProtectedRoute> 
+          
           <Route path="/contact" component={Contact} />
           <ProtectedRoute path="/pages/:slug"> <DynamicPage /> </ProtectedRoute> 
           
@@ -131,7 +131,7 @@ function Router() {
           <ProtectedRoute path = "/regional-international"> <RegionalInternationalLanding /> </ProtectedRoute>
           <ProtectedRoute path = "/regional-international/:slug"> <RedirectRegionalInternational /> </ProtectedRoute>
           
-          
+          <Route path="/"> <Home /> </Route> 
           <Route component={NotFound} />
           
         </Switch>

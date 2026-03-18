@@ -125,6 +125,7 @@ def login_view(request):
             "username": user.username,
             "email": user.email,
             "first_name": user.first_name
+            
         }
     })
 
@@ -163,6 +164,7 @@ def session_view(request):
                 "username": request.user.username,
                 "email": request.user.email,
                 "first_name": request.user.first_name,
+                "is_active": request.user.is_active,
             }
         })
 
@@ -235,7 +237,7 @@ def verify_email_view(request, token=None):
     user = verification.user
 
     # Check if already used (if you have a used_at field)
-    #if hasattr(verification, 'used_at') and verification.used_at:
+    
     if verification.used_at:
         return Response({
             "status": "already_verified",
@@ -246,9 +248,11 @@ def verify_email_view(request, token=None):
     if user.is_active:
         # cleanup any stale tokens silently
         #EmailVerification.objects.filter(user=user).delete()
-        EmailVerification.objects.filter(user=user, used_at__isnull=True).exclude(id=verification.id).update(
-    used_at=timezone.now()
-)
+        EmailVerification.objects.filter(
+            user=user,
+            used_at__isnull=True
+        ).update(used_at=timezone.now())
+
         return Response({
             "message": "Account already verified",
             "status": "already_verified"
@@ -371,9 +375,11 @@ def resend_verification_view(request):
     # ---- Controlled token rotation ----
     # Keep last token only for traceability (optional design choice)
     #EmailVerification.objects.filter(user=user).delete()
-    EmailVerification.objects.filter(user=user, used_at__isnull=True).exclude(id=verification.id).update(
-        used_at=timezone.now()
-    )
+    EmailVerification.objects.filter(
+        user=user,
+        used_at__isnull=True
+    ).update(used_at=timezone.now())
+
     send_verification(user)
 
     return Response(generic_response, status=status.HTTP_200_OK)

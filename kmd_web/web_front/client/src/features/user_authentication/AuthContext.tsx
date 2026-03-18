@@ -20,6 +20,7 @@ interface User {
   username: string;
   email: string;
   first_name: string;
+  is_active: boolean;
 }
 
 interface SessionResponse {
