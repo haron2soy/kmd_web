@@ -58,7 +58,7 @@ def latest_forecast(request):
     full_path = os.path.join(base_path, filename)
     
     if not os.path.exists(full_path):
-        return Response({"error": "Forecast image not found"}, status=404)
+        return Response({"error": "Forecast image not found in {full_path}"}, status=404)
 
     # 3️⃣ Create or update DB record
     category, _ = ForecastCategory.objects.get_or_create(

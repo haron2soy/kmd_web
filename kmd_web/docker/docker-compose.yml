@@ -8,7 +8,7 @@ services:
     env_file:
       - envfile.env
     volumes:
-      - ./uploads:/app/uploads
+      - /home/haron/uploads:/app/uploads
     depends_on:
       - db
       - redis
@@ -20,7 +20,7 @@ services:
     container_name: kmd_nginx
     ports:
       - "80:80"
-      - "443:443"
+#      - "443:443"
     depends_on:
       - django
     volumes:

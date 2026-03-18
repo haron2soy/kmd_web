@@ -1,0 +1,694 @@
+[2026-02-25 18:55:47 +0300] [4846] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 18:55:47 +0300] [4846] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (4846)
+[2026-02-25 18:55:47 +0300] [4846] [INFO] Using worker: sync
+[2026-02-25 18:55:47 +0300] [4847] [INFO] Booting worker with pid: 4847
+[2026-02-25 18:55:47 +0300] [4848] [INFO] Booting worker with pid: 4848
+[2026-02-25 18:55:47 +0300] [4849] [INFO] Booting worker with pid: 4849
+[2026-02-25 18:56:26 +0300] [4846] [INFO] Handling signal: int
+[2026-02-25 15:56:26 +0000] [4847] [INFO] Worker exiting (pid: 4847)
+[2026-02-25 15:56:26 +0000] [4848] [INFO] Worker exiting (pid: 4848)
+[2026-02-25 15:56:26 +0000] [4849] [INFO] Worker exiting (pid: 4849)
+[2026-02-25 18:56:27 +0300] [4846] [INFO] Shutting down: Master
+[2026-02-25 18:56:46 +0300] [4978] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 18:56:46 +0300] [4978] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (4978)
+[2026-02-25 18:56:46 +0300] [4978] [INFO] Using worker: sync
+[2026-02-25 18:56:46 +0300] [4979] [INFO] Booting worker with pid: 4979
+[2026-02-25 18:56:46 +0300] [4981] [INFO] Booting worker with pid: 4981
+[2026-02-25 18:56:46 +0300] [4984] [INFO] Booting worker with pid: 4984
+[2026-02-25 18:57:17 +0300] [4978] [INFO] Handling signal: int
+[2026-02-25 15:57:17 +0000] [4981] [INFO] Worker exiting (pid: 4981)
+[2026-02-25 15:57:17 +0000] [4979] [INFO] Worker exiting (pid: 4979)
+[2026-02-25 15:57:17 +0000] [4984] [INFO] Worker exiting (pid: 4984)
+[2026-02-25 18:57:18 +0300] [4978] [INFO] Shutting down: Master
+[2026-02-25 18:58:53 +0300] [5253] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 18:58:53 +0300] [5253] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (5253)
+[2026-02-25 18:58:53 +0300] [5253] [INFO] Using worker: sync
+[2026-02-25 18:58:53 +0300] [5254] [INFO] Booting worker with pid: 5254
+[2026-02-25 18:58:53 +0300] [5255] [INFO] Booting worker with pid: 5255
+[2026-02-25 18:58:53 +0300] [5256] [INFO] Booting worker with pid: 5256
+[2026-02-25 19:07:55 +0300] [5253] [INFO] Handling signal: int
+[2026-02-25 16:07:55 +0000] [5254] [INFO] Worker exiting (pid: 5254)
+[2026-02-25 16:07:55 +0000] [5255] [INFO] Worker exiting (pid: 5255)
+[2026-02-25 16:07:55 +0000] [5256] [INFO] Worker exiting (pid: 5256)
+[2026-02-25 19:07:56 +0300] [5253] [INFO] Shutting down: Master
+[2026-02-25 19:08:00 +0300] [6751] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 19:08:00 +0300] [6751] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (6751)
+[2026-02-25 19:08:00 +0300] [6751] [INFO] Using worker: sync
+[2026-02-25 19:08:00 +0300] [6752] [INFO] Booting worker with pid: 6752
+[2026-02-25 19:08:00 +0300] [6753] [INFO] Booting worker with pid: 6753
+[2026-02-25 19:08:00 +0300] [6754] [INFO] Booting worker with pid: 6754
+[2026-02-25 19:08:30 +0300] [6751] [INFO] Handling signal: winch
+[2026-02-25 19:08:30 +0300] [6751] [INFO] Handling signal: winch
+[2026-02-25 19:08:30 +0300] [6751] [INFO] Handling signal: winch
+[2026-02-25 19:08:31 +0300] [6751] [INFO] Handling signal: winch
+[2026-02-25 19:10:07 +0300] [7050] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 19:10:07 +0300] [7050] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (7050)
+[2026-02-25 19:10:07 +0300] [7050] [INFO] Using worker: sync
+[2026-02-25 19:10:07 +0300] [7051] [INFO] Booting worker with pid: 7051
+[2026-02-25 19:10:07 +0300] [7052] [INFO] Booting worker with pid: 7052
+[2026-02-25 19:10:07 +0300] [7053] [INFO] Booting worker with pid: 7053
+[2026-02-25 19:10:21 +0300] [7050] [INFO] Handling signal: int
+[2026-02-25 16:10:21 +0000] [7051] [INFO] Worker exiting (pid: 7051)
+[2026-02-25 16:10:21 +0000] [7052] [INFO] Worker exiting (pid: 7052)
+[2026-02-25 16:10:21 +0000] [7053] [INFO] Worker exiting (pid: 7053)
+[2026-02-25 19:10:21 +0300] [7050] [INFO] Shutting down: Master
+[2026-02-25 19:11:52 +0300] [7322] [INFO] Starting gunicorn 25.0.3
+[2026-02-25 19:11:52 +0300] [7322] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (7322)
+[2026-02-25 19:11:52 +0300] [7322] [INFO] Using worker: sync
+[2026-02-25 19:11:52 +0300] [7323] [INFO] Booting worker with pid: 7323
+[2026-02-25 19:11:52 +0300] [7327] [INFO] Booting worker with pid: 7327
+[2026-02-25 19:11:53 +0300] [7331] [INFO] Booting worker with pid: 7331
+[2026-02-25 19:12:02 +0300] [7322] [INFO] Handling signal: int
+[2026-02-25 16:12:02 +0000] [7327] [INFO] Worker exiting (pid: 7327)
+[2026-02-25 16:12:02 +0000] [7323] [INFO] Worker exiting (pid: 7323)
+[2026-02-25 16:12:02 +0000] [7331] [INFO] Worker exiting (pid: 7331)
+[2026-02-25 19:12:02 +0300] [7322] [INFO] Shutting down: Master
+[2026-02-25 19:27:02 +0300] [6751] [INFO] Handling signal: hup
+[2026-02-25 19:27:02 +0300] [6751] [INFO] Hang up: Master
+[2026-02-26 07:33:26 +0300] [5021] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 07:33:26 +0300] [5021] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (5021)
+[2026-02-26 07:33:26 +0300] [5021] [INFO] Using worker: sync
+[2026-02-26 07:33:26 +0300] [5027] [INFO] Booting worker with pid: 5027
+[2026-02-26 07:33:26 +0300] [5028] [INFO] Booting worker with pid: 5028
+[2026-02-26 07:33:26 +0300] [5032] [INFO] Booting worker with pid: 5032
+[2026-02-26 04:47:17 +0000] [5028] [INFO] Worker exiting (pid: 5028)
+[2026-02-26 07:47:17 +0300] [5021] [INFO] Handling signal: term
+[2026-02-26 04:47:17 +0000] [5027] [INFO] Worker exiting (pid: 5027)
+[2026-02-26 04:47:17 +0000] [5032] [INFO] Worker exiting (pid: 5032)
+[2026-02-26 07:47:17 +0300] [5021] [INFO] Worker (pid:5028) was sent SIGTERM!
+[2026-02-26 07:47:17 +0300] [5021] [INFO] Shutting down: Master
+[2026-02-26 07:47:21 +0300] [6544] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 07:47:21 +0300] [6544] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (6544)
+[2026-02-26 07:47:21 +0300] [6544] [INFO] Using worker: sync
+[2026-02-26 07:47:21 +0300] [6550] [INFO] Booting worker with pid: 6550
+[2026-02-26 07:47:21 +0300] [6551] [INFO] Booting worker with pid: 6551
+[2026-02-26 07:47:21 +0300] [6552] [INFO] Booting worker with pid: 6552
+[2026-02-26 05:22:34 +0000] [6551] [INFO] Worker exiting (pid: 6551)
+[2026-02-26 08:22:34 +0300] [6544] [INFO] Handling signal: term
+[2026-02-26 05:22:34 +0000] [6552] [INFO] Worker exiting (pid: 6552)
+[2026-02-26 05:22:34 +0000] [6550] [INFO] Worker exiting (pid: 6550)
+[2026-02-26 08:22:35 +0300] [6544] [INFO] Worker (pid:6551) was sent SIGTERM!
+[2026-02-26 08:22:35 +0300] [6544] [INFO] Shutting down: Master
+[2026-02-26 08:22:37 +0300] [10930] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 08:22:37 +0300] [10930] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (10930)
+[2026-02-26 08:22:37 +0300] [10930] [INFO] Using worker: sync
+[2026-02-26 08:22:37 +0300] [10936] [INFO] Booting worker with pid: 10936
+[2026-02-26 08:22:37 +0300] [10937] [INFO] Booting worker with pid: 10937
+[2026-02-26 08:22:37 +0300] [10938] [INFO] Booting worker with pid: 10938
+[2026-02-26 08:49:56 +0300] [10930] [INFO] Handling signal: term
+[2026-02-26 05:49:56 +0000] [10936] [INFO] Worker exiting (pid: 10936)
+[2026-02-26 05:49:56 +0000] [10938] [INFO] Worker exiting (pid: 10938)
+[2026-02-26 05:49:56 +0000] [10937] [INFO] Worker exiting (pid: 10937)
+[2026-02-26 08:49:58 +0300] [10930] [INFO] Shutting down: Master
+[2026-02-26 08:49:59 +0300] [14194] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 08:49:59 +0300] [14194] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (14194)
+[2026-02-26 08:49:59 +0300] [14194] [INFO] Using worker: sync
+[2026-02-26 08:49:59 +0300] [14200] [INFO] Booting worker with pid: 14200
+[2026-02-26 08:49:59 +0300] [14201] [INFO] Booting worker with pid: 14201
+[2026-02-26 08:49:59 +0300] [14202] [INFO] Booting worker with pid: 14202
+[2026-02-26 08:50:48 +0300] [14194] [INFO] Handling signal: term
+[2026-02-26 05:50:48 +0000] [14201] [INFO] Worker exiting (pid: 14201)
+[2026-02-26 05:50:48 +0000] [14200] [INFO] Worker exiting (pid: 14200)
+[2026-02-26 05:50:48 +0000] [14202] [INFO] Worker exiting (pid: 14202)
+[2026-02-26 08:50:49 +0300] [14194] [INFO] Worker (pid:14200) was sent SIGTERM!
+[2026-02-26 08:50:49 +0300] [14194] [INFO] Worker (pid:14201) was sent SIGTERM!
+[2026-02-26 08:50:49 +0300] [14194] [INFO] Shutting down: Master
+[2026-02-26 08:50:50 +0300] [14319] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 08:50:50 +0300] [14319] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (14319)
+[2026-02-26 08:50:50 +0300] [14319] [INFO] Using worker: sync
+[2026-02-26 08:50:50 +0300] [14331] [INFO] Booting worker with pid: 14331
+[2026-02-26 08:50:51 +0300] [14332] [INFO] Booting worker with pid: 14332
+[2026-02-26 08:50:51 +0300] [14333] [INFO] Booting worker with pid: 14333
+[2026-02-26 11:23:32 +0000] [14331] [INFO] Worker exiting (pid: 14331)
+[2026-02-26 11:23:33 +0000] [14332] [INFO] Worker exiting (pid: 14332)
+[2026-02-26 14:23:33 +0300] [14319] [INFO] Handling signal: term
+[2026-02-26 11:23:33 +0000] [14333] [INFO] Worker exiting (pid: 14333)
+[2026-02-26 14:23:38 +0300] [14319] [INFO] Shutting down: Master
+[2026-02-26 14:23:39 +0300] [55000] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 14:23:39 +0300] [55000] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (55000)
+[2026-02-26 14:23:39 +0300] [55000] [INFO] Using worker: sync
+[2026-02-26 14:23:39 +0300] [55006] [INFO] Booting worker with pid: 55006
+[2026-02-26 14:23:40 +0300] [55007] [INFO] Booting worker with pid: 55007
+[2026-02-26 14:23:40 +0300] [55008] [INFO] Booting worker with pid: 55008
+[2026-02-26 14:48:54 +0300] [55000] [INFO] Handling signal: term
+[2026-02-26 11:48:54 +0000] [55007] [INFO] Worker exiting (pid: 55007)
+[2026-02-26 11:48:54 +0000] [55006] [INFO] Worker exiting (pid: 55006)
+[2026-02-26 11:48:54 +0000] [55008] [INFO] Worker exiting (pid: 55008)
+[2026-02-26 14:48:55 +0300] [55000] [INFO] Shutting down: Master
+[2026-02-26 14:48:56 +0300] [58100] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 14:48:56 +0300] [58100] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (58100)
+[2026-02-26 14:48:56 +0300] [58100] [INFO] Using worker: sync
+[2026-02-26 14:48:56 +0300] [58106] [INFO] Booting worker with pid: 58106
+[2026-02-26 14:48:56 +0300] [58107] [INFO] Booting worker with pid: 58107
+[2026-02-26 14:48:56 +0300] [58108] [INFO] Booting worker with pid: 58108
+[2026-02-26 15:20:32 +0300] [58100] [INFO] Handling signal: term
+[2026-02-26 12:20:32 +0000] [58106] [INFO] Worker exiting (pid: 58106)
+[2026-02-26 12:20:32 +0000] [58107] [INFO] Worker exiting (pid: 58107)
+[2026-02-26 12:20:32 +0000] [58108] [INFO] Worker exiting (pid: 58108)
+[2026-02-26 15:20:37 +0300] [58100] [INFO] Shutting down: Master
+[2026-02-26 15:34:34 +0300] [346] [INFO] Starting gunicorn 25.0.3
+[2026-02-26 15:34:34 +0300] [346] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (346)
+[2026-02-26 15:34:34 +0300] [346] [INFO] Using worker: sync
+[2026-02-26 15:34:34 +0300] [1254] [INFO] Booting worker with pid: 1254
+[2026-02-26 15:34:34 +0300] [1255] [INFO] Booting worker with pid: 1255
+[2026-02-26 15:34:34 +0300] [1256] [INFO] Booting worker with pid: 1256
+[2026-02-26 15:56:36 +0300] [346] [INFO] Handling signal: term
+[2026-02-26 12:56:36 +0000] [1255] [INFO] Worker exiting (pid: 1255)
+[2026-02-26 12:56:36 +0000] [1256] [INFO] Worker exiting (pid: 1256)
+[2026-02-26 12:56:36 +0000] [1254] [INFO] Worker exiting (pid: 1254)
+[2026-02-26 15:56:37 +0300] [346] [INFO] Shutting down: Master
+[2026-03-01 06:33:38 +0300] [337] [INFO] Starting gunicorn 25.0.3
+[2026-03-01 06:33:38 +0300] [337] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (337)
+[2026-03-01 06:33:38 +0300] [337] [INFO] Using worker: sync
+[2026-03-01 06:33:38 +0300] [1277] [INFO] Booting worker with pid: 1277
+[2026-03-01 06:33:38 +0300] [1278] [INFO] Booting worker with pid: 1278
+[2026-03-01 06:33:38 +0300] [1279] [INFO] Booting worker with pid: 1279
+[2026-03-01 07:03:07 +0300] [337] [INFO] Handling signal: term
+[2026-03-01 04:03:07 +0000] [1278] [INFO] Worker exiting (pid: 1278)
+[2026-03-01 04:03:07 +0000] [1277] [INFO] Worker exiting (pid: 1277)
+[2026-03-01 04:03:07 +0000] [1279] [INFO] Worker exiting (pid: 1279)
+[2026-03-01 07:03:07 +0300] [337] [INFO] Shutting down: Master
+[2026-03-01 17:24:26 +0300] [402] [INFO] Starting gunicorn 25.0.3
+[2026-03-01 17:24:26 +0300] [402] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (402)
+[2026-03-01 17:24:26 +0300] [402] [INFO] Using worker: sync
+[2026-03-01 17:24:26 +0300] [1195] [INFO] Booting worker with pid: 1195
+[2026-03-01 17:24:26 +0300] [1198] [INFO] Booting worker with pid: 1198
+[2026-03-01 17:24:26 +0300] [1208] [INFO] Booting worker with pid: 1208
+[2026-03-01 19:45:35 +0300] [402] [INFO] Handling signal: term
+[2026-03-01 16:45:35 +0000] [1195] [INFO] Worker exiting (pid: 1195)
+[2026-03-01 16:45:35 +0000] [1208] [INFO] Worker exiting (pid: 1208)
+[2026-03-01 16:45:35 +0000] [1198] [INFO] Worker exiting (pid: 1198)
+[2026-03-01 19:45:42 +0300] [402] [INFO] Shutting down: Master
+[2026-03-02 08:00:20 +0300] [441] [INFO] Starting gunicorn 25.0.3
+[2026-03-02 08:00:20 +0300] [441] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (441)
+[2026-03-02 08:00:20 +0300] [441] [INFO] Using worker: sync
+[2026-03-02 08:00:20 +0300] [1353] [INFO] Booting worker with pid: 1353
+[2026-03-02 08:00:20 +0300] [1354] [INFO] Booting worker with pid: 1354
+[2026-03-02 08:00:20 +0300] [1362] [INFO] Booting worker with pid: 1362
+[2026-03-02 05:42:00 +0000] [1353] [INFO] Worker exiting (pid: 1353)
+[2026-03-02 05:42:00 +0000] [1354] [INFO] Worker exiting (pid: 1354)
+[2026-03-02 05:42:00 +0000] [1362] [INFO] Worker exiting (pid: 1362)
+[2026-03-02 08:42:00 +0300] [441] [INFO] Handling signal: term
+[2026-03-02 08:42:00 +0300] [441] [INFO] Worker (pid:1353) was sent SIGTERM!
+[2026-03-02 08:42:00 +0300] [441] [INFO] Worker (pid:1354) was sent SIGTERM!
+[2026-03-02 08:42:00 +0300] [441] [INFO] Worker (pid:1362) was sent SIGTERM!
+[2026-03-02 08:42:00 +0300] [441] [INFO] Shutting down: Master
+[2026-03-02 08:42:02 +0300] [7750] [INFO] Starting gunicorn 25.0.3
+[2026-03-02 08:42:02 +0300] [7750] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (7750)
+[2026-03-02 08:42:02 +0300] [7750] [INFO] Using worker: sync
+[2026-03-02 08:42:02 +0300] [7756] [INFO] Booting worker with pid: 7756
+[2026-03-02 08:42:02 +0300] [7757] [INFO] Booting worker with pid: 7757
+[2026-03-02 08:42:02 +0300] [7758] [INFO] Booting worker with pid: 7758
+[2026-03-02 10:13:03 +0300] [7750] [INFO] Handling signal: term
+[2026-03-02 07:13:03 +0000] [7758] [INFO] Worker exiting (pid: 7758)
+[2026-03-02 07:13:03 +0000] [7756] [INFO] Worker exiting (pid: 7756)
+[2026-03-02 07:13:03 +0000] [7757] [INFO] Worker exiting (pid: 7757)
+[2026-03-02 10:13:08 +0300] [7750] [INFO] Shutting down: Master
+[2026-03-02 10:13:11 +0300] [24380] [INFO] Starting gunicorn 25.0.3
+[2026-03-02 10:13:11 +0300] [24380] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (24380)
+[2026-03-02 10:13:11 +0300] [24380] [INFO] Using worker: sync
+[2026-03-02 10:13:11 +0300] [24392] [INFO] Booting worker with pid: 24392
+[2026-03-02 10:13:11 +0300] [24393] [INFO] Booting worker with pid: 24393
+[2026-03-02 10:13:11 +0300] [24394] [INFO] Booting worker with pid: 24394
+[2026-03-02 13:23:57 +0300] [24380] [CRITICAL] WORKER TIMEOUT (pid:24392)
+[2026-03-02 10:24:10 +0000] [24392] [INFO] Worker exiting (pid: 24392)
+[2026-03-02 13:24:48 +0300] [24380] [ERROR] Worker (pid:24392) was sent SIGKILL! Perhaps out of memory?
+[2026-03-02 13:24:49 +0300] [47690] [INFO] Booting worker with pid: 47690
+[2026-03-02 17:30:53 +0300] [24380] [INFO] Handling signal: term
+[2026-03-02 14:30:53 +0000] [47690] [INFO] Worker exiting (pid: 47690)
+[2026-03-02 14:30:53 +0000] [24394] [INFO] Worker exiting (pid: 24394)
+[2026-03-02 14:30:53 +0000] [24393] [INFO] Worker exiting (pid: 24393)
+[2026-03-02 17:35:05 +0300] [390] [INFO] Starting gunicorn 25.0.3
+[2026-03-02 17:35:05 +0300] [390] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (390)
+[2026-03-02 17:35:05 +0300] [390] [INFO] Using worker: sync
+[2026-03-02 17:35:05 +0300] [1186] [INFO] Booting worker with pid: 1186
+[2026-03-02 17:35:05 +0300] [1187] [INFO] Booting worker with pid: 1187
+[2026-03-02 17:35:05 +0300] [1197] [INFO] Booting worker with pid: 1197
+[2026-03-02 19:48:41 +0300] [390] [INFO] Handling signal: term
+[2026-03-02 16:48:41 +0000] [1197] [INFO] Worker exiting (pid: 1197)
+[2026-03-02 16:48:41 +0000] [1187] [INFO] Worker exiting (pid: 1187)
+[2026-03-02 16:48:41 +0000] [1186] [INFO] Worker exiting (pid: 1186)
+[2026-03-03 10:02:58 +0300] [397] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 10:02:58 +0300] [397] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (397)
+[2026-03-03 10:02:58 +0300] [397] [INFO] Using worker: sync
+[2026-03-03 10:02:58 +0300] [1279] [INFO] Booting worker with pid: 1279
+[2026-03-03 10:02:58 +0300] [1280] [INFO] Booting worker with pid: 1280
+[2026-03-03 10:02:58 +0300] [1281] [INFO] Booting worker with pid: 1281
+[2026-03-03 10:03:17 +0300] [397] [INFO] Handling signal: term
+[2026-03-03 07:03:17 +0000] [1279] [INFO] Worker exiting (pid: 1279)
+[2026-03-03 07:03:17 +0000] [1280] [INFO] Worker exiting (pid: 1280)
+[2026-03-03 07:03:17 +0000] [1281] [INFO] Worker exiting (pid: 1281)
+[2026-03-03 10:03:18 +0300] [397] [INFO] Shutting down: Master
+[2026-03-03 10:06:35 +0300] [390] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 10:06:35 +0300] [390] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (390)
+[2026-03-03 10:06:35 +0300] [390] [INFO] Using worker: sync
+[2026-03-03 10:06:35 +0300] [1240] [INFO] Booting worker with pid: 1240
+[2026-03-03 10:06:36 +0300] [1241] [INFO] Booting worker with pid: 1241
+[2026-03-03 10:06:36 +0300] [1242] [INFO] Booting worker with pid: 1242
+[2026-03-03 07:25:53 +0000] [1242] [INFO] Worker exiting (pid: 1242)
+[2026-03-03 07:25:53 +0000] [1241] [INFO] Worker exiting (pid: 1241)
+[2026-03-03 10:25:53 +0300] [390] [INFO] Handling signal: term
+[2026-03-03 07:25:53 +0000] [1240] [INFO] Worker exiting (pid: 1240)
+[2026-03-03 10:25:54 +0300] [390] [INFO] Worker (pid:1241) was sent SIGTERM!
+[2026-03-03 10:25:54 +0300] [390] [INFO] Worker (pid:1242) was sent SIGTERM!
+[2026-03-03 10:25:54 +0300] [390] [INFO] Shutting down: Master
+[2026-03-03 10:25:56 +0300] [4499] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 10:25:56 +0300] [4499] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (4499)
+[2026-03-03 10:25:56 +0300] [4499] [INFO] Using worker: sync
+[2026-03-03 10:25:56 +0300] [4505] [INFO] Booting worker with pid: 4505
+[2026-03-03 10:25:56 +0300] [4506] [INFO] Booting worker with pid: 4506
+[2026-03-03 10:25:56 +0300] [4507] [INFO] Booting worker with pid: 4507
+[2026-03-03 07:56:15 +0000] [4506] [INFO] Worker exiting (pid: 4506)
+[2026-03-03 07:56:15 +0000] [4507] [INFO] Worker exiting (pid: 4507)
+[2026-03-03 10:56:15 +0300] [4499] [INFO] Handling signal: term
+[2026-03-03 07:56:15 +0000] [4505] [INFO] Worker exiting (pid: 4505)
+[2026-03-03 10:56:15 +0300] [4499] [INFO] Worker (pid:4505) was sent SIGTERM!
+[2026-03-03 10:56:15 +0300] [4499] [INFO] Worker (pid:4506) was sent SIGTERM!
+[2026-03-03 10:56:15 +0300] [4499] [INFO] Worker (pid:4507) was sent SIGTERM!
+[2026-03-03 10:56:16 +0300] [4499] [INFO] Shutting down: Master
+[2026-03-03 10:56:17 +0300] [8997] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 10:56:17 +0300] [8997] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (8997)
+[2026-03-03 10:56:17 +0300] [8997] [INFO] Using worker: sync
+[2026-03-03 10:56:17 +0300] [9009] [INFO] Booting worker with pid: 9009
+[2026-03-03 10:56:17 +0300] [9010] [INFO] Booting worker with pid: 9010
+[2026-03-03 10:56:17 +0300] [9011] [INFO] Booting worker with pid: 9011
+[2026-03-03 08:00:13 +0000] [9009] [INFO] Worker exiting (pid: 9009)
+[2026-03-03 08:00:13 +0000] [9010] [INFO] Worker exiting (pid: 9010)
+[2026-03-03 11:00:13 +0300] [8997] [INFO] Handling signal: term
+[2026-03-03 08:00:13 +0000] [9011] [INFO] Worker exiting (pid: 9011)
+[2026-03-03 11:00:13 +0300] [8997] [INFO] Worker (pid:9010) was sent SIGTERM!
+[2026-03-03 11:00:13 +0300] [8997] [INFO] Worker (pid:9009) was sent SIGTERM!
+[2026-03-03 11:00:13 +0300] [8997] [INFO] Shutting down: Master
+[2026-03-03 11:00:15 +0300] [9542] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 11:00:15 +0300] [9542] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (9542)
+[2026-03-03 11:00:15 +0300] [9542] [INFO] Using worker: sync
+[2026-03-03 11:00:15 +0300] [9551] [INFO] Booting worker with pid: 9551
+[2026-03-03 11:00:15 +0300] [9552] [INFO] Booting worker with pid: 9552
+[2026-03-03 11:00:15 +0300] [9554] [INFO] Booting worker with pid: 9554
+[2026-03-03 11:03:03 +0300] [9542] [INFO] Handling signal: term
+[2026-03-03 08:03:03 +0000] [9551] [INFO] Worker exiting (pid: 9551)
+[2026-03-03 08:03:03 +0000] [9554] [INFO] Worker exiting (pid: 9554)
+[2026-03-03 08:03:03 +0000] [9552] [INFO] Worker exiting (pid: 9552)
+[2026-03-03 11:03:06 +0300] [9542] [INFO] Shutting down: Master
+[2026-03-03 11:05:28 +0300] [375] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 11:05:28 +0300] [375] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (375)
+[2026-03-03 11:05:28 +0300] [375] [INFO] Using worker: sync
+[2026-03-03 11:05:28 +0300] [1222] [INFO] Booting worker with pid: 1222
+[2026-03-03 11:05:28 +0300] [1223] [INFO] Booting worker with pid: 1223
+[2026-03-03 11:05:28 +0300] [1224] [INFO] Booting worker with pid: 1224
+[2026-03-03 08:49:20 +0000] [1224] [INFO] Worker exiting (pid: 1224)
+[2026-03-03 11:49:20 +0300] [375] [INFO] Handling signal: term
+[2026-03-03 08:49:20 +0000] [1223] [INFO] Worker exiting (pid: 1223)
+[2026-03-03 08:49:20 +0000] [1222] [INFO] Worker exiting (pid: 1222)
+[2026-03-03 11:49:23 +0300] [375] [INFO] Shutting down: Master
+[2026-03-03 12:13:25 +0300] [400] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 12:13:25 +0300] [400] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (400)
+[2026-03-03 12:13:25 +0300] [400] [INFO] Using worker: sync
+[2026-03-03 12:13:25 +0300] [1239] [INFO] Booting worker with pid: 1239
+[2026-03-03 12:13:25 +0300] [1240] [INFO] Booting worker with pid: 1240
+[2026-03-03 12:13:25 +0300] [1241] [INFO] Booting worker with pid: 1241
+[2026-03-03 12:22:32 +0300] [400] [INFO] Handling signal: term
+[2026-03-03 09:22:32 +0000] [1241] [INFO] Worker exiting (pid: 1241)
+[2026-03-03 09:22:32 +0000] [1240] [INFO] Worker exiting (pid: 1240)
+[2026-03-03 09:22:32 +0000] [1239] [INFO] Worker exiting (pid: 1239)
+[2026-03-03 12:22:33 +0300] [400] [INFO] Shutting down: Master
+[2026-03-03 12:22:36 +0300] [2924] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 12:22:36 +0300] [2924] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (2924)
+[2026-03-03 12:22:36 +0300] [2924] [INFO] Using worker: sync
+[2026-03-03 12:22:36 +0300] [2936] [INFO] Booting worker with pid: 2936
+[2026-03-03 12:22:36 +0300] [2937] [INFO] Booting worker with pid: 2937
+[2026-03-03 12:22:36 +0300] [2938] [INFO] Booting worker with pid: 2938
+[2026-03-03 13:08:57 +0300] [8743] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 13:08:57 +0300] [8743] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (8743)
+[2026-03-03 13:08:57 +0300] [8743] [INFO] Using worker: sync
+[2026-03-03 13:08:57 +0300] [8749] [INFO] Booting worker with pid: 8749
+[2026-03-03 13:08:57 +0300] [8750] [INFO] Booting worker with pid: 8750
+[2026-03-03 13:08:57 +0300] [8751] [INFO] Booting worker with pid: 8751
+[2026-03-03 10:10:02 +0000] [8750] [INFO] Worker exiting (pid: 8750)
+[2026-03-03 13:10:02 +0300] [8743] [INFO] Handling signal: term
+[2026-03-03 10:10:02 +0000] [8749] [INFO] Worker exiting (pid: 8749)
+[2026-03-03 10:10:02 +0000] [8751] [INFO] Worker exiting (pid: 8751)
+[2026-03-03 13:10:03 +0300] [8743] [INFO] Worker (pid:8750) was sent SIGTERM!
+[2026-03-03 13:10:03 +0300] [8743] [INFO] Shutting down: Master
+[2026-03-03 13:10:05 +0300] [8951] [INFO] Starting gunicorn 25.0.3
+[2026-03-03 13:10:05 +0300] [8951] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (8951)
+[2026-03-03 13:10:05 +0300] [8951] [INFO] Using worker: sync
+[2026-03-03 13:10:05 +0300] [8960] [INFO] Booting worker with pid: 8960
+[2026-03-03 13:10:05 +0300] [8961] [INFO] Booting worker with pid: 8961
+[2026-03-03 13:10:05 +0300] [8962] [INFO] Booting worker with pid: 8962
+[2026-03-03 15:57:06 +0300] [8951] [INFO] Handling signal: term
+[2026-03-03 12:57:06 +0000] [8961] [INFO] Worker exiting (pid: 8961)
+[2026-03-03 12:57:06 +0000] [8962] [INFO] Worker exiting (pid: 8962)
+[2026-03-03 12:57:06 +0000] [8960] [INFO] Worker exiting (pid: 8960)
+[2026-03-04 10:12:14 +0300] [500] [INFO] Starting gunicorn 25.0.3
+[2026-03-04 10:12:14 +0300] [500] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (500)
+[2026-03-04 10:12:14 +0300] [500] [INFO] Using worker: sync
+[2026-03-04 10:12:14 +0300] [1271] [INFO] Booting worker with pid: 1271
+[2026-03-04 10:12:14 +0300] [1272] [INFO] Booting worker with pid: 1272
+[2026-03-04 10:12:15 +0300] [1273] [INFO] Booting worker with pid: 1273
+[2026-03-04 12:23:20 +0300] [378] [INFO] Starting gunicorn 25.0.3
+[2026-03-04 12:23:20 +0300] [378] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (378)
+[2026-03-04 12:23:20 +0300] [378] [INFO] Using worker: sync
+[2026-03-04 12:23:20 +0300] [1216] [INFO] Booting worker with pid: 1216
+[2026-03-04 12:23:20 +0300] [1218] [INFO] Booting worker with pid: 1218
+[2026-03-04 12:23:20 +0300] [1219] [INFO] Booting worker with pid: 1219
+[2026-03-04 14:11:44 +0300] [378] [INFO] Handling signal: term
+[2026-03-04 11:11:44 +0000] [1216] [INFO] Worker exiting (pid: 1216)
+[2026-03-04 11:11:44 +0000] [1219] [INFO] Worker exiting (pid: 1219)
+[2026-03-04 11:11:44 +0000] [1218] [INFO] Worker exiting (pid: 1218)
+[2026-03-04 14:11:47 +0300] [378] [INFO] Shutting down: Master
+[2026-03-04 14:12:20 +0300] [354] [INFO] Starting gunicorn 25.0.3
+[2026-03-04 14:12:20 +0300] [354] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (354)
+[2026-03-04 14:12:20 +0300] [354] [INFO] Using worker: sync
+[2026-03-04 14:12:20 +0300] [1478] [INFO] Booting worker with pid: 1478
+[2026-03-04 14:12:20 +0300] [1479] [INFO] Booting worker with pid: 1479
+[2026-03-04 14:12:20 +0300] [1480] [INFO] Booting worker with pid: 1480
+[2026-03-04 15:00:07 +0000] [1480] [INFO] Worker exiting (pid: 1480)
+[2026-03-04 18:00:07 +0300] [354] [INFO] Handling signal: term
+[2026-03-04 15:00:07 +0000] [1478] [INFO] Worker exiting (pid: 1478)
+[2026-03-04 15:00:07 +0000] [1479] [INFO] Worker exiting (pid: 1479)
+[2026-03-04 18:00:11 +0300] [354] [INFO] Shutting down: Master
+[2026-03-04 18:02:51 +0300] [437] [INFO] Starting gunicorn 25.0.3
+[2026-03-04 18:02:51 +0300] [437] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (437)
+[2026-03-04 18:02:51 +0300] [437] [INFO] Using worker: sync
+[2026-03-04 18:02:51 +0300] [1449] [INFO] Booting worker with pid: 1449
+[2026-03-04 18:02:51 +0300] [1454] [INFO] Booting worker with pid: 1454
+[2026-03-04 18:02:51 +0300] [1457] [INFO] Booting worker with pid: 1457
+[2026-03-04 19:28:17 +0300] [437] [INFO] Handling signal: term
+[2026-03-04 16:28:17 +0000] [1457] [INFO] Worker exiting (pid: 1457)
+[2026-03-04 16:28:17 +0000] [1449] [INFO] Worker exiting (pid: 1449)
+[2026-03-04 16:28:17 +0000] [1454] [INFO] Worker exiting (pid: 1454)
+[2026-03-04 19:28:20 +0300] [437] [INFO] Shutting down: Master
+[2026-03-04 19:31:44 +0300] [406] [INFO] Starting gunicorn 25.0.3
+[2026-03-04 19:31:44 +0300] [406] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (406)
+[2026-03-04 19:31:44 +0300] [406] [INFO] Using worker: sync
+[2026-03-04 19:31:44 +0300] [1429] [INFO] Booting worker with pid: 1429
+[2026-03-04 19:31:44 +0300] [1430] [INFO] Booting worker with pid: 1430
+[2026-03-04 19:31:45 +0300] [1431] [INFO] Booting worker with pid: 1431
+[2026-03-04 17:21:59 +0000] [1430] [INFO] Worker exiting (pid: 1430)
+[2026-03-04 20:21:59 +0300] [406] [INFO] Handling signal: term
+[2026-03-04 17:21:59 +0000] [1431] [INFO] Worker exiting (pid: 1431)
+[2026-03-04 17:21:59 +0000] [1429] [INFO] Worker exiting (pid: 1429)
+[2026-03-04 20:22:03 +0300] [406] [INFO] Shutting down: Master
+[2026-03-05 08:57:37 +0300] [379] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 08:57:37 +0300] [379] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (379)
+[2026-03-05 08:57:37 +0300] [379] [INFO] Using worker: sync
+[2026-03-05 08:57:37 +0300] [1528] [INFO] Booting worker with pid: 1528
+[2026-03-05 08:57:37 +0300] [1531] [INFO] Booting worker with pid: 1531
+[2026-03-05 08:57:37 +0300] [1532] [INFO] Booting worker with pid: 1532
+[2026-03-05 09:05:03 +0300] [379] [INFO] Handling signal: term
+[2026-03-05 06:05:03 +0000] [1528] [INFO] Worker exiting (pid: 1528)
+[2026-03-05 06:05:03 +0000] [1532] [INFO] Worker exiting (pid: 1532)
+[2026-03-05 06:05:03 +0000] [1531] [INFO] Worker exiting (pid: 1531)
+[2026-03-05 09:05:04 +0300] [379] [INFO] Shutting down: Master
+[2026-03-05 09:09:31 +0300] [405] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 09:09:31 +0300] [405] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (405)
+[2026-03-05 09:09:31 +0300] [405] [INFO] Using worker: sync
+[2026-03-05 09:09:31 +0300] [1234] [INFO] Booting worker with pid: 1234
+[2026-03-05 09:09:31 +0300] [1240] [INFO] Booting worker with pid: 1240
+[2026-03-05 09:09:31 +0300] [1255] [INFO] Booting worker with pid: 1255
+[2026-03-05 10:59:28 +0300] [405] [INFO] Handling signal: term
+[2026-03-05 07:59:28 +0000] [1234] [INFO] Worker exiting (pid: 1234)
+[2026-03-05 07:59:28 +0000] [1240] [INFO] Worker exiting (pid: 1240)
+[2026-03-05 07:59:28 +0000] [1255] [INFO] Worker exiting (pid: 1255)
+[2026-03-05 10:59:35 +0300] [405] [INFO] Shutting down: Master
+[2026-03-05 11:01:32 +0300] [361] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 11:01:32 +0300] [361] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (361)
+[2026-03-05 11:01:32 +0300] [361] [INFO] Using worker: sync
+[2026-03-05 11:01:32 +0300] [903] [INFO] Booting worker with pid: 903
+[2026-03-05 11:01:32 +0300] [909] [INFO] Booting worker with pid: 909
+[2026-03-05 11:01:32 +0300] [915] [INFO] Booting worker with pid: 915
+[2026-03-05 11:03:04 +0300] [361] [INFO] Handling signal: term
+[2026-03-05 08:03:04 +0000] [909] [INFO] Worker exiting (pid: 909)
+[2026-03-05 08:03:04 +0000] [903] [INFO] Worker exiting (pid: 903)
+[2026-03-05 08:03:04 +0000] [915] [INFO] Worker exiting (pid: 915)
+[2026-03-05 11:03:05 +0300] [361] [INFO] Shutting down: Master
+[2026-03-05 11:03:52 +0300] [300] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 11:03:52 +0300] [300] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (300)
+[2026-03-05 11:03:52 +0300] [300] [INFO] Using worker: sync
+[2026-03-05 11:03:52 +0300] [829] [INFO] Booting worker with pid: 829
+[2026-03-05 11:03:52 +0300] [844] [INFO] Booting worker with pid: 844
+[2026-03-05 11:03:52 +0300] [856] [INFO] Booting worker with pid: 856
+[2026-03-05 08:03:59 +0000] [829] [INFO] Worker exiting (pid: 829)
+[2026-03-05 11:03:59 +0300] [300] [INFO] Handling signal: term
+[2026-03-05 08:03:59 +0000] [844] [INFO] Worker exiting (pid: 844)
+[2026-03-05 08:03:59 +0000] [856] [INFO] Worker exiting (pid: 856)
+[2026-03-05 11:03:59 +0300] [300] [INFO] Worker (pid:844) was sent SIGTERM!
+[2026-03-05 11:04:00 +0300] [300] [INFO] Shutting down: Master
+[2026-03-05 11:04:56 +0300] [311] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 11:04:56 +0300] [311] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (311)
+[2026-03-05 11:04:56 +0300] [311] [INFO] Using worker: sync
+[2026-03-05 11:04:56 +0300] [854] [INFO] Booting worker with pid: 854
+[2026-03-05 11:04:56 +0300] [860] [INFO] Booting worker with pid: 860
+[2026-03-05 11:04:56 +0300] [873] [INFO] Booting worker with pid: 873
+[2026-03-05 11:05:01 +0300] [311] [INFO] Handling signal: term
+[2026-03-05 08:05:01 +0000] [873] [INFO] Worker exiting (pid: 873)
+[2026-03-05 08:05:01 +0000] [860] [INFO] Worker exiting (pid: 860)
+[2026-03-05 08:05:01 +0000] [854] [INFO] Worker exiting (pid: 854)
+[2026-03-05 11:05:02 +0300] [311] [INFO] Shutting down: Master
+[2026-03-05 11:05:39 +0300] [304] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 11:05:39 +0300] [304] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (304)
+[2026-03-05 11:05:39 +0300] [304] [INFO] Using worker: sync
+[2026-03-05 11:05:39 +0300] [834] [INFO] Booting worker with pid: 834
+[2026-03-05 11:05:39 +0300] [843] [INFO] Booting worker with pid: 843
+[2026-03-05 11:05:39 +0300] [847] [INFO] Booting worker with pid: 847
+[2026-03-05 08:05:48 +0000] [843] [INFO] Worker exiting (pid: 843)
+[2026-03-05 11:05:48 +0300] [304] [INFO] Handling signal: term
+[2026-03-05 08:05:48 +0000] [834] [INFO] Worker exiting (pid: 834)
+[2026-03-05 08:05:48 +0000] [847] [INFO] Worker exiting (pid: 847)
+[2026-03-05 11:05:48 +0300] [304] [INFO] Worker (pid:843) was sent SIGTERM!
+[2026-03-05 11:05:48 +0300] [304] [INFO] Worker (pid:847) was sent SIGTERM!
+[2026-03-05 11:05:49 +0300] [304] [INFO] Shutting down: Master
+[2026-03-05 11:06:31 +0300] [309] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 11:06:31 +0300] [309] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (309)
+[2026-03-05 11:06:31 +0300] [309] [INFO] Using worker: sync
+[2026-03-05 11:06:31 +0300] [955] [INFO] Booting worker with pid: 955
+[2026-03-05 11:06:31 +0300] [961] [INFO] Booting worker with pid: 961
+[2026-03-05 11:06:31 +0300] [981] [INFO] Booting worker with pid: 981
+[2026-03-05 15:07:18 +0300] [322] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 15:07:18 +0300] [322] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (322)
+[2026-03-05 15:07:18 +0300] [322] [INFO] Using worker: sync
+[2026-03-05 15:07:18 +0300] [1387] [INFO] Booting worker with pid: 1387
+[2026-03-05 15:07:19 +0300] [1394] [INFO] Booting worker with pid: 1394
+[2026-03-05 15:07:19 +0300] [1403] [INFO] Booting worker with pid: 1403
+[2026-03-05 13:03:46 +0000] [1387] [INFO] Worker exiting (pid: 1387)
+[2026-03-05 16:03:46 +0300] [322] [INFO] Handling signal: term
+[2026-03-05 13:03:46 +0000] [1394] [INFO] Worker exiting (pid: 1394)
+[2026-03-05 13:03:46 +0000] [1403] [INFO] Worker exiting (pid: 1403)
+[2026-03-05 16:03:49 +0300] [322] [INFO] Shutting down: Master
+[2026-03-05 16:03:52 +0300] [11063] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 16:03:52 +0300] [11063] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (11063)
+[2026-03-05 16:03:52 +0300] [11063] [INFO] Using worker: sync
+[2026-03-05 16:03:52 +0300] [11075] [INFO] Booting worker with pid: 11075
+[2026-03-05 16:03:52 +0300] [11076] [INFO] Booting worker with pid: 11076
+[2026-03-05 16:03:52 +0300] [11077] [INFO] Booting worker with pid: 11077
+[2026-03-05 16:06:25 +0300] [11063] [INFO] Handling signal: term
+[2026-03-05 13:06:25 +0000] [11076] [INFO] Worker exiting (pid: 11076)
+[2026-03-05 13:06:25 +0000] [11075] [INFO] Worker exiting (pid: 11075)
+[2026-03-05 13:06:25 +0000] [11077] [INFO] Worker exiting (pid: 11077)
+[2026-03-05 16:06:26 +0300] [11063] [INFO] Shutting down: Master
+[2026-03-05 16:06:27 +0300] [11442] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 16:06:27 +0300] [11442] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (11442)
+[2026-03-05 16:06:27 +0300] [11442] [INFO] Using worker: sync
+[2026-03-05 16:06:27 +0300] [11454] [INFO] Booting worker with pid: 11454
+[2026-03-05 16:06:28 +0300] [11455] [INFO] Booting worker with pid: 11455
+[2026-03-05 16:06:28 +0300] [11456] [INFO] Booting worker with pid: 11456
+[2026-03-05 16:11:36 +0300] [11442] [INFO] Handling signal: term
+[2026-03-05 13:11:36 +0000] [11454] [INFO] Worker exiting (pid: 11454)
+[2026-03-05 13:11:36 +0000] [11455] [INFO] Worker exiting (pid: 11455)
+[2026-03-05 13:11:36 +0000] [11456] [INFO] Worker exiting (pid: 11456)
+[2026-03-05 16:11:37 +0300] [11442] [INFO] Shutting down: Master
+[2026-03-05 16:11:38 +0300] [12110] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 16:11:38 +0300] [12110] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (12110)
+[2026-03-05 16:11:38 +0300] [12110] [INFO] Using worker: sync
+[2026-03-05 16:11:38 +0300] [12122] [INFO] Booting worker with pid: 12122
+[2026-03-05 16:11:38 +0300] [12123] [INFO] Booting worker with pid: 12123
+[2026-03-05 16:11:38 +0300] [12124] [INFO] Booting worker with pid: 12124
+[2026-03-05 13:21:16 +0000] [12122] [INFO] Worker exiting (pid: 12122)
+[2026-03-05 16:21:16 +0300] [12110] [INFO] Handling signal: term
+[2026-03-05 13:21:16 +0000] [12123] [INFO] Worker exiting (pid: 12123)
+[2026-03-05 13:21:16 +0000] [12124] [INFO] Worker exiting (pid: 12124)
+[2026-03-05 16:21:18 +0300] [12110] [INFO] Shutting down: Master
+[2026-03-05 16:21:19 +0300] [13328] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 16:21:19 +0300] [13328] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (13328)
+[2026-03-05 16:21:19 +0300] [13328] [INFO] Using worker: sync
+[2026-03-05 16:21:19 +0300] [13341] [INFO] Booting worker with pid: 13341
+[2026-03-05 16:21:20 +0300] [13342] [INFO] Booting worker with pid: 13342
+[2026-03-05 16:21:20 +0300] [13343] [INFO] Booting worker with pid: 13343
+[2026-03-05 16:30:44 +0300] [13328] [INFO] Handling signal: term
+[2026-03-05 13:30:44 +0000] [13342] [INFO] Worker exiting (pid: 13342)
+[2026-03-05 13:30:44 +0000] [13343] [INFO] Worker exiting (pid: 13343)
+[2026-03-05 13:30:44 +0000] [13341] [INFO] Worker exiting (pid: 13341)
+[2026-03-05 16:30:45 +0300] [13328] [INFO] Shutting down: Master
+[2026-03-05 16:34:03 +0300] [15950] [INFO] Starting gunicorn 25.0.3
+[2026-03-05 16:34:03 +0300] [15950] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (15950)
+[2026-03-05 16:34:03 +0300] [15950] [INFO] Using worker: sync
+[2026-03-05 16:34:03 +0300] [15962] [INFO] Booting worker with pid: 15962
+[2026-03-05 16:34:04 +0300] [15963] [INFO] Booting worker with pid: 15963
+[2026-03-05 16:34:04 +0300] [15964] [INFO] Booting worker with pid: 15964
+[2026-03-06 08:49:51 +0300] [395] [INFO] Starting gunicorn 25.0.3
+[2026-03-06 08:49:51 +0300] [395] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (395)
+[2026-03-06 08:49:51 +0300] [395] [INFO] Using worker: sync
+[2026-03-06 08:49:51 +0300] [1383] [INFO] Booting worker with pid: 1383
+[2026-03-06 08:49:51 +0300] [1385] [INFO] Booting worker with pid: 1385
+[2026-03-06 08:49:51 +0300] [1386] [INFO] Booting worker with pid: 1386
+[2026-03-06 08:58:36 +0300] [395] [CRITICAL] WORKER TIMEOUT (pid:1383)
+[2026-03-06 08:58:44 +0300] [395] [CRITICAL] WORKER TIMEOUT (pid:1385)
+[2026-03-06 08:58:44 +0300] [395] [CRITICAL] WORKER TIMEOUT (pid:1386)
+[2026-03-06 08:58:47 +0300] [395] [ERROR] Worker (pid:1385) was sent SIGKILL! Perhaps out of memory?
+[2026-03-06 08:58:47 +0300] [395] [ERROR] Worker (pid:1383) was sent SIGKILL! Perhaps out of memory?
+[2026-03-06 08:58:47 +0300] [395] [ERROR] Worker (pid:1386) was sent SIGKILL! Perhaps out of memory?
+[2026-03-06 08:58:48 +0300] [5651] [INFO] Booting worker with pid: 5651
+[2026-03-06 08:58:48 +0300] [5650] [INFO] Booting worker with pid: 5650
+[2026-03-06 08:58:49 +0300] [5652] [INFO] Booting worker with pid: 5652
+[2026-03-06 14:31:05 +0000] [5651] [INFO] Worker exiting (pid: 5651)
+[2026-03-06 14:31:07 +0000] [5650] [INFO] Worker exiting (pid: 5650)
+[2026-03-06 14:31:05 +0000] [5652] [INFO] Worker exiting (pid: 5652)
+[2026-03-06 17:31:09 +0300] [395] [INFO] Handling signal: term
+[2026-03-06 17:31:11 +0300] [395] [INFO] Worker (pid:5651) was sent SIGTERM!
+[2026-03-06 17:31:11 +0300] [395] [INFO] Worker (pid:5652) was sent SIGTERM!
+[2026-03-08 11:18:20 +0300] [347] [INFO] Starting gunicorn 25.0.3
+[2026-03-08 11:18:20 +0300] [347] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (347)
+[2026-03-08 11:18:20 +0300] [347] [INFO] Using worker: sync
+[2026-03-08 11:18:20 +0300] [1498] [INFO] Booting worker with pid: 1498
+[2026-03-08 11:18:20 +0300] [1499] [INFO] Booting worker with pid: 1499
+[2026-03-08 11:18:21 +0300] [1502] [INFO] Booting worker with pid: 1502
+[2026-03-08 19:09:58 +0300] [347] [CRITICAL] WORKER TIMEOUT (pid:1499)
+[2026-03-08 16:10:12 +0000] [1499] [INFO] Worker exiting (pid: 1499)
+[2026-03-08 19:10:33 +0300] [347] [ERROR] Worker (pid:1499) was sent SIGKILL! Perhaps out of memory?
+[2026-03-08 19:10:53 +0300] [86645] [INFO] Booting worker with pid: 86645
+[2026-03-09 08:28:06 +0300] [418] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 08:28:06 +0300] [418] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (418)
+[2026-03-09 08:28:06 +0300] [418] [INFO] Using worker: sync
+[2026-03-09 08:28:06 +0300] [1256] [INFO] Booting worker with pid: 1256
+[2026-03-09 08:28:06 +0300] [1267] [INFO] Booting worker with pid: 1267
+[2026-03-09 08:28:06 +0300] [1295] [INFO] Booting worker with pid: 1295
+[2026-03-09 08:38:46 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1267)
+[2026-03-09 08:39:03 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1295)
+[2026-03-09 05:39:03 +0000] [1295] [INFO] Worker exiting (pid: 1295)
+[2026-03-09 05:39:03 +0000] [1267] [INFO] Worker exiting (pid: 1267)
+[2026-03-09 08:39:05 +0300] [418] [ERROR] Worker (pid:1295) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:39:05 +0300] [418] [ERROR] Worker (pid:1267) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:39:05 +0300] [1554] [INFO] Booting worker with pid: 1554
+[2026-03-09 08:39:05 +0300] [1555] [INFO] Booting worker with pid: 1555
+[2026-03-09 08:56:16 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1256)
+[2026-03-09 08:56:25 +0300] [418] [ERROR] Worker (pid:1256) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 08:56:32 +0300] [5944] [INFO] Booting worker with pid: 5944
+[2026-03-09 09:00:00 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1555)
+[2026-03-09 06:00:00 +0000] [1555] [INFO] Worker exiting (pid: 1555)
+[2026-03-09 09:00:01 +0300] [418] [ERROR] Worker (pid:1555) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 09:02:14 +0300] [418] [CRITICAL] WORKER TIMEOUT (pid:1554)
+[2026-03-09 06:02:14 +0000] [1554] [INFO] Worker exiting (pid: 1554)
+[2026-03-09 09:02:29 +0300] [6828] [INFO] Booting worker with pid: 6828
+[2026-03-09 09:02:52 +0300] [418] [ERROR] Worker (pid:1554) was sent SIGKILL! Perhaps out of memory?
+[2026-03-09 09:02:52 +0300] [6850] [INFO] Booting worker with pid: 6850
+[2026-03-09 09:42:19 +0300] [307] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 09:42:19 +0300] [307] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (307)
+[2026-03-09 09:42:19 +0300] [307] [INFO] Using worker: sync
+[2026-03-09 09:42:19 +0300] [1225] [INFO] Booting worker with pid: 1225
+[2026-03-09 09:42:19 +0300] [1245] [INFO] Booting worker with pid: 1245
+[2026-03-09 09:42:20 +0300] [1286] [INFO] Booting worker with pid: 1286
+[2026-03-09 15:48:05 +0300] [329] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 15:48:05 +0300] [329] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (329)
+[2026-03-09 15:48:05 +0300] [329] [INFO] Using worker: sync
+[2026-03-09 15:48:05 +0300] [1108] [INFO] Booting worker with pid: 1108
+[2026-03-09 15:48:05 +0300] [1124] [INFO] Booting worker with pid: 1124
+[2026-03-09 15:48:05 +0300] [1149] [INFO] Booting worker with pid: 1149
+[2026-03-09 16:03:28 +0300] [309] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:03:28 +0300] [309] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (309)
+[2026-03-09 16:03:28 +0300] [309] [INFO] Using worker: sync
+[2026-03-09 16:03:28 +0300] [1738] [INFO] Booting worker with pid: 1738
+[2026-03-09 16:03:28 +0300] [1739] [INFO] Booting worker with pid: 1739
+[2026-03-09 16:03:28 +0300] [1740] [INFO] Booting worker with pid: 1740
+[2026-03-09 16:08:48 +0300] [349] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:08:48 +0300] [349] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (349)
+[2026-03-09 16:08:48 +0300] [349] [INFO] Using worker: sync
+[2026-03-09 16:08:48 +0300] [1674] [INFO] Booting worker with pid: 1674
+[2026-03-09 16:08:48 +0300] [1677] [INFO] Booting worker with pid: 1677
+[2026-03-09 16:08:49 +0300] [1678] [INFO] Booting worker with pid: 1678
+[2026-03-09 16:11:12 +0300] [335] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:11:12 +0300] [335] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (335)
+[2026-03-09 16:11:12 +0300] [335] [INFO] Using worker: sync
+[2026-03-09 16:11:12 +0300] [1345] [INFO] Booting worker with pid: 1345
+[2026-03-09 16:11:12 +0300] [1364] [INFO] Booting worker with pid: 1364
+[2026-03-09 16:11:12 +0300] [1384] [INFO] Booting worker with pid: 1384
+[2026-03-09 16:13:05 +0300] [318] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:13:05 +0300] [318] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (318)
+[2026-03-09 16:13:05 +0300] [318] [INFO] Using worker: sync
+[2026-03-09 16:13:05 +0300] [930] [INFO] Booting worker with pid: 930
+[2026-03-09 16:13:05 +0300] [931] [INFO] Booting worker with pid: 931
+[2026-03-09 16:13:05 +0300] [932] [INFO] Booting worker with pid: 932
+[2026-03-09 16:27:49 +0300] [303] [INFO] Starting gunicorn 25.0.3
+[2026-03-09 16:27:49 +0300] [303] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (303)
+[2026-03-09 16:27:49 +0300] [303] [INFO] Using worker: sync
+[2026-03-09 16:27:49 +0300] [1335] [INFO] Booting worker with pid: 1335
+[2026-03-09 16:27:49 +0300] [1369] [INFO] Booting worker with pid: 1369
+[2026-03-09 16:27:50 +0300] [1380] [INFO] Booting worker with pid: 1380
+[2026-03-09 20:50:35 +0300] [303] [INFO] Handling signal: term
+[2026-03-09 17:50:36 +0000] [1335] [INFO] Worker exiting (pid: 1335)
+[2026-03-09 17:50:36 +0000] [1380] [INFO] Worker exiting (pid: 1380)
+[2026-03-09 17:50:37 +0000] [1369] [INFO] Worker exiting (pid: 1369)
+[2026-03-10 08:26:30 +0300] [400] [INFO] Starting gunicorn 25.0.3
+[2026-03-10 08:26:30 +0300] [400] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (400)
+[2026-03-10 08:26:30 +0300] [400] [INFO] Using worker: sync
+[2026-03-10 08:26:30 +0300] [1303] [INFO] Booting worker with pid: 1303
+[2026-03-10 08:26:30 +0300] [1312] [INFO] Booting worker with pid: 1312
+[2026-03-10 08:26:30 +0300] [1351] [INFO] Booting worker with pid: 1351
+[2026-03-10 06:13:05 +0000] [1303] [INFO] Worker exiting (pid: 1303)
+[2026-03-10 06:13:05 +0000] [1351] [INFO] Worker exiting (pid: 1351)
+[2026-03-10 06:13:05 +0000] [1312] [INFO] Worker exiting (pid: 1312)
+[2026-03-10 09:13:05 +0300] [400] [INFO] Handling signal: term
+[2026-03-10 09:13:06 +0300] [400] [INFO] Worker (pid:1303) was sent SIGTERM!
+[2026-03-10 09:13:06 +0300] [400] [INFO] Worker (pid:1351) was sent SIGTERM!
+[2026-03-10 09:13:08 +0300] [400] [INFO] Shutting down: Master
+[2026-03-10 09:15:06 +0300] [320] [INFO] Starting gunicorn 25.0.3
+[2026-03-10 09:15:06 +0300] [320] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (320)
+[2026-03-10 09:15:06 +0300] [320] [INFO] Using worker: sync
+[2026-03-10 09:15:06 +0300] [1326] [INFO] Booting worker with pid: 1326
+[2026-03-10 09:15:06 +0300] [1345] [INFO] Booting worker with pid: 1345
+[2026-03-10 09:15:06 +0300] [1369] [INFO] Booting worker with pid: 1369
+[2026-03-10 09:20:54 +0300] [320] [INFO] Handling signal: term
+[2026-03-10 06:20:54 +0000] [1326] [INFO] Worker exiting (pid: 1326)
+[2026-03-10 06:20:54 +0000] [1345] [INFO] Worker exiting (pid: 1345)
+[2026-03-10 06:20:54 +0000] [1369] [INFO] Worker exiting (pid: 1369)
+[2026-03-10 09:20:54 +0300] [320] [INFO] Worker (pid:1326) was sent SIGTERM!
+[2026-03-10 09:20:54 +0300] [320] [INFO] Shutting down: Master
+[2026-03-10 09:21:30 +0300] [305] [INFO] Starting gunicorn 25.0.3
+[2026-03-10 09:21:30 +0300] [305] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (305)
+[2026-03-10 09:21:30 +0300] [305] [INFO] Using worker: sync
+[2026-03-10 09:21:30 +0300] [1388] [INFO] Booting worker with pid: 1388
+[2026-03-10 09:21:30 +0300] [1424] [INFO] Booting worker with pid: 1424
+[2026-03-10 09:21:30 +0300] [1437] [INFO] Booting worker with pid: 1437
+[2026-03-10 09:21:57 +0300] [305] [INFO] Handling signal: term
+[2026-03-10 06:21:57 +0000] [1424] [INFO] Worker exiting (pid: 1424)
+[2026-03-10 06:21:57 +0000] [1437] [INFO] Worker exiting (pid: 1437)
+[2026-03-10 06:21:57 +0000] [1388] [INFO] Worker exiting (pid: 1388)
+[2026-03-10 09:21:58 +0300] [305] [INFO] Worker (pid:1424) was sent SIGTERM!
+[2026-03-10 09:21:58 +0300] [305] [INFO] Shutting down: Master
+[2026-03-10 09:24:55 +0300] [374] [INFO] Starting gunicorn 25.0.3
+[2026-03-10 09:24:55 +0300] [374] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (374)
+[2026-03-10 09:24:55 +0300] [374] [INFO] Using worker: sync
+[2026-03-10 09:24:55 +0300] [1421] [INFO] Booting worker with pid: 1421
+[2026-03-10 09:24:55 +0300] [1422] [INFO] Booting worker with pid: 1422
+[2026-03-10 09:24:55 +0300] [1424] [INFO] Booting worker with pid: 1424
+[2026-03-10 10:17:57 +0300] [374] [CRITICAL] WORKER TIMEOUT (pid:1421)
+[2026-03-10 07:17:57 +0000] [1421] [INFO] Worker exiting (pid: 1421)
+[2026-03-10 10:17:59 +0300] [374] [ERROR] Worker (pid:1421) exited with code 1.
+[2026-03-10 10:17:59 +0300] [13928] [INFO] Booting worker with pid: 13928
+[2026-03-10 09:07:09 +0000] [1422] [INFO] Worker exiting (pid: 1422)
+[2026-03-10 12:07:09 +0300] [374] [INFO] Handling signal: term
+[2026-03-10 09:07:09 +0000] [1424] [INFO] Worker exiting (pid: 1424)
+[2026-03-10 09:07:09 +0000] [13928] [INFO] Worker exiting (pid: 13928)
+[2026-03-10 12:07:14 +0300] [374] [INFO] Shutting down: Master
+[2026-03-10 12:12:56 +0300] [340] [INFO] Starting gunicorn 25.0.3
+[2026-03-10 12:12:56 +0300] [340] [INFO] Listening at: unix:/home/haron/kmd/kmd_web/web_service/web_service.sock (340)
+[2026-03-10 12:12:56 +0300] [340] [INFO] Using worker: sync
+[2026-03-10 12:12:56 +0300] [1437] [INFO] Booting worker with pid: 1437
+[2026-03-10 12:12:56 +0300] [1438] [INFO] Booting worker with pid: 1438
+[2026-03-10 12:12:56 +0300] [1439] [INFO] Booting worker with pid: 1439
+[2026-03-10 15:39:18 +0000] [1437] [INFO] Worker exiting (pid: 1437)
+[2026-03-10 18:39:18 +0300] [340] [INFO] Handling signal: term
+[2026-03-10 15:39:18 +0000] [1439] [INFO] Worker exiting (pid: 1439)
+[2026-03-10 15:39:18 +0000] [1438] [INFO] Worker exiting (pid: 1438)
+[2026-03-10 18:39:18 +0300] [340] [INFO] Worker (pid:1437) was sent SIGTERM!
+[2026-03-10 18:39:20 +0300] [340] [INFO] Shutting down: Master

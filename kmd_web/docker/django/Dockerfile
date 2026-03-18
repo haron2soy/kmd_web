@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ../../web_service /app
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+#RUN python manage.py collectstatic --noinput
 
 # Expose port for Gunicorn
 EXPOSE 8000

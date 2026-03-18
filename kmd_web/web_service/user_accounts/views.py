@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -9,13 +10,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializer import RegisterSerializer
-
-from django.core.mail import send_mail
-from django.conf import settings
 from .models import EmailVerification
-from django.db import transaction
-
-
+from .services import send_register_email
 
 # ---------------------------------------------------------
 # CSRF TOKEN VIEW
@@ -26,7 +22,6 @@ from django.db import transaction
 def csrf_token_view(request):
     """
     Ensures CSRF cookie is set for SPA clients (React).
-    Returns CSRF token explicitly for debugging / manual usage.
     """
     return Response({
         "csrfToken": get_token(request),
@@ -40,52 +35,38 @@ def csrf_token_view(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def register_view(request):
+
     serializer = RegisterSerializer(data=request.data)
 
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    user = serializer.save()
+
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+
+    EmailVerification.objects.filter(user=user).delete()
+
+    verification = EmailVerification.objects.create(user=user)
+
+    verification_link = f"{settings.FRONTEND_URL}/verify-email/{verification.token}"
+
     try:
-        # Ensure atomic operation
-        with transaction.atomic():
-
-            # Create user
-            user = serializer.save()
-
-            # Create verification record
-            verification = EmailVerification.objects.create(user=user)
-
-            # Use dynamic frontend URL instead of localhost
-            verification_link = f"{settings.FRONTEND_URL}/verify-email/{verification.token}"
-
-            send_mail(
-                subject="Verify Your Account",
-                message=f"""
-Welcome!
-
-Click the link below to verify your account:
-{verification_link}
-
-Or use this verification code:
-{verification.code}
-
-This link expires in 24 hours.
-""",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False
-            )
-
-        return Response(
-            {"message": "Verification email sent. Please check your inbox."},
-            status=status.HTTP_201_CREATED,
+        send_register_email(
+            user_email=user.email,
+            verification_link=verification_link,
+            verification_code=verification.code
         )
-
-    except Exception:
+    except Exception as e:
         return Response(
-            {"error": "Registration failed. Please try again later."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+    return Response(
+        {"message": "Verification email sent. Please check your inbox."},
+        status=status.HTTP_201_CREATED
+    )
 
 
 # ---------------------------------------------------------
@@ -153,9 +134,9 @@ def logout_view(request):
 @permission_classes([AllowAny])
 def session_view(request):
     """
-    Returns current session authentication state.
-    Useful for React app bootstrapping.
+    Returns authentication state for SPA bootstrapping.
     """
+
     if request.user.is_authenticated:
         return Response({
             "authenticated": True,
@@ -166,10 +147,12 @@ def session_view(request):
             }
         })
 
-    return Response({
-        "authenticated": False
-    })
+    return Response({"authenticated": False})
 
+
+# ---------------------------------------------------------
+# VERIFY EMAIL VIEW
+# ---------------------------------------------------------
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def verify_email_view(request, token=None):
@@ -177,31 +160,40 @@ def verify_email_view(request, token=None):
     code = request.data.get("code")
 
     try:
+
         if token:
-            verification = EmailVerification.objects.get(token=token)
+            verification = EmailVerification.objects.select_related("user").get(token=token)
+
         elif code:
-            verification = EmailVerification.objects.get(code=code)
+            verification = EmailVerification.objects.select_related("user").get(code=code)
+
         else:
             return Response(
                 {"non_field_errors": ["Token or code required"]},
-                status=400
+                status=status.HTTP_400_BAD_REQUEST
             )
 
     except EmailVerification.DoesNotExist:
+
         return Response(
             {"non_field_errors": ["Invalid verification"]},
-            status=400
+            status=status.HTTP_400_BAD_REQUEST
         )
 
+    # Check expiration
     if verification.is_expired():
+
+        verification.delete()
+
         return Response(
             {"non_field_errors": ["Verification expired"]},
-            status=400
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     user = verification.user
+
     user.is_active = True
-    user.save()
+    user.save(update_fields=["is_active"])
 
     verification.delete()
 
