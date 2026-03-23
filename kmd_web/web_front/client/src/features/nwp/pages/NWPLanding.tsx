@@ -1,135 +1,147 @@
-// src/features/nwp/pages/NWPLanding.tsx
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getNWPModels } from "../api";
-import { useEffect } from "react";
-//import { PageLayout } from "@/shared/components/layout/PageLayout";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import { Clock, AlertCircle } from "lucide-react";
-import { Link } from "wouter";
 
-interface NWPModel {
-  id: string | number;
-  name: string;
-  description: string;
-  // future optional fields
-  status?: "pending" | "live" | "deprecated";
-  resolution?: string;
-  updateFrequency?: string;
-  path?: string;
-}
+import MapView from "@/features/nwp/components/MapView";
+import LayerControl from "../components/LayerControl";
+import DateTimeControl from "../components/DateTimeControl";
+import { getNWPModels, type NWPModel } from "../api";
 
-const ModelCard = ({ model }: { model: NWPModel }) => {
-  const isPending = model.status === "pending";
-
-  const cardContent = (
-    <div
-      className={`group relative p-6 border border-gray-200 rounded-lg transition-all duration-200 bg-white ${
-        !isPending ? "hover:shadow-md hover:border-primary/40 cursor-pointer" : "opacity-80 cursor-default"
-      }`}
-    >
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-      <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors mb-3">
-        {model.name}
-      </h3>
-
-      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
-        {model.description || "No description available."}
-      </p>
-
-      {/* Status badge */}
-      {model.status && (
-        <span
-          className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${
-            model.status === "pending"
-              ? "text-yellow-800 bg-yellow-50"
-              : model.status === "live"
-              ? "text-emerald-700 bg-emerald-50"
-              : "text-gray-700 bg-gray-100"
-          }`}
-        >
-          {model.status === "pending" && "Pending"}
-          {model.status === "live" && "Live"}
-          {model.status === "deprecated" && "Deprecated"}
-        </span>
-      )}
-
-      {/* Show "View model" only if not pending */}
-      {!isPending && (
-        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full mt-2">
-          <Clock className="h-3.5 w-3.5" />
-          <span>View model</span>
-        </div>
-      )}
-    </div>
-  );
-
-  // Wrap in Link only if not pending and path exists
-  return !isPending && model.path ? <Link href={model.path}>{cardContent}</Link> : cardContent;
+// -------------------------------
+// Extend API type safely
+// -------------------------------
+type NWPModelExtended = NWPModel & {
+  variables?: string[];
 };
 
-const ModelSkeleton = () => (
-  <div className="p-6 border border-gray-200 rounded-lg bg-white">
-    <Skeleton className="h-6 w-3/4 mb-3" />
-    <Skeleton className="h-16 w-full mb-4" />
-    <Skeleton className="h-5 w-32" />
-  </div>
-);
+// -------------------------------
+// Per-model state
+// -------------------------------
+type ModelState = {
+  variable: string;
+  datetime: string;
+};
 
-export default function NWPLanding() {
-   useEffect(() => {
-    document.title = "NWP | RSMC Nairobi";
-  }, []);
-  const { data, isLoading, isError } = useQuery<NWPModel[]>({
+// -------------------------------
+// Page
+// -------------------------------
+export default function WrfViewer() {
+  const {
+    data: models,
+    isLoading,
+    isError,
+  } = useQuery<NWPModelExtended[]>({
     queryKey: ["nwp-models"],
     queryFn: getNWPModels,
-    staleTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 30 * 60 * 1000,
   });
 
+  // State per model
+  const [modelStates, setModelStates] = useState<
+    Record<string, ModelState>
+  >({});
+
+  // -------------------------------
+  // Initialize state
+  // -------------------------------
+  useEffect(() => {
+    if (!models) return;
+
+    const initialState: Record<string, ModelState> = {};
+
+    models.forEach((model) => {
+      initialState[String(model.id)] = {
+        variable: model.variables?.[0] ?? "PRECIP",
+        datetime: "",
+      };
+    });
+
+    setModelStates(initialState);
+  }, [models]);
+
+  // -------------------------------
+  // Update helpers
+  // -------------------------------
+  const updateVariable = (modelId: string, variable: string) => {
+    setModelStates((prev) => ({
+      ...prev,
+      [modelId]: {
+        ...prev[modelId],
+        variable,
+      },
+    }));
+  };
+
+  const updateDatetime = (modelId: string, datetime: string) => {
+    setModelStates((prev) => ({
+      ...prev,
+      [modelId]: {
+        ...prev[modelId],
+        datetime,
+      },
+    }));
+  };
+
+  // -------------------------------
+  // UI states
+  // -------------------------------
+  if (isLoading) return <p className="p-6">Loading models...</p>;
+
+  if (isError || !models?.length)
+    return <p className="p-6 text-red-600">Failed to load models</p>;
+
+  // -------------------------------
+  // Render
+  // -------------------------------
   return (
-    //<PageLayout>
-      <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
-        <h2 className="text-xl md:text-2xl font-serif font-bold text-primary mb-10">
-          Numerical Weather Prediction (NWP) Models
-        </h2>
+    <div className="p-6 grid gap-6 lg:grid-cols-2">
+      {models
+        .filter((m) => m.status === "live")
+        .map((model) => {
+          const modelId = String(model.id);
+          const state = modelStates[modelId];
 
-        <p className="text-lg text-gray-600 mb-12 max-w-3xl">
-          Operational and research numerical models currently supporting forecasting services.
-        </p>
+          if (!state) return null;
 
-        {isError ? (
-          <div className="rounded-xl border border-red-200 bg-red-50/60 p-10 text-center">
-            <AlertCircle className="mx-auto h-10 w-10 text-red-500 mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">
-              Failed to load model list
-            </h3>
-            <p className="text-red-700/90">
-              Please try again later or contact support if the issue persists.
-            </p>
-          </div>
-        ) : isLoading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <ModelSkeleton key={i} />
-            ))}
-          </div>
-        ) : data && data.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((model) => (
-              <ModelCard key={model.id} model={model} />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/60 p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-700 mb-3">
-              No NWP models available yet
-            </h3>
-            <p className="text-gray-600 max-w-md mx-auto">
-              The list of supported models is being prepared. Check back soon or explore other forecasting products.
-            </p>
-          </div>
-        )}
-      </div>
-    //</PageLayout>
+          return (
+            <div
+              key={modelId}
+              className="bg-white border rounded-lg shadow-sm flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-4 border-b">
+                <h2 className="font-semibold text-gray-800">
+                  {model.name}
+                </h2>
+              </div>
+
+              {/* Controls */}
+              <div className="p-4 flex flex-col gap-4">
+                <LayerControl
+                  variable={state.variable}
+                  setVariable={(v: string) =>
+                    updateVariable(modelId, v)
+                  }
+                />
+
+                <DateTimeControl
+                  datetime={state.datetime}
+                  setDatetime={(dt: string) =>
+                    updateDatetime(modelId, dt)
+                  }
+                />
+              </div>
+
+              {/* Map */}
+              <div className="p-4">
+                <MapView
+                  variable={state.variable}
+                  datetime={state.datetime}
+                  endpoint={model.apiEndpoint}
+                />
+              </div>
+            </div>
+          );
+        })}
+    </div>
   );
 }

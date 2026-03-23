@@ -2,7 +2,7 @@
 from django.urls import path
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .views import latest_forecast
+from .views import latest_forecast, all_forecasts
 from .doc_views import guidance_documents
 from .guidance_archive_views import guidance_files
 from .archive_views import list_years, list_months, list_days, list_files, archive_files  # Added archive_files
@@ -19,6 +19,7 @@ urlpatterns = [
     path("guidance_archive/files/", guidance_files, name="guidance_archive-files"),  # OLD: all files
     path("archive/filtered-files/", archive_files, name="archive-filtered-files"),  # NEW: type-filtered files
     path("download/", download_file, name="downoload_file"),
+    path("short-range/", all_forecasts, name="all_forecasts"),
 
    
 ]

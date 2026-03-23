@@ -1,96 +1,158 @@
-// src/features/forecasts/ForecastLanding.tsx
 import { Link } from "wouter";
-import { useEffect } from "react";
-//import { PageLayout } from "@/shared/components/layout/PageLayout";
+import { useEffect, useState } from "react";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
-const ForecastCard = ({ href, label }: { href: string; label: string }) => (
-  <Link href={href}>
-    <div className="group relative p-3 border border-gray-200 rounded-lg hover:shadow-md hover:border-primary/40 transition-all duration-200 bg-white">
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-      <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors">
-        {label}
-      </h3>
-    </div>
-    
-  </Link>
-);
-
-const shortRangeLinks = [
-  { href: "/forecasts/day-1", label: "Day 1 Forecast" },
-  { href: "/forecasts/day-2", label: "Day 2 Forecast" },
-  { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
-  { href: "/forecasts/discussion-short", label: "Short-Range Discussion" },
-];
-
-const mediumRangeLinks = [
-  { href: "/forecasts/day-3", label: "Day 3 Forecast" },
-  { href: "/forecasts/day-4", label: "Day 4 Forecast" },
-  { href: "/forecasts/day-5", label: "Day 5 Forecast" },
-  { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
-  { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
-];
-
-const archiveLinks = [
-  { href: "/forecasts/archive", label: "View Past Forecasts & Archive" },
-  // add more when needed
-];
 
 export default function ForecastLanding() {
   const { headerRef } = useScrollToHeader(80);
-  //<header ref={headerRef} className="mb-4 md:mb-4"></header>
-  // Set browser tab title
+
+  const [images, setImages] = useState<string[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  // ✅ Fetch ALL images from directory
   useEffect(() => {
-    document.title = "Forecasts | RSMC Nairobi";
+    fetch("/api/forecasts/short-range/")
+      .then(res => res.json())
+      .then(data => {
+        if (data?.images) {
+          const processed = data.images.map((item: any) =>
+            item.image.replace(
+              /\/?rsmc\/(\d{4})\/(\d{2})\/(\d{2})\//,
+              (_: string, y: string, m: string, d: string) =>
+                `/uploads/rsmc/${y}/${m}/${d}/`
+            )
+          );
+
+      setImages(processed);
+    }
+  });
   }, []);
 
+  // ✅ Auto slide
+  useEffect(() => {
+    if (!isPlaying || images.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrent(prev => (prev + 1) % images.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, images]);
+
+  const nextSlide = () => {
+    setCurrent(prev => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrent(prev => (prev - 1 + images.length) % images.length);
+  };
+
+  // Sidebar (exact as you requested)
+  const relatedLinks = [
+    { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
+    { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
+    { href: "/forecasts/archive", label: "Forecast Archive" },
+  ];
+
   return (
-    //<PageLayout>
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
-        <header ref={headerRef} className="mb-4 md:mb-4">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
-            Forecasts
-          </h1>
-          <p className="text-lg text-gray-600 max-w-3xl">
-            Access short-range (1–2 days), medium-range (3–5 days) forecasts, risk assessments, discussions, and archived guidance.
-          </p>
-        </header>
+    <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <header ref={headerRef} className="mb-6">
+        <h1 className="text-xl md:text-xl font-serif font-bold text-primary mb-4">
+          Forecasts
+        </h1>
+      </header>
 
-        {/* Short Range */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-primary mb-6">
-            Short Range Forecasts (1–2 days)
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {shortRangeLinks.map((link) => (
-              <ForecastCard key={link.href} href={link.href} label={link.label} />
-            ))}
-          </div>
-        </section>
+      <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+          {/* LEFT SIDEBAR */}
+            <aside className="lg:col-span-3 mt-10 lg:mt-0">
+              <div className="sticky top-32">
+                <div className="bg-white border rounded-xl p-6 shadow-sm">
+                  <h3 className="text-xl font-semibold text-blue-900 mb-4">
+                    Related Links
+                  </h3>
+                  <div className="space-y-2">
+                    {relatedLinks.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        <div className="py-2 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
+                          {link.label}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </aside>
+        {/* SLIDER */}
+        <div className="lg:col-span-4 flex flex-col items-center mx-auto">
 
-        {/* Medium Range */}
-        <section className="mb-4">
-          <h2 className="text-xl font-semibold text-primary mb-3">
-            Medium Range Forecasts (3–5 days)
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {mediumRangeLinks.map((link) => (
-              <ForecastCard key={link.href} href={link.href} label={link.label} />
-            ))}
+          <div
+            className="w-full h-[400px] bg-white border rounded-xl flex items-center justify-center overflow-hidden"
+            onMouseEnter={() => setIsPlaying(false)}   // ✅ pause on hover
+            onMouseLeave={() => setIsPlaying(true)}   // ✅ resume
+          >
+            {images.length > 0 ? (
+              <img
+                src={images[current]}
+                className="max-h-full max-w-full object-contain"
+                alt={`Forecast ${current + 1}`}
+              />
+            ) : (
+              <span className="text-gray-500">Loading...</span>
+            )}
           </div>
-        </section>
 
-        {/* Archive */}
-        <section>
-          <h2 className="text-2xl font-semibold text-primary mb-6">
-            Archive & Historical Data
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {archiveLinks.map((link) => (
-              <ForecastCard key={link.href} href={link.href} label={link.label} />
-            ))}
+          {/* ✅ CONTROLS BELOW */}
+          <div className="mt-4 flex items-center gap-3">
+
+            <button
+              onClick={prevSlide}
+              className="px-3 py-1 border rounded hover:bg-gray-100"
+            >
+              {"<"}
+            </button>
+
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="px-4 py-1 bg-primary text-white rounded"
+            >
+              {isPlaying ? "||" : "▶"}
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="px-3 py-1 border rounded hover:bg-gray-100"
+            >
+              {">"}
+            </button>
+
+            <span className="ml-3 text-gray-600">
+              {images.length > 0 ? `${current + 1} / ${images.length}` : ""}
+            </span>
           </div>
-        </section>
+        </div>
+
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3 mt-10 lg:mt-0">
+          <div className="sticky top-32">
+            <div className="bg-white border rounded-xl p-6 shadow-sm">
+              <h3 className="text-xl font-semibold text-blue-900 mb-4">
+                Related Links
+              </h3>
+
+              <div className="space-y-2">
+                {relatedLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <div className="py-2 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
+                      {link.label}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+
       </div>
-    //</PageLayout>
+    </div>
   );
 }

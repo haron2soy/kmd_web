@@ -1,6 +1,5 @@
-from datetime import timedelta
 import os
-
+from datetime import timedelta
 from django.utils.timezone import now
 from django.conf import settings
 from rest_framework.response import Response
@@ -8,28 +7,22 @@ from rest_framework.decorators import api_view
 
 from forecasts.models import Forecast, ForecastCategory
 
-
 # -----------------------------
 # Filename generators
 # -----------------------------
 def marine_daily_filename(day, month, year):
-    return f"Daily_Marine_Forecast_valid_{day}_{month.title()}_{year}.pdf"
-
+    return f"Daily_Marine_Forecast_valid_{day}_{month}_{year}.pdf"
 
 def marine_seven_day_filename(day, month, year):
     today = now().date()
     start_date = today + timedelta(days=1)
     end_date = today + timedelta(days=7)
-
-    start = f"{start_date.day:02d}_{start_date.strftime('%B')}_{start_date.year}"
-    end = f"{end_date.day:02d}_{end_date.strftime('%B')}_{end_date.year}"
-
+    start = f"{start_date.day:02d}_{start_date.month:02d}_{start_date.year}"
+    end = f"{end_date.day:02d}_{end_date.month:02d}_{end_date.year}"
     return f"Seven_Day_Marine_Forecast_valid_{start}_to_{end}.pdf"
 
-
 def easwfp_daily_filename(day, month, year):
-    return f"Easwfp_Discussion_valid_{day}_{month.title()}_{year}.pdf"
-
+    return f"Easwfp_Discussion_valid_{day}_{month}_{year}.pdf"
 
 # -----------------------------
 # Slug mapping
@@ -44,27 +37,23 @@ FILENAME_PATTERNS = {
     "easwfp-discussion-daily": easwfp_daily_filename,
 }
 
-
 # -----------------------------
 # API endpoint
 # -----------------------------
 @api_view(["GET"])
 def guidance_documents(request):
-
     slug = request.GET.get("slug")
-
     if not slug:
         return Response({"error": "Missing slug parameter"}, status=400)
 
     if slug not in FILENAME_PATTERNS:
-        return Response({
-            "error": f"Invalid slug. Available: {', '.join(FILENAME_PATTERNS.keys())}"
-        }, status=400)
+        return Response({"error": f"Invalid slug. Available: {', '.join(FILENAME_PATTERNS.keys())}"},
+                        status=400)
 
     today = now().date()
-    day = today.strftime("%d")
-    month_title = today.strftime("%B")
-    year = today.year
+    day = f"{today.day:02d}"
+    month = f"{today.month:02d}"
+    year = str(today.year)
 
     # -----------------------------
     # 1️⃣ Database lookup
@@ -77,13 +66,11 @@ def guidance_documents(request):
     ).first()
 
     if forecast:
-
         _, ext = os.path.splitext(forecast.file_path)
         file_type = ext.lstrip(".").lower()
-
         return Response({
-            "document": forecast.file_path,   # unchanged
-            "url": f"{settings.MEDIA_URL}{forecast.file_path}",  # working URL
+            "document": forecast.file_path,
+            "url": f"{settings.STORAGE_BASE_DIR}{forecast.file_path}",
             "slug": slug,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
             "filename": os.path.basename(forecast.file_path),
@@ -93,24 +80,12 @@ def guidance_documents(request):
     # -----------------------------
     # 2️⃣ Filesystem fallback
     # -----------------------------
-    day_folder = today.strftime("%b-%d").lower()
-
-    base_path = os.path.join(
-        settings.MEDIA_ROOT,
-        "rsmc",
-        str(year),
-        month_title.lower(),
-        day_folder
-    )
-
-    filename = FILENAME_PATTERNS[slug](day, month_title, year)
+    base_path = os.path.join(settings.RSMC_DIR, year, month, day)
+    filename = FILENAME_PATTERNS[slug](day, month, year)
     full_path = os.path.join(base_path, filename)
 
     if not os.path.exists(full_path):
-        return Response(
-            {"error": f"{filename} not found in {day_folder}"},
-            status=404
-        )
+        return Response({"error": f"{filename} not found in {base_path}"}, status=404)
 
     # -----------------------------
     # 3️⃣ Save to DB
@@ -120,14 +95,7 @@ def guidance_documents(request):
         defaults={"name": "Guidance Documents"}
     )
 
-    db_file_path = os.path.join(
-        "rsmc",
-        str(year),
-        month_title.lower(),
-        day_folder,
-        filename
-    )
-
+    db_file_path = os.path.join("rsmc", year, month, day, filename)
     forecast, _ = Forecast.objects.update_or_create(
         category=category,
         slug=slug,
@@ -143,8 +111,8 @@ def guidance_documents(request):
     file_type = ext.lstrip(".").lower()
 
     return Response({
-        "document": db_file_path,   # unchanged
-        "url": f"{settings.MEDIA_URL}{db_file_path}",  # working URL
+        "document": db_file_path,
+        "url": f"{settings.STORAGE_BASE_DIR}{db_file_path}",
         "slug": slug,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
         "filename": filename,

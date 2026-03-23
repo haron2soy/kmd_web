@@ -1,6 +1,6 @@
 export async function checkBackendHealth() {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 3000);
+  const timeout = setTimeout(() => controller.abort(), 8000);
 
   try {
     const res = await fetch("/api/health/", {

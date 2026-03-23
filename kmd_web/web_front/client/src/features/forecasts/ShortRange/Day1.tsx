@@ -40,7 +40,19 @@ export default function Day1() {
       .then(data => {
         if (data?.image) {
           // Ensure image points to /uploads/... for Nginx
-          setImage(data.image.startsWith("/uploads/") ? data.image : `/uploads/${data.image}`);
+          setImage(
+            data.image.replace(
+              /\/?rsmc\/(\d{4})\/(\d{2})\/(\d{2})\//,
+              (_: string, y: string, m: string, d: string) => {
+                //const monthNames = [
+                 // "jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"
+                //];
+                //const monthName = monthNames[parseInt(m, 10) - 1];
+                //const dayFolder = `${monthName}-${d}`;
+                return `/uploads/rsmc/${y}/${m}/${d}/`;
+              }
+            )
+          );
         }
       })
       .catch(err => console.error("Failed to fetch latest forecast:", err));

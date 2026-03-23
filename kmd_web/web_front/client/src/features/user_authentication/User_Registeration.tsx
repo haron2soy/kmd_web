@@ -25,27 +25,28 @@ const initialForm: RegisterForm = {
 };
 
 export default function Register() {
-const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
-  //<header ref={headerRef} 
-   useEffect(() => {
-    document.title = "Register | RSMC Nairobi";
-  }, []);
+  const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
   const [, navigate] = useLocation();
   const { register } = useAuth();
 
   const [form, setForm] = useState<RegisterForm>(initialForm);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string>("");
+
+  useEffect(() => {
+    document.title = "Register | RSMC Nairobi";
+  }, []);
 
   // ─────────────────────────────────────────
   // Handle Input
   // ─────────────────────────────────────────
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setForm((prev) => ({ ...prev, [name]: value }));
 
+    // Clear field-specific error
     setErrors((prev) => {
       if (!prev[name as keyof FieldErrors]) return prev;
       const updated = { ...prev };
@@ -57,15 +58,16 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
   // ─────────────────────────────────────────
   // Validation
   // ─────────────────────────────────────────
-
   const validateForm = (): boolean => {
     const newErrors: FieldErrors = {};
 
-    if (!form.first_name.trim())
+    if (!form.first_name.trim()) {
       newErrors.first_name = ["First name is required."];
+    }
 
-    if (!form.last_name.trim())
+    if (!form.last_name.trim()) {
       newErrors.last_name = ["Last name is required."];
+    }
 
     if (!form.email.trim()) {
       newErrors.email = ["Email is required."];
@@ -73,21 +75,23 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
       newErrors.email = ["Invalid email address."];
     }
 
-    if (form.password.length < 8)
+    if (!form.password) {
+      newErrors.password = ["Password is required."];
+    } else if (form.password.length < 8) {
       newErrors.password = ["Password must be at least 8 characters."];
+    }
 
-    if (form.password !== form.password_confirm)
+    if (form.password !== form.password_confirm) {
       newErrors.password_confirm = ["Passwords do not match."];
+    }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
   // ─────────────────────────────────────────
   // Submit
   // ─────────────────────────────────────────
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -97,6 +101,7 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
     try {
       setLoading(true);
       setErrors({});
+      setSuccess("");
 
       await register(
         form.first_name.trim(),
@@ -106,16 +111,19 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
         form.password_confirm
       );
 
-      // store email temporarily for verification page
-      sessionStorage.setItem("verify_email", form.email);
+      // ✅ Success UX instead of redirect
+      setSuccess("Account created successfully. Await admin approval.");
 
-      navigate("/verify-email", { replace: true });
-
+      // Optional: reset form
+      setForm(initialForm);
+      
+      // Redirect after 5 seconds
+      setTimeout(() => navigate("/login"), 5000);
     } catch (err: any) {
-      const data = err?.response?.data || err;
+      const data = err?.response?.data;
 
       if (data && typeof data === "object") {
-        setErrors(data as FieldErrors);
+        setErrors(data);
       } else {
         setErrors({
           non_field_errors: ["Unexpected error. Please try again."],
@@ -129,14 +137,27 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
   // ─────────────────────────────────────────
   // UI
   // ─────────────────────────────────────────
-
   return (
     <div className="register-container">
       <div ref={headerRef} className="register-card">
         <div className="bg-primary text-primary-foreground px-6 text-center">
           <h1>Create Account</h1>
-          <p className="bg-primary text-center">Join us and start exploring</p>
+          <p>Join us and start exploring</p>
         </div>
+
+        {/* ✅ Success Message */}
+        {success && (
+          <div className="success-block">
+            <p>{success}</p>
+            <button
+              onClick={() => navigate("/login")}
+              className="link-btn"
+            >
+              Go to Login
+            </button>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} noValidate className="register-form">
 
           <Field
@@ -185,6 +206,7 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
             errors={errors.password_confirm}
           />
 
+          {/* Global Errors */}
           {errors.non_field_errors && (
             <div className="error-block">
               {errors.non_field_errors.map((msg, i) => (
@@ -202,7 +224,13 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
             {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
-
+          {/* ✅ Success Message */}
+            {success && (
+              <div className="success-block">
+                <p>{success}</p>
+                
+              </div>
+            )}
         <p className="login-link">
           Already have an account? <Link href="/login">Log in</Link>
         </p>
@@ -211,6 +239,9 @@ const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
   );
 }
 
+// ─────────────────────────────────────────
+// Field Component
+// ─────────────────────────────────────────
 interface FieldProps {
   label: string;
   name: string;

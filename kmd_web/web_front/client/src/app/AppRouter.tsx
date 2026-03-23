@@ -21,6 +21,7 @@ import GuidanceArchive from "@/features/forecasts/Guidance/GuidanceArchive";
 
 import ForecastLanding from "@/features/forecasts/ForecastLanding";
 import GuidanceLanding from "@/features/forecasts/Guidance/GuidanceLanding";
+
 import Day1 from "@/features/forecasts/ShortRange/Day1";
 import Day2 from "@/features/forecasts/ShortRange/Day2";
 import RiskTableShort from "@/features/forecasts/ShortRange/RiskTableShort";
@@ -53,7 +54,7 @@ import ForgotPassword from "@/features/ForgotPassword";
 import {PageLayout} from "@/shared/components/layout/PageLayout";
 
 import Register from "@/features/user_authentication/User_Registeration";
-import VerifyEmail from "@/features/user_authentication/VerifyEmail";
+//import VerifyEmail from "@/features/user_authentication/VerifyEmail";
 
 import RedirectProducts from "@/features/products/pages/RedirectProducts";
 
@@ -69,8 +70,7 @@ function Router() {
           <Route path="/register" component={Register} />
           {/* Auth routes */}
           <Route path="/login" component={Login} />
-          <Route path="/verify-email/:token?" component={VerifyEmail} />
-          <Route path="/verify-email" component={VerifyEmail} />
+
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password/:uid/:token" component={ResetPassword} />
           

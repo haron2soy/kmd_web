@@ -106,3 +106,42 @@ class WRFFieldView(View):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+'''def get_wrf_field(request):
+    datetime = request.GET.get("datetime")
+    variable = request.GET.get("variable")
+
+    if not datetime or not variable:
+        return HttpResponseBadRequest("Missing parameters")
+
+    run_id = datetime
+    folder = os.path.join(BASE_MAP_DIR, run_id)
+
+    # Map variable → filename
+    variable_map = {
+        "PRECIP": "rainfall_map.png",
+        "T2": "temperature_map.png",
+        "WIND": "wind_map.png",
+    }
+
+    filename = variable_map.get(variable)
+
+    if not filename:
+        return HttpResponseBadRequest("Invalid variable")
+
+    file_path = os.path.join(folder, f"{run_id}_{filename}")
+
+    if not os.path.exists(file_path):
+        return HttpResponseBadRequest("File not found")
+
+    # 🔥 IMPORTANT: Hardcoded bounds (replace later with dynamic)
+    bounds = [
+        [33.0, -5.0],   # SW
+        [42.0, -5.0],   # SE
+        [42.0, 5.0],    # NE
+        [33.0, 5.0],    # NW
+    ]
+
+    response = FileResponse(open(file_path, "rb"), content_type="image/png")
+    response["X-Domain-Bounds"] = json.dumps(bounds)
+
+    return response'''

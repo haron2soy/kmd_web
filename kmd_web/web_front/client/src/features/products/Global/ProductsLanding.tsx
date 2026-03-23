@@ -32,7 +32,7 @@ export default function ProductsLanding() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <header ref={headerRef} className="mb-12">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
+          <h1 className="text-xl md:text-xl font-serif font-bold text-primary mb-4">
             Meteorological Services
           </h1>
           <p className="text-gray-600 max-w-2xl">

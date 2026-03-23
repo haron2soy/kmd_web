@@ -7,7 +7,6 @@ import os
 
 MAX_DAY = 5
 
-
 @api_view(["GET"])
 def latest_forecast(request):
     day = request.GET.get("day")
@@ -25,6 +24,9 @@ def latest_forecast(request):
         return Response({"error": f"Day must be between 1 and {MAX_DAY}"}, status=400)
 
     today = now().date()
+    year = str(today.year)
+    month = f"{today.month:02d}"  # numeric month
+    day_folder = f"{today.day:02d}"  # numeric day folder
 
     # 1️⃣ Try database first
     forecast = Forecast.objects.filter(
@@ -42,21 +44,10 @@ def latest_forecast(request):
         })
 
     # 2️⃣ Fallback to filesystem
-    year = str(today.year)
-    month = today.strftime("%B").lower()
-    day_folder = today.strftime("%b-%d").lower()
-
-    base_path = os.path.join(
-        settings.MEDIA_ROOT,
-        "rsmc",
-        year,
-        month,
-        day_folder
-    )
-
+    base_path = os.path.join(settings.RSMC_DIR, year, month, day_folder)
     filename = f"rsmc0{day_int}.jpg"
     full_path = os.path.join(base_path, filename)
-    
+
     if not os.path.exists(full_path):
         return Response({"error": "Forecast image not found"}, status=404)
 
@@ -66,13 +57,15 @@ def latest_forecast(request):
         defaults={"name": "Short Range"}
     )
 
+    file_relative_path = os.path.join("rsmc", year, month, day_folder, filename)
+
     forecast, _ = Forecast.objects.update_or_create(
         category=category,
         day=day_int,
         issue_date=today,
         defaults={
             "title": f"Short Range Forecast - Day {day_int}",
-            "file": f"rsmc/{year}/{month}/{day_folder}/{filename}",
+            "file": file_relative_path,
             "is_active": True,
         }
     )

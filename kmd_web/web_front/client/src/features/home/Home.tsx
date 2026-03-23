@@ -1,7 +1,7 @@
 // src/features/home/pages/Home.tsx
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Button } from "@/shared/components/ui/button";
+//import { Button } from "@/shared/components/ui/button";
 import { CloudRain } from "lucide-react";
 import ActiveWarnings from "@/features/Alerts/ActiveWarnings";
 import { cn } from "@/lib/utils";
@@ -117,14 +117,14 @@ export default function Home() {
             </span>
 
             <h1 className="text-white/90 text-2xl font-serif font-normal mb-4">
-              Providing guidance for whole Eastern Africa domain
+              Providing guidance for Eastern Africa domain
             </h1>
 
             <p className="text-lg md:text-xl text-slate-200 mb-8 leading-relaxed">
              Focusing on Heavy rain, strong winds, large waves (coastal areas of western Indian Ocean)
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            {/*<div className="flex flex-wrap gap-4">
               <Link href="/pages/services">
                 <Button
                   size="lg"
@@ -143,7 +143,7 @@ export default function Home() {
                   About Us
                 </Button>
               </Link>
-            </div>
+            </div>*/}
           </div>
         </div>
       </section>

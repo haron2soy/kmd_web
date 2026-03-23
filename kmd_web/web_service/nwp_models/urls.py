@@ -8,9 +8,11 @@ urlpatterns = [
     path("notify/", views.notify_new_wrf,
      name="notify-wrf"),
      
-    path("field/", views.get_wrf_field,
+    path("<str:model_name>/field/", views.get_model_field,
      name="wrf-field"),
 
     path("metadata/", views.get_wrf_metadata,
-     name="wrf-metadata"),  # add this
+     name="wrf-metadata"),
+    
+    path("list-models/", views.list_models, name="list_models"),
 ]

@@ -8,7 +8,25 @@ from django.http import FileResponse, HttpResponseBadRequest
 from django.conf import settings
 
 
-BASE_MAP_DIR = "/home/haron/kmd/generated_maps"
+MODEL_CONFIG = {
+    "nwp_maps": {
+        "BASE_MAP_DIR": settings.GENERATED_MAPS_DIR,
+        "prefix": "d01",
+        "variables": {
+            "PRECIP": "rainfall_map.png",
+            "T2": "temperature_map.png",
+            "WIND": "wind_map.png",
+        },
+    },
+    "eawrf_maps": {
+        "BASE_MAP_DIR": settings.WRF_DATA_DIR,  # or create EAWRF_DIR if needed
+        "prefix": "d01",
+        "variables": {
+            "PRECIP": "rainfall_map.png",
+            "WIND": "wind_map.png",
+        },
+    },
+}
 
 @api_view(["POST"])
 def notify_new_wrf(request):
@@ -36,71 +54,37 @@ def get_wrf_metadata(request):
         "projection": "EPSG:4326",
     })
 
-'''def get_wrf_field(request):
+
+
+@api_view(["GET"])
+def get_model_field(request, model_name):
     datetime = request.GET.get("datetime")
     variable = request.GET.get("variable")
 
     if not datetime or not variable:
         return HttpResponseBadRequest("Missing parameters")
 
-    run_id = datetime
-    folder = os.path.join(BASE_MAP_DIR, run_id)
+    model = MODEL_CONFIG.get(model_name)
+    if not model:
+        return HttpResponseBadRequest("Invalid model")
 
-    # Map variable → filename
-    variable_map = {
-        "PRECIP": "rainfall_map.png",
-        "T2": "temperature_map.png",
-        "WIND": "wind_map.png",
-    }
+    base_dir = model["BASE_MAP_DIR"]
+    prefix = model["prefix"]
+    variable_map = model["variables"]
 
-    filename = variable_map.get(variable)
-
-    if not filename:
-        return HttpResponseBadRequest("Invalid variable")
-
-    file_path = os.path.join(folder, f"{run_id}_{filename}")
-
-    if not os.path.exists(file_path):
-        return HttpResponseBadRequest("File not found")
-
-    # 🔥 IMPORTANT: Hardcoded bounds (replace later with dynamic)
-    bounds = [
-        [33.0, -5.0],   # SW
-        [42.0, -5.0],   # SE
-        [42.0, 5.0],    # NE
-        [33.0, 5.0],    # NW
-    ]
-
-    response = FileResponse(open(file_path, "rb"), content_type="image/png")
-    response["X-Domain-Bounds"] = json.dumps(bounds)
-
-    return response'''
-
-def get_wrf_field(request):
-    datetime = request.GET.get("datetime")
-    variable = request.GET.get("variable")
-
-    if not datetime or not variable:
-        return HttpResponseBadRequest("Missing parameters")
-
-    run_id = f"d01_{datetime}"
-    folder = os.path.join(BASE_MAP_DIR, run_id)
-
-    variable_map = {
-        "PRECIP": "rainfall_map.png",
-        "T2": "temperature_map.png",
-        "WIND": "wind_map.png",
-    }
+    run_id = f"{prefix}_{datetime}"
+    folder = os.path.join(base_dir, run_id)
 
     filename = variable_map.get(variable.upper())
     if not filename:
         return HttpResponseBadRequest("Invalid variable")
 
-    file_path = os.path.join(folder, f"{run_id}_{filename}")
+    file_path = os.path.join(folder, f"{filename}")
 
     if not os.path.exists(file_path):
-        return HttpResponseBadRequest(f"File not found: {file_path}")
+        return HttpResponseBadRequest(f"File not found")
 
+   
     bounds = [
         [33.0, -5.0],
         [42.0, -5.0],
@@ -117,3 +101,36 @@ def get_wrf_field(request):
 
     return response
 
+
+# -------------------------------
+# LIST MODELS ENDPOINT
+# -------------------------------
+@api_view(["GET"])
+def list_models(request):
+    available_models = []
+
+    for model_name, config in MODEL_CONFIG.items():
+        base_dir = config.get("BASE_MAP_DIR")
+
+        if base_dir and os.path.isdir(base_dir):
+            # check recursively
+            has_files = any(files for _, _, files in os.walk(base_dir))
+            status = "live" if has_files else "pending"
+
+            available_models.append({
+                "id": model_name,
+                "name": model_name.upper(),
+                "description": f"{model_name.upper()} model",
+                "status": status,
+
+                # ✅ frontend route
+                #"path": f"/nwp_models/{model_name}",
+
+                # ✅ API endpoint
+                "apiEndpoint": f"/api/nwp_models/{model_name}/field/",
+
+                # ✅ expose variables (no need separate API)
+                "variables": list(config["variables"].keys()),
+            })
+
+    return Response(available_models)

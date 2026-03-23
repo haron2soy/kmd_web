@@ -1,6 +1,6 @@
 def collect_files(year, month):
     month = month.lower()
-    base_path = os.path.join(settings.MEDIA_ROOT, "rsmc", year, month)
+    base_path = os.path.join(settings.STORAGE_BASE_DIR, "rsmc", year, month)
 
     if not os.path.exists(base_path):
         return []

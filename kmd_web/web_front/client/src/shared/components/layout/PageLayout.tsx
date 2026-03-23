@@ -20,7 +20,7 @@ export function PageLayout({ children, title, description }: PageLayoutProps) {
       {title && (
         <div className="bg-gradient-to-b from-slate-100 to-white border-b border-slate-200">
           <div className="container mx-auto px-4 py-10 md:py-14 lg:py-16">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-primary tracking-tight mb-4">
+            <h1 className="text-xl md:text-2xl lg:text-2xl font-serif font-bold text-primary tracking-tight mb-4">
               {title}
             </h1>
             {description && (

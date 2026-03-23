@@ -7,15 +7,14 @@ import os
 
 # Mapping of slugs to exact filename patterns
 FILENAME_PATTERNS = {
-    'marine-foreast-daily': 'daily-marine-forecast-valid-03-march-2026.doc',
-    'marine-forecast-weekly': 'Seven-day-marine-forecast-valid-09-march-2016-to-15-march-2026.doc',
+    'marine-forecast-daily': 'daily-marine-forecast-valid-03-03-2026.pdf',
+    'marine-forecast-weekly': 'seven-day-marine-forecast-valid-09-03-2026-to-15-03-2026.pdf',
 }
 
 @api_view(["GET"])
 def marine_documents(request):
     slug = request.GET.get("slug")
 
-    # Validate slug parameter
     if not slug:
         return Response({"error": "Missing slug parameter"}, status=400)
 
@@ -25,6 +24,9 @@ def marine_documents(request):
         }, status=400)
 
     today = now().date()
+    year = str(today.year)
+    month = f"{today.month:02d}"  # numeric month
+    day_folder = f"{today.day:02d}"  # numeric day folder
 
     # 1️⃣ Try database first
     forecast = Forecast.objects.filter(
@@ -36,29 +38,17 @@ def marine_documents(request):
 
     if forecast:
         return Response({
-            "document": forecast.file.url if hasattr(forecast, 'file') else forecast.file.url,
+            "document": forecast.file.url,
             "slug": slug,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
-            "filename": os.path.basename(forecast.file.name) if hasattr(forecast, 'file') else os.path.basename(forecast.file.name)
+            "filename": os.path.basename(forecast.file.name)
         })
 
     # 2️⃣ Fallback to filesystem
-    year = str(today.year)
-    month = today.strftime("%B").lower()
-    day_folder = today.strftime("%b-%d").lower()
-
-    base_path = os.path.join(
-        settings.MEDIA_ROOT,
-        "rsmc",
-        year,
-        month,
-        day_folder
-    )
-
+    base_path = os.path.join(settings.RSMC_DIR, year, month, day_folder)
     filename = FILENAME_PATTERNS[slug]
     full_path = os.path.join(base_path, filename)
-    
-    
+
     if not os.path.exists(full_path):
         return Response({"error": f"{filename} not found in {day_folder}"}, status=404)
 
@@ -68,19 +58,21 @@ def marine_documents(request):
         defaults={"name": "Marine Documents"}
     )
 
+    file_relative_path = os.path.join("rsmc", year, month, day_folder, filename)
+
     forecast, _ = Forecast.objects.update_or_create(
         category=category,
         slug=slug,
         issue_date=today,
         defaults={
-            "title": f"{slug.replace('-', ' ').title()}",
-            "file": f"rsmc/{year}/{month}/{day_folder}/{filename}",
+            "title": slug.replace('-', ' ').title(),
+            "file": file_relative_path,
             "is_active": True,
         }
     )
 
     return Response({
-        "document": forecast.file.url if hasattr(forecast, 'file') else forecast.file.url,
+        "document": forecast.file.url,
         "slug": slug,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
         "filename": filename

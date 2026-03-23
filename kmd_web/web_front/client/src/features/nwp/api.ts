@@ -1,34 +1,65 @@
-//import apiClient from "@/lib/apiClient";
+// nwp/api.ts
+import axios from "axios";
 
+/**
+ * NWP Model interface
+ */
 export interface NWPModel {
-  id: number | string;
+  id: string | number;
   name: string;
-  description: string;
+  description?: string;
   status?: "pending" | "live" | "deprecated";
   resolution?: string;
   updateFrequency?: string;
   path?: string;
+  apiEndpoint: string;
 }
 
+/**
+ * Fetch all NWP models from backend
+ */
 export async function getNWPModels(): Promise<NWPModel[]> {
-  // When backend is ready, replace with:
-  //const response = await apiClient.get("/nwp-models/");
-  // return response.data;
+  try {
+    const response = await axios.get<NWPModel[]>("/api/nwp_models/list-models/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch NWP models:", err);
+    return [];
+  }
+}
 
-  return Promise.resolve([
-    {
-      id: 1,
-      name: "WRF Regional Model",
-      description: "High-resolution regional atmospheric model.",
-      status: "live",
-      path: "/nwp-models/wrf",
-    },
-    {
-      id: 2,
-      name: "Global Deterministic Model",
-      description: "Global forecast model for large-scale dynamics.",
-      status: "pending",
-      path: "/nwp-models/global",
-    },
-  ]);
+/**
+ * Fetch available timestamps (datetimes) for a specific model
+ * @param modelId ID of the model
+ */
+export async function getAvailableTimes(modelId: string | number): Promise<string[]> {
+  try {
+    const response = await axios.get<string[]>(`/api/nwp/${modelId}/available-times/`);
+    return response.data;
+  } catch (err) {
+    console.error(`Failed to fetch available times for model ${modelId}:`, err);
+    return [];
+  }
+}
+
+/**
+ * Fetch metadata for a specific model
+ * @param modelId ID of the model
+ */
+export async function getModelMetadata(modelId: string | number): Promise<Record<string, any> | null> {
+  try {
+    const response = await axios.get(`/api/nwp/${modelId}/metadata/`);
+    return response.data;
+  } catch (err) {
+    console.error(`Failed to fetch metadata for model ${modelId}:`, err);
+    return null;
+  }
+}
+
+/**
+ * Fetch the actual map/image URL for a given model, datetime, and variable
+ */
+export function getWrfImageUrl(modelId: string | number, datetime: string, variable: string): string {
+  const encodedVariable = encodeURIComponent(variable);
+  return `/api/nwp_models/${modelId}/field/?datetime=${datetime}&variable=${encodedVariable}`;
 }

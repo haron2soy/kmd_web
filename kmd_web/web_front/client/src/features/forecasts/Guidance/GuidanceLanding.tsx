@@ -22,7 +22,7 @@ export default function GuidanceLanding() {
     //<PageLayout>
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
         <header ref={headerRef} className="mb-4 md:mb-4">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-3">
+          <h2 className="text-xl md:text-xl font-serif font-bold text-primary mb-3">
             Guidance
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl">

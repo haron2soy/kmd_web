@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import type { Dispatch, SetStateAction } from "react";
+//import type { Dispatch, SetStateAction } from "react";
 
 interface DateTimeControlProps {
   datetime: string;
-  setDatetime: Dispatch<SetStateAction<string>>;
+  //setDatetime: Dispatch<SetStateAction<string>>;
+  setDatetime: (value: string) => void;
 }
 
 export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
@@ -34,10 +35,10 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
     );
   };
 
-  const handleCheck = () => {
+  {/*const handleCheck = () => {
     if (!year || !month || !day || !hour) return;
     setDatetime(`${year}-${month}-${day}_${hour}:00:00`);
-  };
+  };*/}
 
   // 🔁 Increment / Decrement by 1 hour
   const adjustHour = (delta: number) => {
@@ -60,12 +61,13 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
 
   return (
     <div className="flex flex-col gap-2">
+      {/*
       <label className="text-lg font-bold mb-2 block">DateTime:</label>
 
-      {/* Inputs */}
+      {/* Inputs /}
         <div className="flex items-end gap-1 flex-nowrap overflow-x-auto max-w-full">
           
-          {/* Year */}
+          {/* Year /}
           <div className="flex flex-col items-center flex-shrink-0">
             <label className="text-xs">Year</label>
             <input
@@ -83,7 +85,7 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
             />
           </div>
 
-          {/* Month */}
+          {/* Month /}
           <div className="flex flex-col items-center flex-shrink-0">
             <label className="text-xs">Month</label>
             <input
@@ -102,7 +104,7 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
             />
           </div>
 
-          {/* Day */}
+          {/* Day /}
           <div className="flex flex-col items-center flex-shrink-0">
             <label className="text-xs">Day</label>
             <input
@@ -121,7 +123,7 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
             />
           </div>
 
-          {/* Hour */}
+          {/* Hour /}
           <div className="flex flex-col items-center flex-shrink-0">
             <label className="text-xs">Hour</label>
             <input
@@ -142,13 +144,13 @@ export default function DateTimeControl({ setDatetime }: DateTimeControlProps) {
 
         </div>
 
-      {/* Check button */}
+      {/* Check button /}
       <button
         onClick={handleCheck}
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-32 mt-2"
       >
         Check
-      </button>
+      </button>*/}
 
       {/* ⬇️ Time Control Arrows */}
       <div className="flex items-center gap-4 mt-3">

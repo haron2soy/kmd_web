@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import datetime
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -165,18 +166,42 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-MEDIA_URL = "/uploads/"
-WRF_DATA_DIR = BASE_DIR / "nwp_models_data/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Generated maps directory
-GENERATED_MAPS_DIR = BASE_DIR / "generated_maps"
+# --- Base directories outside Docker ---
+STORAGE_BASE_DIR = Path("/home/haron/kmd_web")
+MEDIA_URL = "/uploads/"
+RSMC_DIR = STORAGE_BASE_DIR / "rsmc"
+NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
 
-# Auto-create directories if missing
-for directory in [WRF_DATA_DIR, GENERATED_MAPS_DIR]:
+# --- Dynamic date-based subdirectories ---
+today = datetime.now()  # or datetime.utcnow() if utc time needed
+year = str(today.year)
+month = f"{today.month:02d}"
+day = f"{today.day:02d}"
+
+# --- Ensure directories exist ---
+for directory in [
+    RSMC_DIR,
+    RSMC_DIR / year,
+    RSMC_DIR / year / month,
+]:
     directory.mkdir(parents=True, exist_ok=True)
-MEDIA_ROOT = "/home/haron/uploads/"
+
+'''for directory in [
+    NWP_DIR,
+    NWP_DIR / year,
+    NWP_DIR / year / month,
+    NWP_DIR / year / month / "nwp_models_data",
+    NWP_DIR / year / month / "generated_maps",
+]:
+    directory.mkdir(parents=True, exist_ok=True)'''
+
+# --- Django settings ---
+MEDIA_ROOT = STORAGE_BASE_DIR
+WRF_DATA_DIR = RSMC_DIR / year / month / "nwp_models_data"
+GENERATED_MAPS_DIR = RSMC_DIR / year / month / "generated_maps"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
