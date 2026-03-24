@@ -18,13 +18,15 @@ def get_forecast_path(day_int):
     """Build filesystem path for forecast image based on today and day_int."""
     today = now().date()
     year = str(today.year)
-    month = f"{today.month:02d}"  # zero-padded number
-    day_folder = f"{today.day:02d}"  # zero-padded number
+    #month = f"{today.month:02d}"  # zero-padded number
+    month = today.strftime("%B")
+    #day_folder = f"{today.day:02d}"  # zero-padded number
+    day_folder = today.strftime("%b-%d").lower()
 
     base_path = settings.STORAGE_BASE_DIR / "rsmc" / year / month / day_folder
     filename = f"rsmc0{day_int}.jpg"
     full_path = base_path / filename
-    print("another path:", full_path)
+    #print("full_path: ", full_path)
     return full_path, f"rsmc/{year}/{month}/{day_folder}/{filename}"
 
 @api_view(["GET"])
@@ -50,9 +52,9 @@ def latest_forecast(request):
         issue_date=today,
         is_active=True
     ).first()
-    print("beforeDB HIT:", forecast)
+   
     if forecast:
-        print("DB HIT:", forecast.file_path)
+        
         return Response({
             "image": f"{forecast.file_path}".replace("//", "/"),
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
@@ -61,9 +63,9 @@ def latest_forecast(request):
 
     # 2️⃣ Fallback to filesystem
     full_path, db_path = get_forecast_path(day_int)
-    print("full path:", full_path)
+    
     if not os.path.exists(full_path):
-        print("Looking for file at:", full_path)
+        
         return Response({"error": "Forecast image not found"}, status=404)
 
     # 3️⃣ Create or update DB record
@@ -80,6 +82,7 @@ def latest_forecast(request):
             "title": f"Short Range Forecast - Day {day_int}",
             "file_path": db_path,
             "is_active": True,
+            "content_type": "image",
         }
     )
 

@@ -1,0 +1,12 @@
+[Unit]
+Description=Image Transfer Watcher
+After=network.target
+
+[Service]
+ExecStart=/home/nwp/kmd_web/kmd_web/kmd_web/images_transfer.sh
+Restart=always
+RestartSec=5
+User=haron
+
+[Install]
+WantedBy=multi-user.target

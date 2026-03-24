@@ -143,7 +143,7 @@ export default function Archive() {
           setFiles(
             data.files.map((file: any) => ({
               name: file.name,
-              url: `/api${file.url}`,
+              url: file.url,
               type: detectFileType(file.name),
             }))
           );

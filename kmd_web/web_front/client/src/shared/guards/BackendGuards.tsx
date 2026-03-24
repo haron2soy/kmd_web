@@ -1,55 +1,107 @@
 // src/shared/guards/BackendGuards.tsx
 import { useEffect, useState } from "react";
 
+const TIMEOUT = 20000;
+const POLL_INTERVAL = 3000;
+
+type Status = "checking" | "up" | "down";
+
 export function BackendGuard({ children }: { children: React.ReactNode }) {
-  const [backendUp, setBackendUp] = useState(false);
-  const [elapsed, setElapsed] = useState(0); // milliseconds
+  const [status, setStatus] = useState<Status>("checking");
+  const [startTime] = useState(() => Date.now());
+  const [, setDownCount] = useState(0);
 
   useEffect(() => {
-    let intervalId: number;
-    let timerId: number;
+    let isMounted = true;
+    let pollId: number;
 
     const checkBackend = async () => {
       try {
-        const res = await fetch("/api/health/");
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3000);
+
+        const res = await fetch("/api/health/", {
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+
+        if (!isMounted) return;
+
         if (res.ok) {
-          setBackendUp(true);
+          setStatus("up");
+          setDownCount(0); // Reset counter on success
+        } else {
+          // Only mark as down after 2 consecutive failures
+          setDownCount(prev => {
+            const newCount = prev + 1;
+            if (newCount >= 2 && isMounted) {
+              setStatus("down");
+            }
+            return newCount;
+          });
         }
       } catch {
-        // Backend still down, ignore
+        if (isMounted) {
+          // Only mark as down after 2 consecutive failures
+          setDownCount(prev => {
+            const newCount = prev + 1;
+            if (newCount >= 2 && isMounted) {
+              setStatus("down");
+            }
+            return newCount;
+          });
+        }
       }
     };
 
-    // Start elapsed timer (updates every second)
-    timerId = window.setInterval(() => setElapsed((prev) => prev + 1000), 1000);
-
-    // Check backend immediately and then every 10 seconds
     checkBackend();
-    intervalId = window.setInterval(checkBackend, 10000);
+    pollId = window.setInterval(checkBackend, POLL_INTERVAL);
 
     return () => {
-      window.clearInterval(intervalId);
-      window.clearInterval(timerId);
+      isMounted = false;
+      window.clearInterval(pollId);
     };
   }, []);
 
-  if (backendUp) {
-    // Backend is ready, render children
+  const elapsed = Date.now() - startTime;
+  const hasTimedOut = elapsed >= TIMEOUT;
+
+  if (status === "up") {
     return <>{children}</>;
   }
 
-  return (
-    <div className="flex h-screen flex-col items-center justify-center text-red-600">
-      {/* Spinning circle */}
-      <div className="mb-4 animate-spin rounded-full border-4 border-t-4 border-red-600 w-12 h-12"></div>
-
-      {/* Messages based on elapsed time */}
-      {elapsed <= 20000 ? (
-        <p className="text-center">Backend is starting... please wait</p>
-      ) : (
-        <p className="text-center">
-          Still waiting for the server — try refreshing later.
+  if (hasTimedOut) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center text-blue-600 space-y-4">
+        <p className="font-medium text-center">
+          Unable to reach the server.
         </p>
+        <p className="text-sm text-gray-500 text-center">
+          Please try again later.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-700 text-white rounded"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Show appropriate loading message
+  return (
+    <div className="flex h-screen flex-col items-center justify-center text-blue-600">
+      <div className="w-12 h-12 border-4 border-blue-300 border-t-blue-800 rounded-full animate-spin"></div>
+      
+      {/* This will now show both states properly */}
+      {status === "checking" ? (
+        <p>Connecting to server...</p>
+      ) : status === "down" ? (
+        <p>Connection lost. Reconnecting...</p>
+      ) : (
+        <p>Connecting to server...</p> // Fallback
       )}
     </div>
   );

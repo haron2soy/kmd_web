@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { useAuth } from "./AuthContext";
 import { Loader2 } from "lucide-react"; // ← add lucide-react if not already installed
 import { ScrolltoHeader } from "./ScrolltoHeader";
+import axios from "axios";
 
 export default function Login() {
   const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
@@ -28,14 +29,20 @@ export default function Login() {
       await login(username.trim(), password);
       navigate("/", { replace: true }); // replace history entry for better UX
     } catch (err: unknown) {
-    if (err instanceof Error) {
-      setError(err.message);
-      } else {
-        setError("Invalid username or password. Please try again.");
-      }
-    } finally {
-          setIsLoading(false);
+      if (axios.isAxiosError(err)) {
+        const backendMessage =
+          err.response?.data?.error ||
+          err.response?.data?.detail;
+
+          setError(
+            backendMessage || "Incorrect username or password. Please try again."
+          );
+        } else {
+          setError("Something went wrong. Please try again.");
         }
+      } finally {
+        setIsLoading(false);
+      }
     }
 
   return (
@@ -54,8 +61,12 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="px-8 pt-8 pb-10 space-y-2">
           {/* Error message */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-2 rounded-r text-red-700 text-sm">
-              {error}
+            <div className="flex items-start gap-2 bg-red-50 border border-red-200 px-4 py-3 rounded-lg text-red-700 text-sm">
+              <span className="mt-[2px]">⚠️</span>
+              <div>
+                <p className="font-medium">Sign-in failed</p>
+                <p className="text-red-600">{error}</p>
+              </div>
             </div>
           )}
 
@@ -74,7 +85,11 @@ export default function Login() {
               autoComplete="username"
               required
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) =>{setUsername(e.target.value);
+                 if (error) setError("");
+                }
+              }
+              
               className={`
                 block w-full rounded-lg border border-gray-300 px-4 py-3 
                 text-gray-900 placeholder-gray-400 

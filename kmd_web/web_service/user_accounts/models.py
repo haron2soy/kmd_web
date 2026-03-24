@@ -37,3 +37,10 @@ class EmailDelivery(models.Model):
         choices=[("sent","sent"), ("failed","failed")]
     )
     error_message = models.TextField(null=True, blank=True)
+
+class EmailLog(models.Model):
+    email = models.EmailField()
+    status = models.CharField(max_length=20)  # sent, failed
+    subject = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    error = models.TextField(blank=True, null=True)

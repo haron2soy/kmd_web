@@ -16,11 +16,7 @@ export default function ForecastLanding() {
       .then(data => {
         if (data?.images) {
           const processed = data.images.map((item: any) =>
-            item.image.replace(
-              /\/?rsmc\/(\d{4})\/(\d{2})\/(\d{2})\//,
-              (_: string, y: string, m: string, d: string) =>
-                `/uploads/rsmc/${y}/${m}/${d}/`
-            )
+            `/uploads/${item.image}`.replace(/\/+/g, "/")
           );
 
       setImages(processed);
@@ -47,10 +43,15 @@ export default function ForecastLanding() {
     setCurrent(prev => (prev - 1 + images.length) % images.length);
   };
 
-  // Sidebar (exact as you requested)
+  // Sidebar
   const relatedLinks = [
     { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
     { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
+    { href: "/forecasts/archive", label: "Forecast Archive" },
+  ];
+   const relatedLinksleft = [
+    { href: "/guidance", label: "Guidance" },
+    { href: "/nwp-models", label: "NWP Models" },
     { href: "/forecasts/archive", label: "Forecast Archive" },
   ];
 
@@ -68,10 +69,10 @@ export default function ForecastLanding() {
               <div className="sticky top-32">
                 <div className="bg-white border rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-semibold text-blue-900 mb-4">
-                    Related Links
+                    Quick Links
                   </h3>
                   <div className="space-y-2">
-                    {relatedLinks.map((link) => (
+                    {relatedLinksleft.map((link) => (
                       <Link key={link.href} href={link.href}>
                         <div className="py-2 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
                           {link.label}

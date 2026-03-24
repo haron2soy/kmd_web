@@ -7,15 +7,12 @@ export default function ResetPassword() {
   const [, params] = useRoute("/reset-password/:uid/:token");
 
   const [password, setPassword] = useState("");
-  //const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  //const [showConfirm] = useState(false);
-  
-  const [confirmPassword, setConfirmPassword] = useState<string>(""); // input value
-  const [showConfirm, setShowConfirm] = useState<boolean>(false); // visibility toggle
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string | string[]>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValid = password.length >= 8 && password === confirmPassword;
@@ -26,7 +23,7 @@ export default function ResetPassword() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setStatus("error");
       setMessage("Passwords do not match.");
@@ -44,54 +41,70 @@ export default function ResetPassword() {
     setMessage("");
 
     try {
-      await apiClient.post("/auth/reset-password/", {
-        uid: params?.uid,
+      const res = await apiClient.post("/auth/reset-password/", {
+        uidb64: params?.uid,
         token: params?.token,
-        password: password, // ← more conventional field name
+        password,
+        confirm_password: confirmPassword,
       });
 
       setStatus("success");
-      setMessage("Your password has been reset successfully.");
+      setMessage(res.data.message || "Your password has been set successfully.");
     } catch (err: any) {
-      const errorMsg = err?.response?.data?.detail 
-        || err?.response?.data?.non_field_errors?.[0]
-        || "Invalid or expired reset link. Please request a new one.";
+      // Backend returns structured error like { error: { message, details? } }
+      const errorData = err?.response?.data?.error;
 
-      setStatus("error");
-      setMessage(errorMsg);
+      if (errorData) {
+        // Combine main message and optional details array
+        const fullMessage = errorData.details
+          ? [errorData.message, ...errorData.details]
+          : errorData.message;
+
+        setStatus("error");
+        setMessage(fullMessage);
+      } else {
+        setStatus("error");
+        setMessage("Invalid or expired reset link. Please request a new one.");
+      }
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  const renderMessage = () => {
+    if (!message) return null;
+
+    if (Array.isArray(message)) {
+      return message.map((m, idx) => <div key={idx}>{m}</div>);
+    }
+    return message;
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-12">
       <div className="w-full max-w-md space-y-8 bg-white shadow-xl rounded-2xl p-8 md:p-10 border border-gray-100">
-
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Reset Password
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Enter your new password below
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Reset Password</h1>
+          <p className="mt-2 text-sm text-gray-600">Enter your new password below</p>
         </div>
 
         {message && (
           <div
-            className={`flex items-center gap-3 rounded-lg p-4 text-sm ${
+            className={`flex flex-col gap-2 rounded-lg p-4 text-sm ${
               status === "success"
                 ? "bg-green-50 text-green-800 border border-green-200"
                 : "bg-red-50 text-red-800 border border-red-200"
             }`}
             role="alert"
           >
-            {status === "success" ? (
-              <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
-            ) : (
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-            )}
-            <span>{message}</span>
+            <div className="flex items-center gap-3">
+              {status === "success" ? (
+                <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+              ) : (
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              )}
+              <span>{renderMessage()}</span>
+            </div>
           </div>
         )}
 
@@ -120,11 +133,7 @@ export default function ResetPassword() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   tabIndex={-1}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
+                  {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
                 </button>
               </div>
             </div>
@@ -151,11 +160,7 @@ export default function ResetPassword() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   tabIndex={-1}
                 >
-                  {showConfirm ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
+                  {showConfirm ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
                 </button>
               </div>
             </div>
@@ -163,16 +168,11 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={isSubmitting || !isValid}
-              className={`
-                w-full flex items-center justify-center gap-2 
-                py-3 px-4 rounded-lg font-medium text-white 
-                transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
-                ${
-                  isValid && !isSubmitting
-                    ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
-                    : "bg-gray-400 cursor-not-allowed"
-                }
-              `}
+              className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                isValid && !isSubmitting
+                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
               {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
               {isSubmitting ? "Resetting..." : "Reset Password"}
@@ -181,19 +181,16 @@ export default function ResetPassword() {
         )}
 
         {status === "success" && (
-            <div className="text-center pt-4">
-              <p className="text-sm text-gray-600">
-                Your password has been reset. You can now{" "}
-                <a
-                  href="/login"
-                  className="text-indigo-600 hover:underline font-medium"
-                >
-                  sign in
-                </a>
-                .
-              </p>
-            </div>
-          )}
+          <div className="text-center pt-4">
+            <p className="text-sm text-gray-600">
+              Your password has been reset. You can now{" "}
+              <a href="/login" className="text-indigo-600 hover:underline font-medium">
+                sign in
+              </a>
+              .
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export default function LayerControl({ variable, setVariable }: any) {
                 ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-black hover:bg-gray-100"
             }`}
-        >
+          >
           {opt.label}
         </button>
       ))}

@@ -44,19 +44,26 @@ export default function WrfViewer() {
   // Initialize state
   // -------------------------------
   useEffect(() => {
-    if (!models) return;
+      if (!models) return;
 
-    const initialState: Record<string, ModelState> = {};
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      const hh = String(now.getHours()).padStart(2, "0");
+      const currentHour = `${yyyy}-${mm}-${dd}_${hh}:00:00`;
 
-    models.forEach((model) => {
-      initialState[String(model.id)] = {
-        variable: model.variables?.[0] ?? "PRECIP",
-        datetime: "",
-      };
-    });
+      const initialState: Record<string, ModelState> = {};
 
-    setModelStates(initialState);
-  }, [models]);
+      models.forEach((model) => {
+        initialState[String(model.id)] = {
+          variable: model.variables?.[0] ?? "PRECIP",
+          datetime: currentHour, // ✅ set to current hour
+        };
+      });
+
+      setModelStates(initialState);
+    }, [models]);
 
   // -------------------------------
   // Update helpers

@@ -25,8 +25,10 @@ def marine_documents(request):
 
     today = now().date()
     year = str(today.year)
-    month = f"{today.month:02d}"  # numeric month
-    day_folder = f"{today.day:02d}"  # numeric day folder
+    #month = f"{today.month:02d}"  # numeric month
+    month = calendar.month_name[today.month]  # e.g., "March"
+    #day_folder = f"{today.day:02d}"  # numeric day folder
+    day_folder = today.strftime("%b-%d").lower()  # "mar-23"
 
     # 1️⃣ Try database first
     forecast = Forecast.objects.filter(
@@ -46,9 +48,10 @@ def marine_documents(request):
 
     # 2️⃣ Fallback to filesystem
     base_path = os.path.join(settings.RSMC_DIR, year, month, day_folder)
+    print("base_path:", base_path)
     filename = FILENAME_PATTERNS[slug]
     full_path = os.path.join(base_path, filename)
-
+    print("full_path:", full_path)
     if not os.path.exists(full_path):
         return Response({"error": f"{filename} not found in {day_folder}"}, status=404)
 

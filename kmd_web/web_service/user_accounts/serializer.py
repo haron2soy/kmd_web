@@ -61,7 +61,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             **validated_data
         )
 
-        user.set_password(password)
+        #user.set_password(password)
         user.save()
 
         return user

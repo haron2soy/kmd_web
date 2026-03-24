@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     "pages",
     "wrfapi",
     "news",
-    "user_accounts",
+    #"user_accounts",
+    "user_accounts.apps.UserAccountsConfig"
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', "OPTIONS": {"min_length": 8}
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -169,15 +170,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # --- Base directories outside Docker ---
-STORAGE_BASE_DIR = Path("/home/haron/kmd_web")
+STORAGE_BASE_DIR = Path("/home/haron/uploads")
 MEDIA_URL = "/uploads/"
 RSMC_DIR = STORAGE_BASE_DIR / "rsmc"
 NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
 
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 24 hours
+# CAPTCHA toggle
+ENABLE_CAPTCHA = False  # set True when ready
+
 # --- Dynamic date-based subdirectories ---
 today = datetime.now()  # or datetime.utcnow() if utc time needed
 year = str(today.year)
-month = f"{today.month:02d}"
+#month = f"{today.month:02d}"
+month = f"{today:%B}"
 day = f"{today.day:02d}"
 
 # --- Ensure directories exist ---
@@ -198,8 +204,10 @@ for directory in [
     directory.mkdir(parents=True, exist_ok=True)'''
 
 # --- Django settings ---
+CURRENT_YEAR = year
+
 MEDIA_ROOT = STORAGE_BASE_DIR
-WRF_DATA_DIR = RSMC_DIR / year / month / "nwp_models_data"
+WRF_DATA_DIR = RSMC_DIR / year / month / "eawrf_maps"
 GENERATED_MAPS_DIR = RSMC_DIR / year / month / "generated_maps"
 
 # Default primary key field type
@@ -220,11 +228,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 }'''
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        #"BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://localhost:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        #"OPTIONS": {
+        #    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        #}
     }
 }
 
@@ -272,7 +281,7 @@ EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
 DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
 
 SITE_NAME = "RSMC"
-CURRENT_YEAR = 2026
+
 
 FRONTEND_URL = "http://localhost:5173"
 

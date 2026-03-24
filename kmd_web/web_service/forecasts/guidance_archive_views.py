@@ -14,7 +14,7 @@ def guidance_files(request):
     if not all([year, month, file_type]):
         return Response({"error": "year, month, type required"}, status=400)
 
-    month_path = os.path.join(BASE_DIR, year, month.zfill(2))  # ensure 2-digit month
+    month_path = os.path.join(BASE_DIR, year, month)  
     if not os.path.exists(month_path):
         return Response({"files": []})
 
@@ -32,12 +32,12 @@ def guidance_files(request):
             if file_type == "Marine_Forecast" and "marine" in f_lower:
                 files.append({
                     "name": f,
-                    "url": f"{settings.STORAGE_BASE_DIR}rsmc/{year}/{month.zfill(2)}/{day_folder}/{f}"
+                    "url": f"{settings.MEDIA_URL}rsmc/{year}/{month.zfill(2)}/{day_folder}/{f}"
                 })
             elif file_type == "Easwfp_Discussion" and "discussion" in f_lower:
                 files.append({
                     "name": f,
-                    "url": f"{settings.STORAGE_BASE_DIR}rsmc/{year}/{month.zfill(2)}/{day_folder}/{f}"
+                    "url": f"{settings.MEDIA_URL}rsmc/{year}/{month.zfill(2)}/{day_folder}/{f}"
                 })
 
     return Response({"files": files})

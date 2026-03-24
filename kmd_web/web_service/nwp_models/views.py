@@ -75,14 +75,26 @@ def get_model_field(request, model_name):
     run_id = f"{prefix}_{datetime}"
     folder = os.path.join(base_dir, run_id)
 
-    filename = variable_map.get(variable.upper())
-    if not filename:
+    if not os.path.exists(folder):
+        return HttpResponseBadRequest(f"Folder not found: {folder}")
+
+    # target logical filename
+    target_filename = variable_map.get(variable.upper())
+    if not target_filename:
         return HttpResponseBadRequest("Invalid variable")
 
-    file_path = os.path.join(folder, f"{filename}")
+    # 🔍 search for any file ending with the target filename
+    matched_file = None
+    for f in os.listdir(folder):
+        if f.endswith(target_filename):
+            matched_file = f
+            break
 
-    if not os.path.exists(file_path):
-        return HttpResponseBadRequest(f"File not found")
+    if not matched_file:
+        return HttpResponseBadRequest(f"No file found for variable {variable} in folder {folder}")
+
+    file_path = os.path.join(folder, matched_file)
+    print("filePath:", file_path)
 
    
     bounds = [

@@ -53,13 +53,13 @@ import ProtectedRoute from "../features/user_authentication/ProtectedRoute";
 import ForgotPassword from "@/features/ForgotPassword";
 import {PageLayout} from "@/shared/components/layout/PageLayout";
 
-import Register from "@/features/user_authentication/User_Registeration";
+import Register from "@/features/user_authentication/User_Registration";
 //import VerifyEmail from "@/features/user_authentication/VerifyEmail";
 
 import RedirectProducts from "@/features/products/pages/RedirectProducts";
 
 import ResetPassword from "@/features/user_authentication/ResetPassword";
-
+import SetPassword from "@/features/user_authentication/SetPassword";
 
 
 function Router() {
@@ -73,7 +73,7 @@ function Router() {
 
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password/:uid/:token" component={ResetPassword} />
-          
+          <Route path="/set-password/:uid/:token" component={SetPassword} />
           
           <Route path="/contact" component={Contact} />
           <ProtectedRoute path="/pages/:slug"> <DynamicPage /> </ProtectedRoute> 

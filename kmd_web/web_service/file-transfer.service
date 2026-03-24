@@ -1,0 +1,20 @@
+[Unit]
+Description=Large File Transfer Service (RSMC)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/haron
+ExecStart=/bin/bash /home/nwp/kmd_web/kmd_web/kmd_web/file_transfer.sh
+Restart=always
+RestartSec=10
+User=haron
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+LimitNOFILE=65536
+StandardOutput=append:/home/nwp/kmd_web/file_transfer.log
+StandardError=append:/home/nwp/kmd_web/file_transfer.log
+
+[Install]
+WantedBy=multi-user.target

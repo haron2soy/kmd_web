@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from forecasts.models import Forecast, ForecastCategory
+import calendar
 
 # -----------------------------
 # Filename generators
@@ -51,9 +52,14 @@ def guidance_documents(request):
                         status=400)
 
     today = now().date()
-    day = f"{today.day:02d}"
-    month = f"{today.month:02d}"
+    daydigit = f"{today.day:02d}"
+    #month = f"{today.month:02d}"
     year = str(today.year)
+    
+    #month = f"{today.month:02d}"  # numeric month
+    month = calendar.month_name[today.month]  # e.g., "March"
+    #day = f"{today.day:02d}"  # numeric day folder
+    day = today.strftime("%b-%d").lower()  # "mar-23"
 
     # -----------------------------
     # 1️⃣ Database lookup
@@ -81,7 +87,7 @@ def guidance_documents(request):
     # 2️⃣ Filesystem fallback
     # -----------------------------
     base_path = os.path.join(settings.RSMC_DIR, year, month, day)
-    filename = FILENAME_PATTERNS[slug](day, month, year)
+    filename = FILENAME_PATTERNS[slug](daydigit, month, year)
     full_path = os.path.join(base_path, filename)
 
     if not os.path.exists(full_path):

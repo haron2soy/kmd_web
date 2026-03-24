@@ -3,16 +3,59 @@ import { Loader2 } from "lucide-react";
 import apiClient from "@/lib/apiClient";
 import { ScrolltoHeader } from "./user_authentication/ScrolltoHeader";
 
+type ApiError = {
+  error?: {
+    code?: string;
+    message?: string;
+    details?: string[];
+  };
+  message?: string;
+};
+
 export default function ForgotPassword() {
   const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
-    //<header ref={headerRef} 
-   useEffect(() => {
+
+  useEffect(() => {
     document.title = "Reset-Password | RSMC Nairobi";
   }, []);
+
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  function extractError(err: any): string {
+    // Axios error
+    if (err?.response?.data) {
+      const data: ApiError = err.response.data;
+
+      // Structured backend error
+      if (data.error?.message) {
+        return data.error.message;
+      }
+
+      // DRF default message
+      if (data.message) {
+        return data.message;
+      }
+
+      // Validation errors (fallback)
+      if (typeof data === "object") {
+        const firstKey = Object.keys(data)[0];
+        const value = (data as any)[firstKey];
+
+        if (Array.isArray(value)) return value[0];
+        if (typeof value === "string") return value;
+      }
+    }
+
+    // Network / unknown error
+    if (err?.message) {
+      return err.message;
+    }
+
+    return "Something went wrong. Please try again.";
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,15 +66,21 @@ export default function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      await apiClient.post("/auth/forgot-password/", {
+      const response = await apiClient.post("/auth/forgot-password/", {
         email: email.trim().toLowerCase(),
       });
 
-      // Always show success message (prevent user enumeration)
-      setSubmitted(true);
-    } catch (err) {
-      console.error("Forgot password error:", err);
-      setError("Something went wrong. Please try again.");
+      // Always success (anti-enumeration)
+      if (response.status === 200) {
+        setSubmitted(true);
+      }
+
+    } catch (err: any) {
+      //console.error("[FORGOT PASSWORD ERROR]", err);
+
+      const message = extractError(err);
+      setError(message);
+
     } finally {
       setIsLoading(false);
     }
@@ -39,8 +88,10 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-16">
-      <div ref={headerRef} className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-
+      <div
+        ref={headerRef}
+        className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+      >
         {/* Header */}
         <div className="bg-primary text-primary-foreground px-8 py-2 text-center">
           <h2 className="text-2xl font-bold">Reset Password</h2>

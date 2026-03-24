@@ -46,7 +46,7 @@ def list_files(request):
     files = [
         {
             "name": f,
-            "url": f"{settings.STORAGE_BASE_DIR}rsmc/{year}/{month}/{day}/{f}"
+            "url": f"{settings.MEDIA_URL}rsmc/{year}/{month}/{day}/{f}"
         }
         for f in safe_listdir(path)
     ]
@@ -87,7 +87,7 @@ def archive_files(request):
             if match:
                 files.append({
                     "name": filename,
-                    "url": f"{settings.STORAGE_BASE_DIR}rsmc/{year}/{month}/{day}/{filename}",
+                    "url": f"{settings.MEDIA_URL}rsmc/{year}/{month}/{day}/{filename}",
                     "date": iso_date
                 })
 
