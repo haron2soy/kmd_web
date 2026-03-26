@@ -60,6 +60,7 @@ import RedirectProducts from "@/features/products/pages/RedirectProducts";
 
 import ResetPassword from "@/features/user_authentication/ResetPassword";
 import SetPassword from "@/features/user_authentication/SetPassword";
+import { BackendProvider } from "@/shared/guards/BackendProvider";
 
 
 function Router() {
@@ -146,11 +147,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-
-        <BackendGuard>
-          <Router />
-        </BackendGuard>
-
+          <BackendProvider>
+          <BackendGuard>
+            <Router />
+          </BackendGuard>
+        </BackendProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

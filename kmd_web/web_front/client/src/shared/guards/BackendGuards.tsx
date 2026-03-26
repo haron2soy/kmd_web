@@ -1,108 +1,57 @@
-// src/shared/guards/BackendGuards.tsx
-import { useEffect, useState } from "react";
+// src/shared/guards/BackendGuard.tsx
+import { useBackendStatus } from "./BackendStatus";
 
-const TIMEOUT = 20000;
-const POLL_INTERVAL = 3000;
-
-type Status = "checking" | "up" | "down";
+import { useState, useEffect } from "react";
 
 export function BackendGuard({ children }: { children: React.ReactNode }) {
-  const [status, setStatus] = useState<Status>("checking");
-  const [startTime] = useState(() => Date.now());
-  const [, setDownCount] = useState(0);
+  const status = useBackendStatus((s) => s.status);
+  const [showConnected, setShowConnected] = useState(true);
 
-  useEffect(() => {
-    let isMounted = true;
-    let pollId: number;
-
-    const checkBackend = async () => {
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
-
-        const res = await fetch("/api/health/", {
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeout);
-
-        if (!isMounted) return;
-
-        if (res.ok) {
-          setStatus("up");
-          setDownCount(0); // Reset counter on success
-        } else {
-          // Only mark as down after 2 consecutive failures
-          setDownCount(prev => {
-            const newCount = prev + 1;
-            if (newCount >= 2 && isMounted) {
-              setStatus("down");
-            }
-            return newCount;
-          });
-        }
-      } catch {
-        if (isMounted) {
-          // Only mark as down after 2 consecutive failures
-          setDownCount(prev => {
-            const newCount = prev + 1;
-            if (newCount >= 2 && isMounted) {
-              setStatus("down");
-            }
-            return newCount;
-          });
-        }
-      }
-    };
-
-    checkBackend();
-    pollId = window.setInterval(checkBackend, POLL_INTERVAL);
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(pollId);
-    };
-  }, []);
-
-  const elapsed = Date.now() - startTime;
-  const hasTimedOut = elapsed >= TIMEOUT;
-
+useEffect(() => {
   if (status === "up") {
-    return <>{children}</>;
-  }
+    setShowConnected(true);
+    const timer = setTimeout(() => {
+      setShowConnected(false);
+    }, 4000);
 
-  if (hasTimedOut) {
+    return () => clearTimeout(timer);
+  }
+}, [status]);
+
+  // 🚨 Backend down UI
+  if (status === "down") {
     return (
       <div className="flex h-screen flex-col items-center justify-center text-blue-600 space-y-4">
         <p className="font-medium text-center">
-          Unable to reach the server.
+          Connection lost.
         </p>
         <p className="text-sm text-gray-500 text-center">
-          Please try again later.
+          Trying to reconnect ...
         </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-700 text-white rounded"
-        >
-          Retry
-        </button>
       </div>
     );
   }
 
-  // Show appropriate loading message
+  // 🚨 Initial checking state (optional)
+  if (status === "checking") {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>Connecting...</p>
+      </div>
+    );
+  }
+
+
+
+  // ✅ Normal app
   return (
-    <div className="flex h-screen flex-col items-center justify-center text-blue-600">
-      <div className="w-12 h-12 border-4 border-blue-300 border-t-blue-800 rounded-full animate-spin"></div>
-      
-      {/* This will now show both states properly */}
-      {status === "checking" ? (
-        <p>Connecting to server...</p>
-      ) : status === "down" ? (
-        <p>Connection lost. Reconnecting...</p>
-      ) : (
-        <p>Connecting to server...</p> // Fallback
+    <>
+      {children}
+      {showConnected && (
+      <div className="fixed bottom-4 right-4 bg-white shadow border rounded px-3 py-1 text-sm transition-opacity duration-300">
+        Connected
+      </div>
       )}
-    </div>
+    </>
   );
 }

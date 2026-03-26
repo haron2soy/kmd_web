@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { fetchClient } from '@/lib/fetchClient';
 import { useEffect, useState } from 'react';
 
 type AnnouncementItem = {
@@ -18,7 +19,7 @@ export default function AnnouncementList() {
   const MAX_CHARS = 120;
 
   useEffect(() => {
-    fetch('/api/announcements/active')
+    fetchClient('/api/announcements/active')
       .then((res) => res.json())
       .then((data) => setAnnouncements(data || []))
       .catch((err) => {

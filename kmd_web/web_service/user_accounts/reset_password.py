@@ -1,6 +1,6 @@
 # users/reset_password.py
 
-import logging
+
 import time
 
 from django.contrib.auth import get_user_model
@@ -15,8 +15,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.core.exceptions import ValidationError
+
 User = get_user_model()
-logger = logging.getLogger(__name__)
+
 
 # CONFIG
 IP_COOLDOWN = 10
@@ -72,7 +74,7 @@ def reset_password(request):
     # ---- Decode user ----
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        user = User.objects.get(pk=int(uid))
     except Exception:
         return Response(
             {"error": {"code": "invalid_link", "message": "Invalid or expired link"}},
@@ -86,16 +88,17 @@ def reset_password(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # ---- Password strength validation ----
+
+
     try:
         validate_password(password, user=user)
-    except Exception as e:
+    except ValidationError as e:
         return Response(
             {
                 "error": {
                     "code": "weak_password",
                     "message": "Password does not meet requirements",
-                    "details": list(e.messages)
+                    "details": e.messages
                 }
             },
             status=status.HTTP_400_BAD_REQUEST
@@ -103,11 +106,14 @@ def reset_password(request):
 
     try:
         # ---- Prevent token reuse (practical mitigation) ----
-        if cache.get(f"used_token_{token}"):
-            return Response(
-                {"error": {"code": "token_used", "message": "Token already used"}},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        try:
+            if cache.get(f"used_token_{token}"):
+                return Response(
+                    {"error": {"code": "token_used", "message": "Token already used"}},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception:
+            pass
 
         user.set_password(password)
         user.save()
@@ -116,7 +122,7 @@ def reset_password(request):
         cache.set(f"used_token_{token}", True, timeout=60 * 60 * 24)
 
     except Exception as e:
-        logger.error(f"[RESET PASSWORD ERROR] {str(e)}")
+        
         return Response(
             {"error": {"code": "server_error", "message": "Unable to reset password"}},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR

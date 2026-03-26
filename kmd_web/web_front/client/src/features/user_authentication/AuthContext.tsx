@@ -9,7 +9,8 @@ import {
   useMemo,
 } from "react";
 import { useLocation } from "wouter";
-import apiClient from "@/lib/apiClient";
+import apiClient  from "@/lib/apiClient";
+import {registerUnauthorizedHandler} from "@/lib/apiClient";
 
 // ─────────────────────────────────────────
 // Types
@@ -39,6 +40,7 @@ interface AuthContextType {
   error: string | null;
   message: string | null;
   isAuthenticated: boolean;
+  clearAuthState: () => void;
 
   login: (username: string, password: string) => Promise<void>;
   register: (
@@ -55,6 +57,7 @@ interface AuthContextType {
 
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  
 }
 
 // ─────────────────────────────────────────
@@ -98,6 +101,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   
   const [message, setMessage] = useState<string | null>(null);
+
+  const clearAuthState = useCallback(() => {
+      setUser(null);
+    }, []);
+  //const AuthContext = createContext<AuthContextType | null>(null);
   // ─────────────────────────────────────────
   // Generic request wrapper
   // ─────────────────────────────────────────
@@ -145,6 +153,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     init();
   }, [refreshSession]);
 
+  useEffect(() => {
+    registerUnauthorizedHandler(() => {
+      clearAuthState();
+      navigate("/login", { replace: true });
+    });
+  }, [clearAuthState, navigate]);
+
   // ─────────────────────────────────────────
   // Login
   // ─────────────────────────────────────────
@@ -166,6 +181,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ─────────────────────────────────────────
   // Register
   // ─────────────────────────────────────────
+
 
 const register = useCallback(
   async (
@@ -259,7 +275,8 @@ const resendVerification = useCallback(
   // Logout
   // ─────────────────────────────────────────
 
-  const logout = useCallback(async () => {
+  
+  {/*const logout = useCallback(async () => {
     const isLoggedIn = !!user;
     try {
       await apiClient.post("/logout/");
@@ -272,19 +289,52 @@ const resendVerification = useCallback(
     }
       
     }
-  }, [navigate]);
+  }, [navigate]);*/}
+   const logout = useCallback(async () => {
+    await apiClient.post("/logout/");
+  }, []);
 
   // ─────────────────────────────────────────
   // Refresh session when tab gains focus
   // ─────────────────────────────────────────
 
   useEffect(() => {
-    const onFocus = () => refreshSession();
+  const onFocus = () => refreshSession();
 
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, [refreshSession]);
+  window.addEventListener("focus", onFocus);
 
+  return () => {
+    window.removeEventListener("focus", onFocus);
+  };
+}, [refreshSession]);
+
+useEffect(() => {
+  let wasIdle = true;
+  let idleTimer: number;
+
+  const markIdle = () => {
+    wasIdle = true;
+  };
+
+  const onActivity = () => {
+    if (wasIdle) {
+      wasIdle = false;
+      refreshSession(); // 🔥 only fires once after idle
+    }
+
+    clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(markIdle, 5 * 60 * 1000); // 5 min idle
+  };
+
+  window.addEventListener("click", onActivity);
+  window.addEventListener("keydown", onActivity);
+
+  return () => {
+    window.removeEventListener("click", onActivity);
+    window.removeEventListener("keydown", onActivity);
+    clearTimeout(idleTimer);
+  };
+}, [refreshSession]);
   // ─────────────────────────────────────────
   // Context Value
   // ─────────────────────────────────────────
@@ -296,6 +346,7 @@ const resendVerification = useCallback(
       error,
       message,
       isAuthenticated: !!user,
+      clearAuthState,
 
       login,
       register,
@@ -329,11 +380,11 @@ const resendVerification = useCallback(
 // ─────────────────────────────────────────
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-  if (!ctx) {
+  if (!context) {
     throw new Error("useAuth must be used within AuthProvider");
   }
 
-  return ctx;
+  return context;
 }

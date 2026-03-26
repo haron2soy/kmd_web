@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRoute } from "wouter";
-
+import { fetchClient } from "@/lib/fetchClient";
 type NewsDetailType = {
   title: string;
   content: string;
@@ -16,7 +16,7 @@ export default function NewsDetail() {
 
     useEffect(() => {
     if (match && params?.slug) {
-        fetch(`/api/news/${params.slug}`)
+        fetchClient(`/api/news/${params.slug}`)
         .then(res => res.json())
         .then(data => setNews(data))
         .catch(err => console.error("Failed to fetch news detail:", err));

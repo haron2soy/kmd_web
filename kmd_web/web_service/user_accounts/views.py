@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import check_password
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -73,13 +74,16 @@ def login_view(request):
 
 
     try:
-        user = User.objects.get(username=username)
-        
+        #user = User.objects.get(username=username)
+        user = authenticate(request, username=username, password=password)
+
         if not user.is_active:
             return Response(
                 {"error": "Your account is not activated. Keep checking your email for activation."},
                 status=status.HTTP_403_FORBIDDEN
             )
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=401)
     except User.DoesNotExist:
         return Response(
             {"error": "Incorrect username or password."},

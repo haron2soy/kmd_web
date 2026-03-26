@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Link } from 'wouter';
 import { useEffect, useState } from "react";
 import { CloudSun } from 'lucide-react'; // add these icons or any you prefer
-
+import { fetchClient } from '@/lib/fetchClient';
 type NewsItem = {
   id: number;
   slug: string;
@@ -19,7 +19,7 @@ export default function NewsList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/news")
+    fetchClient("/api/news")
       .then(res => res.json())
       .then(data => {
         setNewsItems(data || []);

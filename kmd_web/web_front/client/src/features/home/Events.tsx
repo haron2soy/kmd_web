@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
-
+import { fetchClient } from "@/lib/fetchClient";
 type EventItem = {
   id: number;
   slug: string;
@@ -15,7 +15,7 @@ export default function Events() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/events/upcoming/")
+    fetchClient("/api/events/upcoming/")
       .then(res => res.json())
       .then(data => {
         setEvents(data || []);
