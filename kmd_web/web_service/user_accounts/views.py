@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.contrib.auth.models import User
@@ -6,12 +6,14 @@ from django.contrib.auth.hashers import check_password
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings
+from django.utils.timezone import now
 
 from .serializer import RegisterSerializer
 
+CURRENT_SESSION_VERSION = getattr(settings, "SESSION_VERSION", 1)
 
 # ---------------------------------------------------------
 # CSRF TOKEN VIEW
@@ -62,6 +64,7 @@ def register_view(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login_view(request):
+    request.session["session_version"] = CURRENT_SESSION_VERSION
 
     username = request.data.get("username")
     password = request.data.get("password")
@@ -76,29 +79,32 @@ def login_view(request):
     try:
         #user = User.objects.get(username=username)
         user = authenticate(request, username=username, password=password)
-
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=401)
+            
         if not user.is_active:
             return Response(
                 {"error": "Your account is not activated. Keep checking your email for activation."},
                 status=status.HTTP_403_FORBIDDEN
             )
-        if user is None:
-            return Response({"error": "Invalid credentials"}, status=401)
     except User.DoesNotExist:
         return Response(
             {"error": "Incorrect username or password."},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
-    if not check_password(password, user.password):
-        return Response(
-            {"error": "Incorrect username or password."},
-            status=status.HTTP_401_UNAUTHORIZED
-        )
+        '''if not check_password(password, user.password):
+            return Response(
+                {"error": "Incorrect username or password."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )'''
 
     
 
     login(request, user)
+    request.session["session_version"] = CURRENT_SESSION_VERSION
+    request.session["last_seen"] = now().isoformat()
+
 
     return Response({
         "message": "Login successful",

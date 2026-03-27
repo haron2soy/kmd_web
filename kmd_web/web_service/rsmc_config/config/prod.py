@@ -75,6 +75,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "user_accounts.middleware.SessionVersionMiddleware",
+    "user_accounts.middleware.SessionTimeoutMiddleware",
     
 ]
 
@@ -150,18 +152,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ]
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_TZ = True
 
+TIME_ZONE = 'Africa/Nairobi'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -173,7 +180,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STORAGE_BASE_DIR = Path("/home/haron/uploads")
 MEDIA_URL = "/uploads/"
 RSMC_DIR = STORAGE_BASE_DIR / "rsmc"
-NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
+#NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
 
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 24 hours
 # CAPTCHA toggle
@@ -207,8 +214,9 @@ for directory in [
 CURRENT_YEAR = year
 
 MEDIA_ROOT = STORAGE_BASE_DIR
-WRF_DATA_DIR = RSMC_DIR / year / month / "eawrf_maps"
+WRF_DATA_DIR = RSMC_DIR / year / month / "nwp_models_data"
 GENERATED_MAPS_DIR = RSMC_DIR / year / month / "generated_maps"
+EAWRF_MAPS = RSMC_DIR / year / month / "eawrf_maps"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -263,6 +271,8 @@ CSRF_COOKIE_HTTPONLY = False   # must be False for React
 SESSION_COOKIE_AGE = 600        # 10 minutes
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_VERSION = 1
 
 #CSRF_COOKIE_SECURE = True #for production
 #SESSION_COOKIE_SECURE = True #for production

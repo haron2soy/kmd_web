@@ -132,7 +132,8 @@ function Router() {
           <ProtectedRoute path = "/regional-international"> <RegionalInternationalLanding /> </ProtectedRoute>
           <ProtectedRoute path = "/regional-international/:slug"> <RedirectRegionalInternational /> </ProtectedRoute>
           
-          <Route path="/"> <Home /> </Route> 
+           
+          <ProtectedRoute path="/"> <Home /> </ProtectedRoute>
           <Route component={NotFound} />
           
         </Switch>

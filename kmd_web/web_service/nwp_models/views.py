@@ -6,7 +6,8 @@ import os
 import json
 from django.http import FileResponse, HttpResponseBadRequest
 from django.conf import settings
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 MODEL_CONFIG = {
     "nwp_maps": {
@@ -19,7 +20,7 @@ MODEL_CONFIG = {
         },
     },
     "eawrf_maps": {
-        "BASE_MAP_DIR": settings.WRF_DATA_DIR,  # or create EAWRF_DIR if needed
+        "BASE_MAP_DIR": settings.EAWRF_MAPS ,  
         "prefix": "d01",
         "variables": {
             "PRECIP": "rainfall_map.png",
@@ -28,13 +29,20 @@ MODEL_CONFIG = {
     },
 }
 
+DOMAIN_MAP = {
+
+    f"d{i:02d}": f"day{i}" for i in range(1, 7)
+    
+    }
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def notify_new_wrf(request):
     nc_path = request.data["path"]
     process_new_wrf.delay(nc_path)
     return Response({"status": "accepted"})
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_wrf_metadata(request):
     datetime = request.GET.get("file")
 
@@ -55,35 +63,41 @@ def get_wrf_metadata(request):
     })
 
 
-
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_model_field(request, model_name):
     datetime = request.GET.get("datetime")
     variable = request.GET.get("variable")
 
-    if not datetime or not variable:
-        return HttpResponseBadRequest("Missing parameters")
+    day = request.GET.get("day")  # day1, day2, day3
+    REVERSE_DOMAIN_MAP = {v: k for k, v in DOMAIN_MAP.items()}
+
+    prefix = REVERSE_DOMAIN_MAP.get(day)
+    
 
     model = MODEL_CONFIG.get(model_name)
     if not model:
         return HttpResponseBadRequest("Invalid model")
 
     base_dir = model["BASE_MAP_DIR"]
-    prefix = model["prefix"]
+    #prefix = model["prefix"]
     variable_map = model["variables"]
-
+    
+    if not prefix:
+        return HttpResponseBadRequest("Invalid or missing day")
+    
     run_id = f"{prefix}_{datetime}"
     folder = os.path.join(base_dir, run_id)
 
     if not os.path.exists(folder):
-        return HttpResponseBadRequest(f"Folder not found: {folder}")
+        return HttpResponseBadRequest(f"File not found")
 
     # target logical filename
     target_filename = variable_map.get(variable.upper())
     if not target_filename:
         return HttpResponseBadRequest("Invalid variable")
 
-    # 🔍 search for any file ending with the target filename
+    #  search for any file ending with the target filename
     matched_file = None
     for f in os.listdir(folder):
         if f.endswith(target_filename):
@@ -94,7 +108,7 @@ def get_model_field(request, model_name):
         return HttpResponseBadRequest(f"No file found for variable {variable} in folder {folder}")
 
     file_path = os.path.join(folder, matched_file)
-    print("filePath:", file_path)
+    #print("filePath:", file_path)
 
    
     bounds = [
@@ -106,7 +120,7 @@ def get_model_field(request, model_name):
 
     response = FileResponse(open(file_path, "rb"), content_type="image/png")
 
-    # 🔥 Important headers
+    # Important headers
     response["X-Domain-Bounds"] = json.dumps(bounds)
     response["Cache-Control"] = "public, max-age=3600"
     response["Access-Control-Expose-Headers"] = "X-Domain-Bounds"
@@ -118,31 +132,50 @@ def get_model_field(request, model_name):
 # LIST MODELS ENDPOINT
 # -------------------------------
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def list_models(request):
     available_models = []
 
     for model_name, config in MODEL_CONFIG.items():
         base_dir = config.get("BASE_MAP_DIR")
 
-        if base_dir and os.path.isdir(base_dir):
-            # check recursively
-            has_files = any(files for _, _, files in os.walk(base_dir))
-            status = "live" if has_files else "pending"
+        if not base_dir or not os.path.isdir(base_dir):
+            continue
 
-            available_models.append({
-                "id": model_name,
-                "name": model_name.upper(),
-                "description": f"{model_name.upper()} model",
-                "status": status,
+        detected_domains = set()
 
-                # ✅ frontend route
-                #"path": f"/nwp_models/{model_name}",
+        # scan folders like d01_2026-03-26_00:00:00
+        for folder in os.listdir(base_dir):
+            parts = folder.split("_")
+            if len(parts) < 2:
+                continue
 
-                # ✅ API endpoint
-                "apiEndpoint": f"/api/nwp_models/{model_name}/field/",
+            domain = parts[0]  # d01, d02, d03
 
-                # ✅ expose variables (no need separate API)
-                "variables": list(config["variables"].keys()),
-            })
+            if domain in DOMAIN_MAP:
+                detected_domains.add(domain)
+
+        status = "live" if detected_domains else "pending"
+
+        available_models.append({
+            "id": model_name,
+            "name": model_name.upper(),
+            "description": f"{model_name.upper()} model",
+            "status": status,
+
+            "apiEndpoint": f"/api/nwp_models/{model_name}/field/",
+
+            "variables": list(config["variables"].keys()),
+
+            # NEW: expose available forecast days
+            "days": [
+                {
+                    "id": DOMAIN_MAP[d],
+                    "label": DOMAIN_MAP[d].capitalize(),  # Day1
+                    "prefix": d,
+                }
+                for d in sorted(detected_domains)
+            ],
+        })
 
     return Response(available_models)

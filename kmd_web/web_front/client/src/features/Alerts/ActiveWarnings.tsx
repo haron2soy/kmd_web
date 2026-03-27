@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { CloudRain, Wind, Anchor, Sun, Plane, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
-
+import { fetchClient } from "@/lib/fetchClient";
 import type { Warning } from "./index";
 
 const ICONS: Record<string, any> = {
@@ -28,7 +28,7 @@ export default function ActiveWarnings() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/warnings/active/")
+    fetchClient("/api/warnings/active/")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch warnings");
         return res.json() as Promise<Warning[]>;

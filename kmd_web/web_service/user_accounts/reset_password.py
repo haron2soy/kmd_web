@@ -1,6 +1,5 @@
 # users/reset_password.py
 
-
 import time
 
 from django.contrib.auth import get_user_model
@@ -119,10 +118,15 @@ def reset_password(request):
         user.save()
 
         # mark token as used
-        cache.set(f"used_token_{token}", True, timeout=60 * 60 * 24)
+        try:
+            cache.set(f"used_token_{token}", True, timeout=60 * 60 * 24)
+        except Exception as e:
+            #logger.exception("Cache error!")
+            pass
+            #print("FAILED AT:", str(e))
 
     except Exception as e:
-        
+        #logger.exception("Password reset failed")  # logs full traceback
         return Response(
             {"error": {"code": "server_error", "message": "Unable to reset password"}},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
