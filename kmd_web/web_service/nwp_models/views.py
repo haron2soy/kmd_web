@@ -8,6 +8,7 @@ from django.http import FileResponse, HttpResponseBadRequest
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from datetime import datetime, timedelta
 
 MODEL_CONFIG = {
     "nwp_maps": {
@@ -86,7 +87,16 @@ def get_model_field(request, model_name):
     if not prefix:
         return HttpResponseBadRequest("Invalid or missing day")
     
-    run_id = f"{prefix}_{datetime}"
+    if model_name == "eawrf_maps":
+        run_id = find_valid_run(base_dir, prefix, datetime)
+
+        if not run_id:
+            return HttpResponseBadRequest("No valid run found for requested time")
+    else:
+        run_id = f"{prefix}_{datetime}"
+
+
+    #run_id = f"{prefix}_{datetime}"
     folder = os.path.join(base_dir, run_id)
 
     if not os.path.exists(folder):
@@ -179,3 +189,33 @@ def list_models(request):
         })
 
     return Response(available_models)
+
+def find_valid_run(base_dir, prefix, requested_dt_str):
+
+    try:
+        requested_dt = datetime.strptime(requested_dt_str, "%Y-%m-%d_%H:%M:%S")
+    except ValueError:
+        return None
+
+    valid_runs = []
+
+    for folder in os.listdir(base_dir):
+        if not folder.startswith(prefix + "_"):
+            continue
+
+        try:
+            run_time_str = folder.replace(prefix + "_", "")
+            run_time = datetime.strptime(run_time_str, "%Y-%m-%d_%H:%M:%S")
+        except ValueError:
+            continue
+
+        # ✅ 24-hour validity window
+        if run_time <= requested_dt < run_time + timedelta(hours=24):
+            valid_runs.append((run_time, folder))
+
+    if not valid_runs:
+        return None
+
+    # ✅ pick latest valid run (important if overlaps ever occur)
+    valid_runs.sort(reverse=True)
+    return valid_runs[0][1]

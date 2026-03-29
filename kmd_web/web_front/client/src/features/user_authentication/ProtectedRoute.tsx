@@ -18,7 +18,7 @@ export default function ProtectedRoute({ path, children }: Props) {
         }
 
         if (!user) {
-          return <Redirect to="/login" />;
+          return <Redirect to="/" />;
         }
         
         if (user && !user.is_active) {

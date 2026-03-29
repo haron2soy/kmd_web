@@ -87,7 +87,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-2 md:py-16">
+    <div className="min-h-screen bg-gradient-to-b items-start from-gray-50 to-gray-100 flex justify-center px-4 py-0 md:py-0">
       <div
         ref={headerRef}
         className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
@@ -142,7 +142,7 @@ export default function ForgotPassword() {
               </button>
 
               <div className="text-center text-sm">
-                <a href="/login" className="text-accent hover:underline">
+                <a href="/" className="text-accent hover:underline">
                   Back to login
                 </a>
               </div>

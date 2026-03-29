@@ -33,7 +33,7 @@ export default function LogoutButton({ className }: LogoutButtonProps) {
       sessionStorage.clear();
 
       // Navigate AFTER cleanup
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
 
       setLoading(false);
     }

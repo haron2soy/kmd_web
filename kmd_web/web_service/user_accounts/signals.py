@@ -1,4 +1,4 @@
-# users/signals.py
+# user_accounts/signals.py
 
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save, post_save
@@ -53,5 +53,6 @@ def send_password_email_on_activation(sender, instance, created, **kwargs):
         send_password_email_task.delay(
             instance.id,
             instance.email,
-            reset_url
+            reset_url,
+            "setup"
         )

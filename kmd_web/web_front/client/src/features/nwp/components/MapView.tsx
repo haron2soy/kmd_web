@@ -6,6 +6,7 @@ import { useWrfImage } from "@/features/nwp/hooks/useWrfImage";
 type MapViewProps = {
   variable: string;
   datetime?: string;
+  day:string;
   endpoint: string;
   opacity?: number;
   width?: number | string;
@@ -26,6 +27,7 @@ export default function MapView({
   variable,
   datetime,
   endpoint,
+  day,
   opacity = 0.85,
   width = "90%",
   className = "",
@@ -41,6 +43,7 @@ export default function MapView({
     variable,
     datetime: effectiveDatetime,
     endpoint,
+    day,
   });
 
   return (
@@ -85,13 +88,19 @@ export default function MapView({
         {/* Image */}
         {!loading && !error && imageUrl && (
           <TransformWrapper
+                    
             initialScale={1}
             minScale={1}
             maxScale={8}
             limitToBounds={false}
-            wheel={{ step: 0.15 }}
+            wheel={{
+              step: 0.15,
+              activationKeys: ["Control"], 
+            }}
             doubleClick={{ step: 1.8 }}
+            pinch={{ step: 5 }}
           >
+          
             <TransformComponent
               wrapperStyle={{
                 width: "100%",

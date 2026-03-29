@@ -3,6 +3,7 @@ import { Link } from "wouter";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect, useState } from "react";
 import { useScrollToHeader } from "../../../shared/components/ScrollToHeader/useScrollToHeader";
+import FilePreviewModal from "@/features/forecasts/Guidance/FilePreviewModal";
 
 const relatedLinks = [
   { href: "/swfp-evaluation", label: "SWFP Landing" },
@@ -32,7 +33,14 @@ const SidebarLink = ({
 );
 
 export default function QuarterlyReport() {
-  const [file, setFile] = useState<string | null>(null);
+  //const [file, setFile] = useState<string | null>(null);
+
+  const [files, setFiles] = useState<
+    { name: string; url: string; type: "image" | "document" }[]
+    >([]);
+
+  const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null);
+
   const { headerRef } = useScrollToHeader(80);
   const year = 2026;
   const quarter = 1;
@@ -42,9 +50,17 @@ export default function QuarterlyReport() {
       .then(res => res.json())
       .then(data => {
         if (data?.file) {
-          setFile(data.file.startsWith("/uploads/")
+          const url = data.file.startsWith("/uploads/")
             ? data.file
-            : `/uploads/${data.file}`);
+            : `/uploads/${data.file}`;
+
+          setFiles([
+            {
+              name: `Quarterly_Report_Q${quarter}_${year}.pdf`,
+              url,
+              type: "document",
+            },
+          ]);
         }
       });
   }, []);
@@ -65,12 +81,22 @@ export default function QuarterlyReport() {
               </p>
             </header>
 
-            <div className="bg-white border rounded-xl p-4">
-              {file ? (
+            <div className="bg-white border rounded-xl p-6 text-center">
+              {files.length > 0 ? (
                 <>
-                  <iframe src={file} className="w-full h-[600px]" />
-                  <div className="mt-4 flex justify-center">
-                    <a href={file} download className="px-5 py-2 bg-blue-600 text-white rounded-lg">
+                  <button
+                    onClick={() => setPreviewFileIndex(0)}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Open Report
+                  </button>
+
+                  <div className="mt-4">
+                    <a
+                      href={files[0].url}
+                      download
+                      className="px-5 py-2 bg-gray-700 text-white rounded-lg"
+                    >
                       Download PDF
                     </a>
                   </div>
@@ -98,9 +124,14 @@ export default function QuarterlyReport() {
               </div>
             </div>
           </aside>
-
+        <FilePreviewModal
+          previewFileIndex={previewFileIndex}
+          setPreviewFileIndex={setPreviewFileIndex}
+          files={files}
+        />
         </div>
       </div>
     //</PageLayout>
+    
   );
 }

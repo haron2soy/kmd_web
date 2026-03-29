@@ -34,7 +34,7 @@ export async function getNWPModels(): Promise<NWPModel[]> {
  */
 export async function getAvailableTimes(modelId: string | number): Promise<string[]> {
   try {
-    const response = await axios.get<string[]>(`/api/nwp/${modelId}/available-times/`);
+    const response = await axios.get<string[]>(`/api/nwp-models/${modelId}/available-times/`);
     return response.data;
   } catch (err) {
     console.error(`Failed to fetch available times for model ${modelId}:`, err);
@@ -48,7 +48,7 @@ export async function getAvailableTimes(modelId: string | number): Promise<strin
  */
 export async function getModelMetadata(modelId: string | number): Promise<Record<string, any> | null> {
   try {
-    const response = await axios.get(`/api/nwp/${modelId}/metadata/`);
+    const response = await axios.get(`/api/nwp-models/${modelId}/metadata/`);
     return response.data;
   } catch (err) {
     console.error(`Failed to fetch metadata for model ${modelId}:`, err);

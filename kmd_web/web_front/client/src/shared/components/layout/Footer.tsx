@@ -1,5 +1,5 @@
-import { MapPin, Phone, Mail, Globe } from 'lucide-react';
-
+import { MapPin, Phone, Mail } from 'lucide-react';
+//import {Globe} from 'lucide-react';
 export function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 py-12 border-t-4 border-accent mt-auto">
@@ -43,7 +43,7 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Disclaimer */}
+        {/* Disclaimer 
         <div>
            <h3 className="text-white font-serif font-bold text-lg mb-4 uppercase border-b border-slate-700 pb-2 inline-block">
             Legal
@@ -53,12 +53,12 @@ export function Footer() {
             The RSMC is not liable for any damages arising from the use of this information.
           </p>
           <div className="flex gap-4">
-             {/* Social placeholders */}
+             {/* Social placeholders *}
              <div className="h-8 w-8 bg-slate-700 rounded-full flex items-center justify-center hover:bg-accent hover:text-slate-900 transition-colors cursor-pointer">
                 <Globe className="h-4 w-4" />
              </div>
           </div>
-        </div>
+        </div>*/}
       </div>
       
       <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollToHeader";
 
 export default function ForecastLanding() {
-  const { headerRef } = useScrollToHeader(80);
+  const { headerRef } = useScrollToHeader([], 80);
 
   const [images, setImages] = useState<string[]>([]);
   const [current, setCurrent] = useState(0);
@@ -83,13 +83,17 @@ export default function ForecastLanding() {
                 </div>
               </div>
             </aside>
-        {/* SLIDER */}
-        <div className="lg:col-span-4 flex flex-col items-center mx-auto">
+        {/* SLIDER *}
+        <div className="lg:col-span-6 flex flex-col items-center mx-auto">*/}
+        <div   className={`${
+              images.length === 0 ? "lg:col-span-6" : "lg:col-span-6"
+            } flex flex-col items-center`}
+          >
 
           <div
             className="w-full h-[400px] bg-white border rounded-xl flex items-center justify-center overflow-hidden"
-            onMouseEnter={() => setIsPlaying(false)}   // ✅ pause on hover
-            onMouseLeave={() => setIsPlaying(true)}   // ✅ resume
+            onMouseEnter={() => setIsPlaying(false)}   
+            onMouseLeave={() => setIsPlaying(true)}   
           >
             {images.length > 0 ? (
               <img

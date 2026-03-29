@@ -5,10 +5,12 @@ export function useWrfImage({
   variable,
   datetime,
   endpoint,
+  day,
 }: {
   variable: string;
   datetime: string;
-  endpoint: string; // e.g., "/api/nwp/wrf/field/"
+  endpoint: string;
+  day: string;
 }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [aspect, setAspect] = useState<number | null>(null);
@@ -27,20 +29,33 @@ export function useWrfImage({
       return;
     }
 
-    // Construct full URL with query params
-    const url = `${endpoint}?datetime=${encodeURIComponent(datetime)}&variable=${encodeURIComponent(variable)}`;
+    if (!day) {
+      setError("Missing forecast day");
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Include day
+    const url = `${endpoint}?datetime=${encodeURIComponent(
+      datetime
+    )}&variable=${encodeURIComponent(variable)}&day=${encodeURIComponent(day)}`;
 
     fetch(url)
       .then((res) => {
-        if (!res.ok) throw new Error(`Image not yet generated (status: ${res.status})`);
+        if (!res.ok)
+          throw new Error(
+            `Image not available (status: ${res.status})`
+          );
         return res.blob();
       })
       .then((blob) => {
-        if (!blob.size) throw new Error("Received empty image");
+        if (!blob.size) throw new Error("Empty image received");
+
         objectUrl = URL.createObjectURL(blob);
 
         const img = new Image();
-        img.onload = () => setAspect(img.naturalWidth / img.naturalHeight);
+        img.onload = () =>
+          setAspect(img.naturalWidth / img.naturalHeight);
         img.onerror = () => setError("Failed to load image");
         img.src = objectUrl;
 
@@ -55,7 +70,7 @@ export function useWrfImage({
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [variable, datetime, endpoint]);
+  }, [variable, datetime, endpoint, day]); // ✅ include day
 
   return { imageUrl, aspect, loading, error };
 }

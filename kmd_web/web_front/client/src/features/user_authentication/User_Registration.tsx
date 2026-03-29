@@ -118,7 +118,7 @@ export default function Register() {
       setForm(initialForm);
       
       // Redirect after 5 seconds
-      setTimeout(() => navigate("/login"), 5000);
+      setTimeout(() => navigate("/"), 5000);
     } catch (err: any) {
       const data = err?.response?.data;
 
@@ -150,7 +150,7 @@ export default function Register() {
           <div className="success-block">
             <p>{success}</p>
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
               className="link-btn"
             >
               Go to Login
@@ -232,7 +232,7 @@ export default function Register() {
               </div>
             )}
         <p className="login-link">
-          Already have an account? <Link href="/login">Log in</Link>
+          Already have an account? <Link href="/">Log in</Link>
         </p>
       </div>
     </div>

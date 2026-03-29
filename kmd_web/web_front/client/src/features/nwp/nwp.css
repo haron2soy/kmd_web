@@ -1,0 +1,4 @@
+/* Prevent page scroll interference when hovering map */
+.map-container {
+  touch-action: none;
+}

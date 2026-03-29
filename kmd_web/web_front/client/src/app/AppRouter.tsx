@@ -8,7 +8,7 @@ import WrfViewer from "@/features/nwp/pages/WrfViewer";
 import { BackendGuard } from "@/shared/guards/BackendGuards";
 
 import NotFound from "@/features/home/not-found";
-import Home from "@/features/home/Home";
+//import Home from "@/features/home/Home";
 import DynamicPage from "@/features/home/pages/DynamicPage";
 import Contact from "@/features/home/Contact";
 import PlaceholderPage from "@/features/home/PlaceholderPage";
@@ -48,7 +48,7 @@ import RegionalInternationalLanding  from "@/features/regional_and_international
 import RedirectRegionalInternational from "@/features/regional_and_international/pages/RedirectRegionalInternational";
 
 import { AuthProvider } from "../features/user_authentication/AuthContext";
-import Login from "../features/user_authentication/Login";
+//import Login from "../features/user_authentication/Login";
 import ProtectedRoute from "../features/user_authentication/ProtectedRoute";
 import ForgotPassword from "@/features/ForgotPassword";
 import {PageLayout} from "@/shared/components/layout/PageLayout";
@@ -61,6 +61,7 @@ import RedirectProducts from "@/features/products/pages/RedirectProducts";
 import ResetPassword from "@/features/user_authentication/ResetPassword";
 import SetPassword from "@/features/user_authentication/SetPassword";
 import { BackendProvider } from "@/shared/guards/BackendProvider";
+import RootRoute from "./RootRoute";
 
 
 function Router() {
@@ -70,7 +71,7 @@ function Router() {
         <Switch>
           <Route path="/register" component={Register} />
           {/* Auth routes */}
-          <Route path="/login" component={Login} />
+          <Route path="/" component={RootRoute} />
 
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password/:uid/:token" component={ResetPassword} />
@@ -94,7 +95,7 @@ function Router() {
           
 
           <ProtectedRoute path="/nwp-models"> <NWPLanding /> </ProtectedRoute> 
-          <ProtectedRoute path="/nwp-models/wrf"> <WrfViewer /> </ProtectedRoute> 
+          <ProtectedRoute path="/nwp-models/:modelId"> <WrfViewer /> </ProtectedRoute>
 
           <ProtectedRoute path="/forecasts" > <ForecastLanding /> </ProtectedRoute> 
           <ProtectedRoute path="/forecasts/day-1" > <Day1 /> </ProtectedRoute> 
@@ -132,8 +133,8 @@ function Router() {
           <ProtectedRoute path = "/regional-international"> <RegionalInternationalLanding /> </ProtectedRoute>
           <ProtectedRoute path = "/regional-international/:slug"> <RedirectRegionalInternational /> </ProtectedRoute>
           
-           
-          <ProtectedRoute path="/"> <Home /> </ProtectedRoute>
+          
+          
           <Route component={NotFound} />
           
         </Switch>
@@ -148,7 +149,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-          <BackendProvider>
+
+        <BackendProvider>
           <BackendGuard>
             <Router />
           </BackendGuard>

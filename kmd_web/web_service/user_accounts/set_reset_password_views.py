@@ -1,5 +1,3 @@
-# users/reset_password.py
-
 import time
 
 from django.contrib.auth import get_user_model
@@ -18,7 +16,6 @@ from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
-
 # CONFIG
 IP_COOLDOWN = 10
 DELAY_SECONDS = 0.5
@@ -33,9 +30,40 @@ def _rate_limit(key, timeout):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def reset_password(request):
+def validate_reset_token(request):
+    uidb64 = request.data.get("uidb64")
+    token = request.data.get("token")
+
+    if not uidb64 or not token:
+        return Response(
+            {"valid": False, "error": "Invalid link"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=int(uid))
+    except Exception:
+        return Response(
+            {"valid": False, "error": "Invalid link"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not default_token_generator.check_token(user, token):
+        return Response(
+            {"valid": False, "error": "Link expired or invalid"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    return Response({"valid": True})
+
+def _common_password_flow(request, *, mode: str):
+    """
+    mode: "setup" | "reset"
+    """
+
     start_time = time.time()
-    
+
     uidb64 = request.data.get("uidb64")
     token = request.data.get("token")
     password = request.data.get("password")
@@ -51,10 +79,9 @@ def reset_password(request):
         )
 
     # ---- Input validation ----
-    
     if not uidb64 or not token:
         return Response(
-            {"error": {"code": "invalid_request", "message": "Invalid reset link"}},
+            {"error": {"code": "invalid_request", "message": "Invalid link"}},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -87,8 +114,22 @@ def reset_password(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    # ---- Mode-specific rules ----
+    if mode == "setup":
+        if user.has_usable_password():
+            return Response(
+                {"error": {"code": "already_set", "message": "Password already set"}},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+    elif mode == "reset":
+        if not user.has_usable_password():
+            return Response(
+                {"error": {"code": "no_existing_password", "message": "Use setup instead"}},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+    # ---- Password validation ----
     try:
         validate_password(password, user=user)
     except ValidationError as e:
@@ -104,31 +145,23 @@ def reset_password(request):
         )
 
     try:
-        # ---- Prevent token reuse (practical mitigation) ----
-        try:
-            if cache.get(f"used_token_{token}"):
-                return Response(
-                    {"error": {"code": "token_used", "message": "Token already used"}},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        except Exception:
-            pass
+        # ---- Prevent token reuse (user-scoped) ----
+        token_key = f"used_token_{user.pk}_{token}"
+
+        if cache.get(token_key):
+            return Response(
+                {"error": {"code": "token_used", "message": "Token already used"}},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user.set_password(password)
         user.save()
 
-        # mark token as used
-        try:
-            cache.set(f"used_token_{token}", True, timeout=60 * 60 * 24)
-        except Exception as e:
-            #logger.exception("Cache error!")
-            pass
-            #print("FAILED AT:", str(e))
+        cache.set(token_key, True, timeout=60 * 60 * 24)
 
-    except Exception as e:
-        #logger.exception("Password reset failed")  # logs full traceback
+    except Exception:
         return Response(
-            {"error": {"code": "server_error", "message": "Unable to reset password"}},
+            {"error": {"code": "server_error", "message": "Unable to process request"}},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
@@ -138,5 +171,27 @@ def reset_password(request):
         time.sleep(DELAY_SECONDS - elapsed)
 
     return Response({
-        "message": "Password reset successful"
+        "message": "Password set successfully" if mode == "setup" else "Password reset successful"
     })
+
+
+# ---------------------------------------------------------
+# PUBLIC VIEWS
+# ---------------------------------------------------------
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def set_password(request):
+    """
+    First-time password creation (account activation)
+    """
+    return _common_password_flow(request, mode="setup")
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password(request):
+    """
+    Standard forgot-password reset
+    """
+    return _common_password_flow(request, mode="reset")

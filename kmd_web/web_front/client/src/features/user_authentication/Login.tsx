@@ -3,11 +3,11 @@ import {Link} from "wouter";
 import { useLocation } from "wouter";
 import { useAuth } from "./AuthContext";
 import { Loader2 } from "lucide-react"; // ← add lucide-react if not already installed
-import { ScrolltoHeader } from "./ScrolltoHeader";
+//import { ScrolltoHeader } from "./ScrolltoHeader";
 import axios from "axios";
 
 export default function Login() {
-  const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
+  //const { headerRef } = ScrolltoHeader<HTMLDivElement>(80);
   //<header ref={headerRef} className="mb-4 md:mb-4"></header>
   const { login } = useAuth();
   const [, navigate] = useLocation();
@@ -47,8 +47,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-start justify-center px-4 border border-red py-4 md:py-8">
-      {/* Card container – centered and max-width constrained */}
-      <div ref={headerRef} className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mt-0">
+      {/* ref={headerRef} Card container – centered and max-width constrained */}
+      <div  className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mt-0">
         {/* Header area */}
         <div className="bg-primary text-primary-foreground px-6 py-2 text-center">
           <h2 className="text-2xl font-bold tracking-tight">RSMC Login</h2>

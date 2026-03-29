@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .forgot_password import forgot_password
-from .reset_password import reset_password
+from .set_reset_password_views import validate_reset_token, reset_password, set_password
 
 from .views import (
     csrf_token_view,
@@ -19,5 +19,6 @@ urlpatterns = [
     path("auth/register/", register_view),
     path("auth/forgot-password/", forgot_password),
     path("auth/reset-password/", reset_password),
-    path("auth/set-password/", reset_password),
+    path("auth/set-password/", set_password),
+    path("auth/validate-reset-token/", validate_reset_token),
 ]

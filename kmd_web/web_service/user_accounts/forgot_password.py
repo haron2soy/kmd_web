@@ -90,7 +90,12 @@ def forgot_password(request):
             #send_password_reset_email(user, reset_url)
 
             
-            send_password_email_task.delay(user.id, user.email, reset_url)
+            send_password_email_task.delay(
+                user.id,
+                user.email,
+                reset_url,
+                "reset"
+                )
 
 
 
