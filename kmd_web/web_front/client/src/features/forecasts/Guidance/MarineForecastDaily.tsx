@@ -1,8 +1,13 @@
-// src/features/forecasts/guidance/MarineDailyForecast.tsx
 import { Link } from "wouter";
-//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect, useState } from "react";
 import { useScrollToHeaderDoc } from "../components/scrollToHeaderDoc";
+import FilePreviewModal from "./FilePreviewModal";
+
+interface FileItem {
+  name: string;
+  url: string;
+  type: "image" | "document";
+}
 
 const relatedLinks = [
   { href: "/guidance/marine-forecast-seven-days", label: "Marine 7 Day Forecast" },
@@ -10,13 +15,22 @@ const relatedLinks = [
   { href: "/guidance/archive", label: "Guidance Forecast Archive" },
 ];
 
-const SidebarLink = ({ href, label, isActive = false }: { href: string; label: string; isActive?: boolean }) => (
+const SidebarLink = ({
+  href,
+  label,
+  isActive = false,
+}: {
+  href: string;
+  label: string;
+  isActive?: boolean;
+}) => (
   <Link href={href}>
     <div
       className={`block py-2.5 px-4 rounded-md text-base transition
-        ${isActive
-          ? "bg-blue-50 text-blue-900 font-medium border-l-4 border-blue-700 pl-3"
-          : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/70"
+        ${
+          isActive
+            ? "bg-blue-50 text-blue-900 font-medium border-l-4 border-blue-700 pl-3"
+            : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/70"
         }`}
     >
       {label}
@@ -25,30 +39,42 @@ const SidebarLink = ({ href, label, isActive = false }: { href: string; label: s
 );
 
 export default function MarineDailyForecast() {
-  const [documentPath, setDocumentPath] = useState<string | null>(null);
-  const [fileType, setFileType] = useState<string>("docx");
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const { headerRef } = useScrollToHeaderDoc(80, !loading);
 
   useEffect(() => {
     document.title = "Forecasts | RSMC Nairobi";
+
     fetch("/api/forecasts/latest-doc/?slug=marine-forecast-daily")
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data?.document) {
-          setDocumentPath(
-            data.document.startsWith("/uploads/") ? data.document : `/uploads/${data.document}`
-          );
-          setFileType(data.file_type || "docx");
+          const path = data.document.startsWith("/uploads/")
+            ? data.document
+            : `/uploads/${data.document}`;
+
+          const fileName = path.split("/").pop() || "document";
+
+          setFiles([
+            {
+              name: fileName,
+              url: path,
+              type: "document",
+            },
+          ]);
         } else {
           setError(data?.error || "Document not found");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Failed to fetch latest marine forecast:", err);
         setError("Failed to load document");
       })
@@ -56,10 +82,8 @@ export default function MarineDailyForecast() {
   }, []);
 
   return (
-    //<PageLayout>
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       <div className="lg:grid lg:grid-cols-12 lg:gap-10">
-
         {/* Main content */}
         <div className="lg:col-span-9">
           <header ref={headerRef} className="mb-6">
@@ -77,33 +101,31 @@ export default function MarineDailyForecast() {
             ) : error ? (
               <div className="p-8 text-center">
                 <div className="text-red-600 mb-4">⚠️</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Document Unavailable</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Document Unavailable
+                </h3>
                 <p className="text-gray-600 mb-6">{error}</p>
                 <p className="text-sm text-gray-500">
                   Check back later or contact support if this persists.
                 </p>
               </div>
-            ) : documentPath ? (
-              <>
-                <iframe
-                  src={
-                    fileType === "docx" || fileType === "doc"
-                      ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(documentPath)}`
-                      : documentPath
-                  }
-                  className="w-full h-[600px]"
-                  title="Marine Forecast Document"
-                />
-                <div className="mt-4 flex justify-center">
-                  <a
-                    href={documentPath}
-                    download
-                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                  >
-                    Download Document
-                  </a>
-                </div>
-              </>
+            ) : files.length > 0 ? (
+              <div className="p-6 text-center space-y-4">
+                <button
+                  onClick={() => setPreviewFileIndex(0)}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  Preview Document
+                </button>
+
+                <a
+                  href={files[0].url}
+                  download={files[0].name}
+                  className="block text-blue-600 hover:underline text-sm"
+                >
+                  Download Document
+                </a>
+              </div>
             ) : null}
           </div>
         </div>
@@ -115,7 +137,7 @@ export default function MarineDailyForecast() {
               Related Links
             </h3>
             <div className="space-y-1">
-              {relatedLinks.map(link => (
+              {relatedLinks.map((link) => (
                 <SidebarLink
                   key={link.href}
                   href={link.href}
@@ -126,9 +148,14 @@ export default function MarineDailyForecast() {
             </div>
           </div>
         </aside>
-
       </div>
+
+      {/* Modal */}
+      <FilePreviewModal
+        previewFileIndex={previewFileIndex}
+        setPreviewFileIndex={setPreviewFileIndex}
+        files={files}
+      />
     </div>
-    //</PageLayout>
   );
 }

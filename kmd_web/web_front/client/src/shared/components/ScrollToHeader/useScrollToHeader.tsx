@@ -1,63 +1,64 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
-// Overloads
-export function useScrollToHeader<T extends HTMLElement>(
-  navbarHeight?: number
-): {
+/**
+ * Hook: useScrollToHeader
+ *
+ * Scrolls the viewport to a referenced header element,
+ * offsetting for a fixed navbar height.
+ *
+ * Supports:
+ *  - useScrollToHeader(height)
+ *  - useScrollToHeader(deps, height)
+ */
+
+type UseScrollToHeaderReturn<T extends HTMLElement> = {
   headerRef: React.RefObject<T | null>;
 };
 
+// Overload signatures
 export function useScrollToHeader<T extends HTMLElement>(
-  deps: any[],
   navbarHeight?: number
-): {
-  headerRef: React.RefObject<T | null>;
-};
+): UseScrollToHeaderReturn<T>;
+
+export function useScrollToHeader<T extends HTMLElement>(
+  deps: unknown[],
+  navbarHeight?: number
+): UseScrollToHeaderReturn<T>;
 
 // Implementation
 export function useScrollToHeader<T extends HTMLElement>(
-  depsOrHeight?: any[] | number,
+  depsOrHeight?: unknown[] | number,
   maybeHeight?: number
-) {
+): UseScrollToHeaderReturn<T> {
   const headerRef = useRef<T | null>(null);
 
-  // ✅ Normalize arguments safely
-  const deps: any[] = Array.isArray(depsOrHeight) ? depsOrHeight : [];
-  const height: number =
+  // Normalize arguments
+  const deps: unknown[] = Array.isArray(depsOrHeight) ? depsOrHeight : [];
+  const navbarHeight: number =
     typeof depsOrHeight === "number"
       ? depsOrHeight
-      : maybeHeight ?? 80; // fallback default
+      : maybeHeight ?? 80;
 
-  useEffect(() => {
-    if (!headerRef.current) return;
+  useLayoutEffect(() => {
+    const element = headerRef.current;
+    if (!element) return;
 
     const scrollToHeader = () => {
-      const el = headerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-
-      if (
-        rect.top >= height &&
-        rect.bottom <= window.innerHeight
-      ) return;
-
-      const elementTop = rect.top + window.scrollY;
-      const target = Math.max(0, elementTop - height);
+      const { top } = element.getBoundingClientRect();
+      const absoluteTop = top + window.scrollY;
+      const targetPosition = Math.max(0, absoluteTop - navbarHeight);
 
       window.scrollTo({
-        top: target,
-        behavior: "smooth",
+        top: targetPosition,
+        behavior: "auto", // deterministic for initial load
       });
     };
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setTimeout(scrollToHeader, 0);
-      });
-    });
+    // Delay ensures layout stabilization (fonts, images, hydration)
+    const timer = window.setTimeout(scrollToHeader, 50);
 
-  }, [...deps, height]); // ✅ always safe
+    return () => window.clearTimeout(timer);
+  }, [...deps, navbarHeight]);
 
   return { headerRef };
 }
