@@ -21,22 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-aj9o6jord!qh1t8=6t%*v^1e#gp&(y#f5(6-#s$2wh(hj2!962'
-#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 #DATABASES["default"]["PASSWORD"] = os.getenv("DB_PASSWORD")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#correct DEBUG = os.getenv("DEBUG", "False") == "True"
+#DEBUG = False
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = [
-    "172.168.2.103",
-    "localhost:5173",
-    "127.0.0.1:5173",
-    "localhost",
-    "127.0.0.1",
-    "django"      
-]
+def get_list(env_var):
+    value = os.getenv(env_var, "")
+    return [v.strip() for v in value.split(",") if v.strip()]
+
+ALLOWED_HOSTS = get_list("ALLOWED_HOSTS")   
 
 
 # Application definition
@@ -85,11 +82,11 @@ ROOT_URLCONF = 'rsmc_config.config.urls'
 #SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 #USE_X_FORWARDED_HOST = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://172.168.2.103",
-    "http://localhost:5173",
-    "http://127.0.0.1",
-]
+
+
+CSRF_TRUSTED_ORIGINS = get_list("CSRF_TRUSTED_ORIGINS")
+CORS_ALLOWED_ORIGINS = get_list("CORS_ALLOWED_ORIGINS")
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -111,7 +108,7 @@ WSGI_APPLICATION = 'rsmc_config.config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "rsmc_db",
@@ -120,17 +117,17 @@ DATABASES = {
         "HOST": "localhost",
         "PORT": "5432",
     }
-}
-'''for dockerDATABASES = {
+}'''
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB", "rsmc_db"),
         "USER": os.getenv("POSTGRES_USER", "haron"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "haron12345"),
-        "HOST": os.getenv("POSTGRES_HOST", "postgres"),
+        "HOST": os.getenv("POSTGRES_HOST", "db"),
         "PORT": "5432",
     }
-}'''
+}
 
 
 
@@ -177,7 +174,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # --- Base directories outside Docker ---
-STORAGE_BASE_DIR = Path("/home/haron/uploads")
+STORAGE_BASE_DIR = Path(os.getenv("STORAGE_BASE_DIR", "/app/media"))
 MEDIA_URL = "/uploads/"
 RSMC_DIR = STORAGE_BASE_DIR / "rsmc"
 #NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
@@ -224,16 +221,17 @@ EAWRF_MAPS = RSMC_DIR / year / month / "eawrf_maps"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-'''CACHES = {
+CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        #"LOCATION": "redis://redis:6379/1",
+        #"LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-}'''
+}
+'''
 CACHES = {
     "default": {
         #"BACKEND": "django_redis.cache.RedisCache",
@@ -243,20 +241,20 @@ CACHES = {
         #    "CLIENT_CLASS": "django_redis.client.DefaultClient",
         #}
     }
-}
+}'''
 
 #CELERY_BROKER_URL = "redis://redis:6379/0"
 #CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # Celery
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-#for dockerCELERY_BROKER_URL = "redis://redis:6379/0"
-#forr dockerCELERY_RESULT_BACKEND = "redis://redis:6379/0"
+#CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # Celery Enhancements
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-REDIS_URL="redis://localhost:6379/0"
+#CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+#REDIS_URL="redis://localhost:6379/0"
 
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
@@ -285,22 +283,17 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "haron1soy@gmail.com"
-EMAIL_HOST_PASSWORD = "ycjywypxextyvhwv"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = "RSMC <haron1soy@gmail.com>"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 SITE_NAME = "RSMC"
 
 
-FRONTEND_URL = "http://localhost:5173"
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-# Allow your frontend origin
-CORS_ALLOWED_ORIGINS = [
-    "http://172.168.2.103",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+
 
 #SECURE_SSL_REDIRECT = True #for production
 CORS_ALLOW_CREDENTIALS = True
