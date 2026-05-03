@@ -21509,3 +21509,13 @@ File /home/haron/kmd/kmd_web/web_service/home/migrations/0001_initial.py first s
 File /home/haron/kmd/kmd_web/web_service/user_accounts/migrations/0004_emaillog.py first seen with mtime 1774345485.5836384
 File /home/haron/kmd/kmd_web/web_service/user_accounts/migrations/__init__.py first seen with mtime 1772532351.7888913
 File /home/haron/miniconda3/envs/rsmc-env/lib/python3.11/site-packages/django/views/csrf.py first seen with mtime 1768985465.6248271
+(0.004) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."expire_date" > '2026-05-03T00:44:19.902872+00:00'::timestamptz AND "django_session"."session_key" = 'vza5j08ibf6svh89d5a6epjvkkq459zv') LIMIT 21; args=(datetime.datetime(2026, 5, 3, 0, 44, 19, 902872, tzinfo=datetime.timezone.utc), 'vza5j08ibf6svh89d5a6epjvkkq459zv'); alias=default
+"GET /api/session/ HTTP/1.1" 200 23
+"GET /api/session/ HTTP/1.1" 200 23
+File /home/haron/miniconda3/envs/rsmc-env/lib/python3.11/site-packages/django/contrib/messages/storage/fallback.py first seen with mtime 1768985464.9863615
+File /home/haron/miniconda3/envs/rsmc-env/lib/python3.11/site-packages/django/contrib/messages/storage/cookie.py first seen with mtime 1768985464.9863615
+File /home/haron/miniconda3/envs/rsmc-env/lib/python3.11/site-packages/django/contrib/sessions/serializers.py first seen with mtime 1768985465.2229693
+File /home/haron/miniconda3/envs/rsmc-env/lib/python3.11/site-packages/django/contrib/messages/storage/session.py first seen with mtime 1768985464.9863615
+File /home/haron/kmd/kmd_web/web_service/rsmc_config/config/prod.py previous mtime: 1774589957.2943916, current mtime: 1777769998.3337617
+/home/haron/kmd/kmd_web/web_service/rsmc_config/config/prod.py notified as changed. Signal results: [(<function template_changed at 0x74e8a4736c00>, None), (<function translation_file_changed at 0x74e8a37f8720>, None)].
+/home/haron/kmd/kmd_web/web_service/rsmc_config/config/prod.py changed, reloading.
