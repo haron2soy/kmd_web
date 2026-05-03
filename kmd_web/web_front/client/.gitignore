@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 *.pyc
 *.__pycache__
+.env
+cookies.txt
+*.txt

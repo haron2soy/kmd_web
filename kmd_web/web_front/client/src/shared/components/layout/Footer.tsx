@@ -1,4 +1,6 @@
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { Facebook, Twitter, Instagram } from "lucide-react";
+
 //import {Globe} from 'lucide-react';
 export function Footer() {
   return (
@@ -43,22 +45,50 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Disclaimer 
+        {/* Social media Links */}
         <div>
-           <h3 className="text-white font-serif font-bold text-lg mb-4 uppercase border-b border-slate-700 pb-2 inline-block">
-            Legal
-          </h3>
-          <p className="text-sm leading-relaxed mb-4">
-            The information on this website is provided "as is" without warranty of any kind. 
-            The RSMC is not liable for any damages arising from the use of this information.
-          </p>
-          <div className="flex gap-4">
-             {/* Social placeholders *}
-             <div className="h-8 w-8 bg-slate-700 rounded-full flex items-center justify-center hover:bg-accent hover:text-slate-900 transition-colors cursor-pointer">
-                <Globe className="h-4 w-4" />
-             </div>
-          </div>
-        </div>*/}
+  <h3 className="text-white font-serif font-bold text-lg mb-4 uppercase border-b border-slate-700 pb-2 inline-block">
+    Our Social Media Links
+  </h3>
+
+  <ul className="space-y-3 text-sm">
+    <li>
+      <a
+        href="https://www.facebook.com/KenyaMeteorologicalDepartment/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 hover:text-white hover:underline decoration-accent"
+      >
+        <Facebook className="w-4 h-4" />
+        Facebook
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="https://x.com/MeteoKenya/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 hover:text-white hover:underline decoration-accent"
+      >
+        <Twitter className="w-4 h-4" />
+        X (Twitter)
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="https://www.instagram.com/officialkmd_/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 hover:text-white hover:underline decoration-accent"
+      >
+        <Instagram className="w-4 h-4" />
+        Instagram
+      </a>
+    </li>
+  </ul>
+</div>
       </div>
       
       <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">

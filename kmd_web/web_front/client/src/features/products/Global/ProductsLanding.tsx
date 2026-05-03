@@ -38,29 +38,29 @@ export default function ProductsLanding() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-0 md:py-0 relative overflow-hidden">
       
       {/* 🌌 Decorative satellite images (no layout interference) */}
       <div className="absolute inset-0 pointer-events-none">
         <img
           src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/78975044cd7cae81c6d6f0244628eee248776945.jpg"
           alt=""
-          className="absolute left-4 top-20 w-32 md:w-40 opacity-30"
+          className="absolute left-4 top-0 w-32 md:w-40 opacity-30"
         />
         <img
           src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4ce1a134295cdd7ed0a5ea333671c6e0ff037605.jpg"
           alt=""
-          className="absolute right-4 top-32 w-36 md:w-44 opacity-30"
+          className="absolute right-4 top-0 w-36 md:w-44 opacity-50"
         />
         <img
           src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5a163b637f156afb67f32fedf1457066671a416a.jpg"
           alt=""
-          className="absolute left-10 bottom-20 w-28 md:w-36 opacity-25"
+          className="absolute left-10 bottom-30 w-28 md:w-36 opacity-50"
         />
         <img
           src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5a163b637f156afb67f32fedf1457066671a416a.jpg"
           alt=""
-          className="absolute right-10 bottom-16 w-28 md:w-36 opacity-25"
+          className="absolute right-10 bottom-16 w-28 md:w-36 opacity-50"
         />
       </div>
 
@@ -68,7 +68,7 @@ export default function ProductsLanding() {
         
         {/* Header */}
         <header ref={headerRef} className="text-center mb-10">
-          <h1 className="text-xl md:text-2xl font-serif font-bold text-primary mb-3 flex items-center justify-center gap-3 border">
+          <h1 className="text-xl md:text-2xl font-serif font-bold text-primary mb-3 flex items-center justify-center gap-3">
             <Satellite className="w-6 h-6" />
             Meteorological Services
           </h1>
