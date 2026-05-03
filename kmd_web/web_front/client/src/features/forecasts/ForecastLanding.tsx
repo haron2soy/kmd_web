@@ -9,7 +9,7 @@ export default function ForecastLanding() {
   const [current, setCurrent] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
-  // ✅ Fetch ALL images from directory
+  // Fetch images
   useEffect(() => {
     fetch("/api/forecasts/short-range/")
       .then(res => res.json())
@@ -18,13 +18,12 @@ export default function ForecastLanding() {
           const processed = data.images.map((item: any) =>
             `/uploads/${item.image}`.replace(/\/+/g, "/")
           );
-
-      setImages(processed);
-    }
-  });
+          setImages(processed);
+        }
+      });
   }, []);
 
-  // ✅ Auto slide
+  // Auto slide
   useEffect(() => {
     if (!isPlaying || images.length === 0) return;
 
@@ -43,62 +42,61 @@ export default function ForecastLanding() {
     setCurrent(prev => (prev - 1 + images.length) % images.length);
   };
 
-  // Sidebar
-  const relatedLinks = [
+  const QuickLinks = [
+    
+    { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
+    { href: "/forecasts/discussion-short", label: "Short-Range Discussion" },
     { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
     { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
-    { href: "/forecasts/archive", label: "Forecast Archive" },
-  ];
-   const relatedLinksleft = [
     { href: "/guidance", label: "Guidance" },
     { href: "/nwp-models", label: "NWP Models" },
     { href: "/forecasts/archive", label: "Forecast Archive" },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-0 max-w-6xl">
-      <header ref={headerRef} className="mb-6">
-        <h1 className="text-xl md:text-xl font-serif font-bold text-primary mb-4">
-          Forecasts
-        </h1>
-      </header>
+    <div className="mx-auto px-4 max-w-7xl">
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-10">
-          {/* LEFT SIDEBAR */}
-            <aside className="lg:col-span-3 mt-10 lg:mt-0">
-              <div className="sticky top-32">
-                <div className="bg-white border rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-semibold text-blue-900 mb-4">
-                    Quick Links
-                  </h3>
-                  <div className="space-y-2">
-                    {relatedLinksleft.map((link) => (
-                      <Link key={link.href} href={link.href}>
-                        <div className="py-2 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
-                          {link.label}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+
+      {/* ✅ RESPONSIVE GRID */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
+
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-20">
+            <div className="bg-white border rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4">
+                Quick Links
+              </h3>
+              <div className="space-y-2">
+                {QuickLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <div className="py-1 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
+                      {link.label}
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </aside>
-        {/* SLIDER *}
-        <div className="lg:col-span-6 flex flex-col items-center mx-auto">*/}
-        <div   className={`${
-              images.length === 0 ? "lg:col-span-6" : "lg:col-span-6"
-            } flex flex-col items-center`}
-          >
+            </div>
+          </div>
+        </aside>
 
+        {/* ✅ SLIDER */}
+        <div className="lg:col-span-9 w-full flex flex-col">
+          <header ref={headerRef} className="mb-6">
+            <h1 className="text-xl font-serif font-bold text-primary">
+              Forecasts
+            </h1>
+          </header>
+          {/* IMAGE CONTAINER */}
           <div
-            className="w-full h-[400px] bg-white border rounded-xl flex items-center justify-center overflow-hidden"
-            onMouseEnter={() => setIsPlaying(false)}   
-            onMouseLeave={() => setIsPlaying(true)}   
+            className="w-full flex-1 bg-white border rounded-xl overflow-hidden bg-white border rounded-xl flex items-center justify-center overflow-hidden"
+            onMouseEnter={() => setIsPlaying(false)}
+            onMouseLeave={() => setIsPlaying(true)}
           >
             {images.length > 0 ? (
               <img
                 src={images[current]}
-                className="max-h-full max-w-full object-contain"
+                className="w-full h-full object-contain"
                 alt={`Forecast ${current + 1}`}
               />
             ) : (
@@ -106,9 +104,8 @@ export default function ForecastLanding() {
             )}
           </div>
 
-          {/* ✅ CONTROLS BELOW */}
-          <div className="mt-4 flex items-center gap-3">
-
+          {/* CONTROLS */}
+          <div className="mt-4 flex items-center gap-3 flex-wrap">
             <button
               onClick={prevSlide}
               className="px-3 py-1 border rounded hover:bg-gray-100"
@@ -130,33 +127,12 @@ export default function ForecastLanding() {
               {">"}
             </button>
 
-            <span className="ml-3 text-gray-600">
+            <span className="ml-2 text-gray-600 text-sm">
               {images.length > 0 ? `${current + 1} / ${images.length}` : ""}
             </span>
           </div>
+
         </div>
-
-        {/* SIDEBAR */}
-        <aside className="lg:col-span-3 mt-10 lg:mt-0">
-          <div className="sticky top-32">
-            <div className="bg-white border rounded-xl p-6 shadow-sm">
-              <h3 className="text-xl font-semibold text-blue-900 mb-4">
-                Related Links
-              </h3>
-
-              <div className="space-y-2">
-                {relatedLinks.map((link) => (
-                  <Link key={link.href} href={link.href}>
-                    <div className="py-2 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
-                      {link.label}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </aside>
-
       </div>
     </div>
   );

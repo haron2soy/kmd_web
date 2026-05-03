@@ -115,7 +115,7 @@ class WindMapper:
         ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
 
         ax.add_feature(cfeature.NaturalEarthFeature(
-            'cultural', 'admin_0_countries', '10m',
+            'cultural', 'admin_1_countries', '10m',
             edgecolor='black', facecolor='none', linewidth=0.9
         ))
 

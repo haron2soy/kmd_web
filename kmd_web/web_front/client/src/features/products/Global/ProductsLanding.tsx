@@ -4,6 +4,7 @@ import { useScrollToHeader } from "@/shared/components/ScrollToHeader/useScrollT
 import type { ServiceItem } from "./ProductDetails";
 import { ProductDetails } from "./ProductDetails";
 import { useEffect } from "react";
+import {Link} from "wouter";
 import { ExternalLink, Globe, Satellite } from "lucide-react";
 
 const Card = ({ name, url }: ServiceItem) => (
@@ -11,7 +12,7 @@ const Card = ({ name, url }: ServiceItem) => (
     href={url}
     target="_blank"
     rel="noopener noreferrer"
-    className="group block bg-white border border-gray-200 rounded-xl p-4 
+    className="group block bg-gray-200 border border-gray-200 rounded-xl p-4 
                hover:border-primary hover:shadow-sm transition-all duration-200 
                hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-primary/20"
     aria-label={`Visit ${name} (opens in new tab)`}
@@ -37,6 +38,18 @@ export default function ProductsLanding() {
     document.title = "Meteorological Services | RSMC Nairobi";
   }, []);
 
+  const QuickLinks = [
+    
+    { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
+    { href: "/forecasts/discussion-short", label: "Short-Range Discussion" },
+    { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
+    { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
+    { href: "/guidance", label: "Guidance" },
+    { href: "/nwp-models", label: "NWP Models" },
+    { href: "/forecasts/archive", label: "Forecast Archive" },
+  ];
+
+  
   return (
     <div className="min-h-screen bg-gray-50 py-0 md:py-0 relative overflow-hidden">
       
@@ -63,8 +76,28 @@ export default function ProductsLanding() {
           className="absolute right-10 bottom-16 w-28 md:w-36 opacity-50"
         />
       </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-20">
+            <div className="bg-white border rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4">
+                Quick Links
+              </h3>
+              <div className="space-y-2">
+                {QuickLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <div className="py-1 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
+                      {link.label}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+      <div className="lg:col-span-9 w-full flex flex-col">
         
         {/* Header */}
         <header ref={headerRef} className="text-center mb-10">
@@ -78,7 +111,9 @@ export default function ProductsLanding() {
         </header>
 
         {/* Services grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="bg-gray-200  border border-gray-200
+                rounded-xl p-4 hover:bg-gray-300 hover:shadow-md transition">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4">
           {ProductDetails.map((service) => (
             <Card
               key={service.slug}
@@ -88,6 +123,7 @@ export default function ProductsLanding() {
             />
           ))}
         </div>
+      </div>
 
         {/* Footer note */}
         <div className="mt-12 text-center">
@@ -96,6 +132,7 @@ export default function ProductsLanding() {
           </p>
         </div>
       </div>
+    </div>
     </div>
   );
 }

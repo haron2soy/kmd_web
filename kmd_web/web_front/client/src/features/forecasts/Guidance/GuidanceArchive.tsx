@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import apiClient from "@/lib/apiClient";
 import { useScrollToHeaderArc } from "../components/scrollToHeaderArc";
-import FilePreviewModal from "./FilePreviewModal";
+import FilePreviewModal from "../components/FilePreviewModal"
 type FileItem = {
   name: string;
   url: string;
@@ -192,6 +192,17 @@ const detectFileType = (name: string): "image" | "document" =>
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3 mt-12 lg:mt-0">
+          <div className="sticky top-32 bg-white border rounded-xl p-6 shadow-sm">
+            <h3 className="text-lg font-semibold mb-4 border-b pb-2">
+              Related Links
+            </h3>
+            {relatedLinks.map((link) => (
+              <SidebarLink key={link.href} {...link} />
+            ))}
+          </div>
+        </aside>
         {/* MAIN */}
         <div className="lg:col-span-9">
           <header ref={headerRef} className="mb-8">
@@ -272,17 +283,7 @@ const detectFileType = (name: string): "image" | "document" =>
           )}
         </div>
 
-        {/* SIDEBAR */}
-        <aside className="lg:col-span-3 mt-12 lg:mt-0">
-          <div className="sticky top-32 bg-white border rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 border-b pb-2">
-              Related Links
-            </h3>
-            {relatedLinks.map((link) => (
-              <SidebarLink key={link.href} {...link} />
-            ))}
-          </div>
-        </aside>
+        
       </div>
 
       {/* --------------------------------------------------}

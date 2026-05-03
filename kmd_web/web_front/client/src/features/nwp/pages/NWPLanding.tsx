@@ -106,8 +106,45 @@ export default function NWPLanding() {
     staleTime: 30 * 60 * 1000,
   });
 
+
+  const QuickLinks = [
+    
+    { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
+    { href: "/forecasts/discussion-short", label: "Short-Range Discussion" },
+    { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
+    { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
+    { href: "/guidance", label: "Guidance" },
+    { href: "/nwp-models", label: "NWP Models" },
+    { href: "/forecasts/archive", label: "Forecast Archive" },
+  ];
   return (
-    <div className="container mx-auto px-4 py-3 md:py-0 max-w-6xl">
+    <div className="mx-auto px-4 max-w-7xl">
+
+
+      {/* ✅ RESPONSIVE GRID */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
+
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-20">
+            <div className="bg-white border rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4">
+                Quick Links
+              </h3>
+              <div className="space-y-2">
+                {QuickLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <div className="py-1 px-3 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer">
+                      {link.label}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+    <div className="lg:col-span-9 w-full flex flex-col">
       <header ref={headerRef} className="mb-4 md:mb-4">
         <h2 className="text-xl md:text-2xl font-serif font-bold text-primary mb-10">
           Numerical Weather Prediction (NWP) Models
@@ -162,6 +199,8 @@ export default function NWPLanding() {
           </p>
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 }

@@ -12,11 +12,11 @@ type FileItem = {
 };
 
 const relatedLinks = [
-  { href: "/forecasts/day-1", label: "Day 1 Forecast" },
-  { href: "/forecasts/day-2", label: "Day 2 Forecast" },
-  { href: "/forecasts/day-3", label: "Day 3 Forecast" },
+
   { href: "/forecasts/risk-table-short", label: "Short-Range Risk Table" },
   { href: "/forecasts/discussion-short", label: "Short-Range Discussion" },
+  { href: "/forecasts/risk-table-medium", label: "Medium-Range Risk Table" },
+  { href: "/forecasts/discussion-medium", label: "Medium-Range Discussion" },
 ];
 
 const SidebarLink = ({
@@ -203,6 +203,19 @@ function getFolderInfoFromUrl(url: string) {
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-3 mt-12 lg:mt-0">
+          <div className="sticky top-32 bg-white border rounded-xl p-6 shadow-sm">
+            <h3 className="text-lg font-semibold mb-4 border-b pb-2">
+              Related Links
+            </h3>
+            {relatedLinks.map((link) => (
+              <SidebarLink key={link.href} {...link} />
+            ))}
+          </div>
+        </aside>
+
         {/* MAIN */}
         <div className="lg:col-span-9">
           <header ref={headerRef} className="mb-8">
@@ -311,17 +324,7 @@ function getFolderInfoFromUrl(url: string) {
           )}
         </div>
 
-        {/* SIDEBAR */}
-        <aside className="lg:col-span-3 mt-12 lg:mt-0">
-          <div className="sticky top-32 bg-white border rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 border-b pb-2">
-              Related Links
-            </h3>
-            {relatedLinks.map((link) => (
-              <SidebarLink key={link.href} {...link} />
-            ))}
-          </div>
-        </aside>
+        
       </div>
 
       {/* MODAL */}

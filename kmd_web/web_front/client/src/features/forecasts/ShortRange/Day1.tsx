@@ -62,6 +62,27 @@ export default function Day1() {
     //<PageLayout>
       <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8 max-w-6xl">
         <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+          
+          {/* Sidebar */}
+          <aside className="lg:col-span-3 mt-12 lg:mt-0">
+            <div className="sticky top-32 lg:top-40">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
+                  Related Links
+                </h3>
+                <div className="space-y-1">
+                  {relatedLinks.map((link) => (
+                    <SidebarLink
+                      key={link.href}
+                      href={link.href}
+                      label={link.label}
+                      isActive={false} // you can mark Day1 as active if needed
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
           {/* Main content */}
           <div className="lg:col-span-9">
             
@@ -94,26 +115,7 @@ export default function Day1() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-3 mt-12 lg:mt-0">
-            <div className="sticky top-32 lg:top-40">
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
-                  Related Links
-                </h3>
-                <div className="space-y-1">
-                  {relatedLinks.map((link) => (
-                    <SidebarLink
-                      key={link.href}
-                      href={link.href}
-                      label={link.label}
-                      isActive={false} // you can mark Day1 as active if needed
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </aside>
+          
         </div>
       </div>
     //</PageLayout>

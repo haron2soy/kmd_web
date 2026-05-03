@@ -3,7 +3,7 @@ import { Link } from "wouter";
 //import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect, useState } from "react";
 import { useScrollToHeader } from "../../../shared/components/ScrollToHeader/useScrollToHeader";
-import FilePreviewModal from "@/features/forecasts/Guidance/FilePreviewModal";
+import FilePreviewModal from "@/features/forecasts/components/FilePreviewModal";
 
 const relatedLinks = [
   { href: "/swfp-evaluation", label: "SWFP Landing" },

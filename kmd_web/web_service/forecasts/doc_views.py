@@ -1,4 +1,5 @@
 import os
+import subprocess
 from datetime import timedelta
 from django.utils.timezone import now
 from django.conf import settings
@@ -7,6 +8,46 @@ from rest_framework.decorators import api_view
 
 from forecasts.models import Forecast, ForecastCategory
 import calendar
+
+# -----------------------------
+# Conversion utility
+# -----------------------------
+def convert_doc_to_pdf(input_path):
+    """
+    Convert .doc/.docx to .pdf only if PDF does not already exist.
+    Returns final usable file path (PDF preferred).
+    """
+    base, ext = os.path.splitext(input_path)
+    ext = ext.lower()
+
+    pdf_path = base + ".pdf"
+
+    # ✅ If PDF already exists → use it (NO conversion)
+    if os.path.exists(pdf_path):
+        return pdf_path
+    
+    #libreoffice_path = "/snap/bin/libreoffice"
+    # ✅ Only convert if DOC exists
+    if ext in [".doc", ".docx"] and os.path.exists(input_path):
+        try:
+            subprocess.run([
+                "soffice", #libreoffice_path
+                "--headless",
+                "--convert-to", "pdf",
+                "--outdir", os.path.dirname(input_path),
+                input_path
+            ], check=True)
+
+            if os.path.exists(pdf_path):
+                return pdf_path
+
+        except Exception as e:
+            pass 
+            #print(f"[WARN] Conversion failed: {e}")
+
+    # fallback → return original
+    return input_path
+
 
 # -----------------------------
 # Filename generators
@@ -25,6 +66,7 @@ def marine_seven_day_filename(day, month, year):
 def easwfp_daily_filename(day, month, year):
     return f"Easwfp_Discussion_valid_{day}_{month}_{year}.pdf"
 
+
 # -----------------------------
 # Slug mapping
 # -----------------------------
@@ -38,6 +80,7 @@ FILENAME_PATTERNS = {
     "easwfp-discussion-daily": easwfp_daily_filename,
 }
 
+
 # -----------------------------
 # API endpoint
 # -----------------------------
@@ -48,21 +91,20 @@ def guidance_documents(request):
         return Response({"error": "Missing slug parameter"}, status=400)
 
     if slug not in FILENAME_PATTERNS:
-        return Response({"error": f"Invalid slug. Available: {', '.join(FILENAME_PATTERNS.keys())}"},
-                        status=400)
+        return Response(
+            {"error": f"Invalid slug. Available: {', '.join(FILENAME_PATTERNS.keys())}"},
+            status=400
+        )
 
     today = now().date()
     daydigit = f"{today.day:02d}"
-    #month = f"{today.month:02d}"
     year = str(today.year)
-    
-    #month = f"{today.month:02d}"  # numeric month
-    month = calendar.month_name[today.month]  # e.g., "March"
-    #day = f"{today.day:02d}"  # numeric day folder
-    day = today.strftime("%b-%d").lower()  # "mar-23"
+
+    month = calendar.month_name[today.month]
+    day = today.strftime("%b-%d").lower()
 
     # -----------------------------
-    # 1️⃣ Database lookup
+    # 1️⃣ DB lookup (FAST PATH)
     # -----------------------------
     forecast = Forecast.objects.filter(
         content_type="document",
@@ -73,35 +115,39 @@ def guidance_documents(request):
 
     if forecast:
         _, ext = os.path.splitext(forecast.file_path)
-        file_type = ext.lstrip(".").lower()
         return Response({
             "document": forecast.file_path,
-            "url": f"{settings.STORAGE_BASE_DIR}{forecast.file_path}",
+            "url": f"{settings.MEDIA_URL}{forecast.file_path}",
             "slug": slug,
             "date": forecast.issue_date.strftime("%Y-%m-%d"),
             "filename": os.path.basename(forecast.file_path),
-            "file_type": file_type,
+            "file_type": ext.lstrip(".").lower(),
         })
 
     # -----------------------------
-    # 2️⃣ Filesystem fallback
+    # 2️⃣ Filesystem lookup
     # -----------------------------
     base_path = os.path.join(settings.RSMC_DIR, year, month, day)
     filename = FILENAME_PATTERNS[slug](daydigit, month, year)
     full_path = os.path.join(base_path, filename)
 
     if not os.path.exists(full_path):
-        return Response({"error": f"{filename} not found in {base_path}"}, status=404)
+        return Response({"error": "File not found."}, status=404)
+
+    # ✅ Convert ONLY if needed
+    final_path = convert_doc_to_pdf(full_path)
+    final_filename = os.path.basename(final_path)
 
     # -----------------------------
-    # 3️⃣ Save to DB
+    # 3️⃣ Save to DB (PDF preferred)
     # -----------------------------
     category, _ = ForecastCategory.objects.get_or_create(
         slug="guidance",
         defaults={"name": "Guidance Documents"}
     )
 
-    db_file_path = os.path.join("rsmc", year, month, day, filename)
+    db_file_path = os.path.join("rsmc", year, month, day, final_filename)
+
     forecast, _ = Forecast.objects.update_or_create(
         category=category,
         slug=slug,
@@ -114,13 +160,12 @@ def guidance_documents(request):
     )
 
     _, ext = os.path.splitext(db_file_path)
-    file_type = ext.lstrip(".").lower()
 
     return Response({
         "document": db_file_path,
-        "url": f"{settings.STORAGE_BASE_DIR}{db_file_path}",
+        "url": f"{settings.MEDIA_URL}{db_file_path}",
         "slug": slug,
         "date": forecast.issue_date.strftime("%Y-%m-%d"),
-        "filename": filename,
-        "file_type": file_type,
+        "filename": final_filename,
+        "file_type": ext.lstrip(".").lower(),
     })

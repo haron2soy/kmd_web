@@ -73,11 +73,25 @@ class RainfallMapper:
         ax = plt.axes(projection=ccrs.PlateCarree())
 
         # Map features
-        ax.coastlines(resolution='10m', linewidth=0.7, alpha=0.9)
+        ax.coastlines(resolution='10m', linewidth=0.7)
+
+        # Base layers
+        ax.add_feature(cfeature.OCEAN, facecolor='#d8e8f5', zorder=0)
+        ax.add_feature(cfeature.LAND, facecolor='#f5f5eb', zorder=0)
+        ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
+
+        
         ax.add_feature(cfeature.BORDERS, linewidth=0.8)
-        ax.add_feature(cfeature.OCEAN, facecolor='#d8e8f5')
-        ax.add_feature(cfeature.LAND, facecolor='#f5f5eb')
-        ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff')
+
+        
+        ax.add_feature(cfeature.NaturalEarthFeature(
+            'cultural',
+            'admin_1_countries',
+            '10m',
+            edgecolor='black',
+            facecolor='none',
+            linewidth=0.9
+        ))
 
         ax.gridlines(draw_labels=True, linestyle='--', alpha=0.35)
 

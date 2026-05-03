@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useScrollToHeaderDoc } from "../components/scrollToHeaderDoc";
-import FilePreviewModal from "./FilePreviewModal";
+import FilePreviewModal from "../components/FilePreviewModal"
 
 interface FileItem {
   name: string;
@@ -84,6 +84,24 @@ export default function MarineDailyForecast() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+        {/* Sidebar */}
+        <aside className="lg:col-span-3 mt-12 lg:mt-0">
+          <div className="sticky top-32 lg:top-40 bg-white border rounded-xl p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
+              Related Links
+            </h3>
+            <div className="space-y-1">
+              {relatedLinks.map((link) => (
+                <SidebarLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  isActive={link.href === "/guidance/marine-forecast-daily"}
+                />
+              ))}
+            </div>
+          </div>
+        </aside>
         {/* Main content */}
         <div className="lg:col-span-9">
           <header ref={headerRef} className="mb-6">
@@ -130,24 +148,7 @@ export default function MarineDailyForecast() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <aside className="lg:col-span-3 mt-12 lg:mt-0">
-          <div className="sticky top-32 lg:top-40 bg-white border rounded-xl p-6 shadow-sm">
-            <h3 className="text-xl font-semibold text-blue-900 mb-5 pb-2 border-b border-gray-100">
-              Related Links
-            </h3>
-            <div className="space-y-1">
-              {relatedLinks.map((link) => (
-                <SidebarLink
-                  key={link.href}
-                  href={link.href}
-                  label={link.label}
-                  isActive={link.href === "/guidance/marine-forecast-daily"}
-                />
-              ))}
-            </div>
-          </div>
-        </aside>
+        
       </div>
 
       {/* Modal */}

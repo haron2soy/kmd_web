@@ -127,14 +127,28 @@ class TemperatureMapper:
         )
 
         # -----------------------------------------
-        # Base layers (UNCHANGED)
+        # Base layers
         # -----------------------------------------
-        ax.coastlines(resolution='10m', linewidth=0.8)
-        ax.add_feature(cfeature.BORDERS, linestyle='-', linewidth=1.0, alpha=0.7)
-        ax.add_feature(cfeature.OCEAN)
-        ax.add_feature(cfeature.LAND)
-        ax.add_feature(cfeature.LAKES, edgecolor='black', facecolor='lightblue')
-        ax.gridlines(draw_labels=True, alpha=0.5, linestyle='--')
+        ax.coastlines(resolution='10m', linewidth=0.7)
+
+        ax.add_feature(cfeature.OCEAN, facecolor='#d8e8f5', zorder=0)
+        ax.add_feature(cfeature.LAND, facecolor='#f5f5eb', zorder=0)
+        ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
+
+        # Borders (thin baseline)
+        ax.add_feature(cfeature.BORDERS, linewidth=0.8)
+
+        # 🔥 KEY ADDITION — sharp political boundaries
+        ax.add_feature(cfeature.NaturalEarthFeature(
+            'cultural',
+            'admin_1_countries',
+            '10m',
+            edgecolor='black',
+            facecolor='none',
+            linewidth=0.9
+        ))
+
+        ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
 
         # -----------------------------------------
         # Title & output
