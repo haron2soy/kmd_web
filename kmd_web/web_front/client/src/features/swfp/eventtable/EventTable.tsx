@@ -1,41 +1,21 @@
 // src/features/swfp/eventtable/EventTable.tsx
 import { Link } from "wouter";
-//import { PageLayout } from "@/shared/components/layout/PageLayout";
 import { useEffect, useState } from "react";
 import { useScrollToHeader } from "../../../shared/components/ScrollToHeader/useScrollToHeader";
 
-
-
-const relatedLinks = [
+const QuickLinks = [
   { href: "/swfp-evaluation", label: "SWFP Landing" },
   { href: "/swfp-evaluation/quarterly-report", label: "Quarterly Report" },
+  { href: "/swfp-evaluation/event-table", label: "Event Table" },
 ];
-
-const SidebarLink = ({
-  href,
-  label,
-  isActive = false,
-}: {
-  href: string;
-  label: string;
-  isActive?: boolean;
-}) => (
-  <Link href={href}>
-    <div className={`block py-2.5 px-4 rounded-md transition
-      ${isActive
-        ? "bg-blue-50 text-blue-900 font-medium border-l-4 border-blue-700 pl-3"
-        : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/70"}
-    `}>
-      {label}
-    </div>
-  </Link>
-);
 
 export default function EventTable() {
   const [file, setFile] = useState<string | null>(null);
   const { headerRef } = useScrollToHeader(80);
+
   const year = 2026;
   const quarter = 1;
+
   const [columns, setColumns] = useState<string[]>([]);
   const [rows, setRows] = useState<any[]>([]);
 
@@ -44,109 +24,118 @@ export default function EventTable() {
       .then(res => res.json())
       .then(data => {
         if (data?.file) {
-          setFile(data.file.startsWith("/uploads/")
-            ? data.file
-            : `/uploads/${data.file}`);
+          setFile(
+            data.file.startsWith("/uploads/")
+              ? data.file
+              : `/uploads/${data.file}`
+          );
         }
       });
-      
-      // 2️⃣ NEW: fetch table data
-      fetch(`/api/swfp_evaluation/events-table-data/?year=${year}&quarter=${quarter}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data?.columns && data?.rows) {
-            setColumns(data.columns);
-            setRows(data.rows);
-          }
-        });
+
+    fetch(`/api/swfp_evaluation/events-table-data/?year=${year}&quarter=${quarter}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data?.columns && data?.rows) {
+          setColumns(data.columns);
+          setRows(data.rows);
+        }
+      });
   }, []);
 
   return (
-    //<PageLayout>
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+    <div className="mx-auto px-4 max-w-7xl">
 
-          {/* Main */}
-          <div className="lg:col-span-9">
-            <header ref={headerRef} className="mb-6">
-              <h1 className="text-3xl font-serif font-bold text-primary mb-3">
-                Event Table
-              </h1>
-              <p className="text-gray-600">
-                SWFP event verification dataset.
-              </p>
-            </header>
-            
-            {rows.length > 0 && (
-              <div className="overflow-x-auto mt-4">
-                <table className="min-w-full border border-gray-200 text-sm">
-                  
-                  {/* Header */}
-                  <thead className="bg-gray-100">
-                    <tr>
-                      {columns.map((col) => (
-                        <th
-                          key={col}
-                          className="px-3 py-2 border text-left font-semibold"
-                        >
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
+      {/* SAME GRID AS NWP */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
 
-                  {/* Body */}
-                  <tbody>
-                    {rows.map((row, i) => (
-                      <tr key={i} className="hover:bg-gray-50">
-                        {columns.map((col) => (
-                          <td key={col} className="px-3 py-2 border">
-                            {row[col]}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-
-                </table>
-              </div>
-            )}
-
-            <div className="bg-white border rounded-xl p-4">
-              {file ? (
-                <>                  
-                  <div className="mt-4 flex justify-center">
-                    <a href={file} download className="px-5 py-2 bg-green-600 text-white rounded-lg">
-                      Download Excel
-                    </a>
-                  </div>
-                </>
-              ) : (
-                <p className="text-center py-10">Loading...</p>
-              )}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <aside className="lg:col-span-3 mt-10 lg:mt-0">
-            <div className="sticky top-32">
-              <div className="bg-white border rounded-xl p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-blue-900 mb-5 border-b pb-2">
-                  Related Links
-                </h3>
-                {relatedLinks.map(link => (
-                  <SidebarLink
-                    key={link.href}
-                    {...link}
-                    isActive={link.href === "/swfp-evaluation/event-table"}
-                  />
+        {/* QUICK LINKS (LEFT SIDEBAR - IDENTICAL TO NWP) */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-20">
+            <div className="bg-white border rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4">
+                Quick Links
+              </h3>
+              <div className="space-y-2">
+                {QuickLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <div
+                      className={`py-1 px-3 rounded cursor-pointer
+                        ${
+                          link.href === "/swfp-evaluation/event-table"
+                            ? "bg-orange-50 text-orange-600"
+                            : "hover:bg-orange-50 hover:text-orange-600"
+                        }
+                      `}
+                    >
+                      {link.label}
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>
-          </aside>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <div className="lg:col-span-9 w-full flex flex-col">
+
+          <header ref={headerRef} className="mb-4 md:mb-4">
+            <h1 className="text-xl md:text-2xl font-serif font-bold text-primary mb-10">
+              Event Table
+            </h1>
+            <p className="text-gray-600">
+              SWFP event verification dataset.
+            </p>
+          </header>
+
+          {/* TABLE */}
+          {rows.length > 0 && (
+            <div className="overflow-x-auto mt-4">
+              <table className="min-w-full border border-gray-200 text-sm">
+                <thead className="bg-gray-100">
+                  <tr>
+                    {columns.map((col) => (
+                      <th key={col} className="px-3 py-2 border text-left">
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {rows.map((row, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      {columns.map((col) => (
+                        <td key={col} className="px-3 py-2 border">
+                          {row[col]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* DOWNLOAD */}
+          <div className="bg-white border rounded-xl p-4 mt-6">
+            {file ? (
+              <div className="flex justify-center">
+                <a
+                  href={file}
+                  download
+                  className="px-5 py-2 bg-green-600 text-white rounded-lg"
+                >
+                  Download Excel
+                </a>
+              </div>
+            ) : (
+              <p className="text-center py-10">Loading...</p>
+            )}
+          </div>
 
         </div>
       </div>
-    //</PageLayout>
+    </div>
   );
 }

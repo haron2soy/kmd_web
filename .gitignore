@@ -17,7 +17,9 @@ generatedaps12/
 venv/
 env/
 .rsmc-env/
-
+cookies.txt
 # VSCode
 .vscode/
 *.pyc
+django_errors.log
+

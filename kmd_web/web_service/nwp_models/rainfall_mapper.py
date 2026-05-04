@@ -7,6 +7,13 @@ Spatial Rainfall Map Class (Hourly Rainfall)
 - Produces ONE rainfall map
 ----------------------------------------------------------
 """
+import os
+os.environ["CARTOPY_DATA_DIR"] = "/opt/cartopy_data"
+os.environ["CARTOPY_USER_BACKGROUNDS"] = "/opt/cartopy_data"
+os.environ["CARTOPY_PREBUILT_DIR"] = "/opt/cartopy_data"
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 
 import xarray as xr
 import matplotlib
@@ -14,10 +21,10 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
+#import cartopy.crs as ccrs
+#import cartopy.feature as cfeature
 import numpy as np
-import os
+import cartopy.io.shapereader as shp
 
 
 class RainfallMapper:
@@ -80,13 +87,13 @@ class RainfallMapper:
         ax.add_feature(cfeature.LAND, facecolor='#f5f5eb', zorder=0)
         ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
 
-        
+
         ax.add_feature(cfeature.BORDERS, linewidth=0.8)
 
-        
+
         ax.add_feature(cfeature.NaturalEarthFeature(
             'cultural',
-            'admin_1_countries',
+            'admin_0_countries',
             '10m',
             edgecolor='black',
             facecolor='none',
@@ -150,7 +157,7 @@ class RainfallMapper:
 
         # Title
         ax.set_title(
-            f"{title} (mm) (WRF)\n{self.selected_time}",
+            f"{title} (mm) (WRF)",
             fontsize=14
         )
 

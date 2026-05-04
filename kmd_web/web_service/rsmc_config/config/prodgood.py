@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY","this-must-be-changed-in-production")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 #DATABASES["default"]["PASSWORD"] = os.getenv("DB_PASSWORD")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+#DEBUG = False
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 def get_list(env_var):
     value = os.getenv(env_var, "")
@@ -124,7 +124,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", "rsmc_db"),
         "USER": os.getenv("POSTGRES_USER", "haron"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "haron12345"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "HOST": os.getenv("POSTGRES_HOST", "db"),
         "PORT": "5432",
     }
 }
@@ -174,7 +174,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # --- Base directories outside Docker ---
-STORAGE_BASE_DIR = Path(os.getenv("STORAGE_BASE_DIR", "/home/haron/uploads"))
+STORAGE_BASE_DIR = Path(os.getenv("STORAGE_BASE_DIR", "/app/media"))
 MEDIA_URL = "/uploads/"
 RSMC_DIR = STORAGE_BASE_DIR / "rsmc"
 #NWP_DIR = STORAGE_BASE_DIR / "wrf-web-data-images"
@@ -221,7 +221,7 @@ EAWRF_MAPS = RSMC_DIR / year / month / "eawrf_maps"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-'''CACHES = {
+CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         #"LOCATION": "redis://127.0.0.1:6379/1",
@@ -241,22 +241,20 @@ CACHES = {
         #    "CLIENT_CLASS": "django_redis.client.DefaultClient",
         #}
     }
-}
-
+}'''
 
 #CELERY_BROKER_URL = "redis://redis:6379/0"
 #CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # Celery
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-#CELERY_BROKER_URL = "redis://redis:6379/0"
-#CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+#CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # Celery Enhancements
-
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-REDIS_URL="redis://localhost:6379/0"
+#CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+#REDIS_URL="redis://localhost:6379/0"
 
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

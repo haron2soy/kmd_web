@@ -8,24 +8,33 @@ Spatial Temperature Map Class (Full Grid, Single Time)
 - Creates ONE temperature map
 ----------------------------------------------------------
 """
+import os
+os.environ["CARTOPY_DATA_DIR"] = "/opt/cartopy_data"
+os.environ["CARTOPY_USER_BACKGROUNDS"] = "/opt/cartopy_data"
+os.environ["CARTOPY_PREBUILT_DIR"] = "/opt/cartopy_data"
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 
 import xarray as xr
 import matplotlib
 matplotlib.use('Agg')
-import os
+
 import matplotlib.pyplot as plt
 from matplotlib import colormaps
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
+#import cartopy.crs as ccrs
+#import cartopy.feature as cfeature
 from datetime import datetime
 import numpy as np
-
+import cartopy.io.shapereader as shp
+shp.gdal_config = {}
+shp._NE_DOWNLOAD_URL = None
 
 class TemperatureMapper:
     def __init__(self, ds, out_dir):
         self.ds = ds
         self.out_dir = out_dir
-        
+
         self.temp = None
         self.temp_celsius = None
         self.selected_time = None
@@ -44,7 +53,7 @@ class TemperatureMapper:
 
         self.temp = temp_slice
         self.temp_celsius = temp_slice - 273.15
-        
+
 
     # ---------------------------
     # Create map (FULL GRID)
@@ -60,7 +69,7 @@ class TemperatureMapper:
         # -----------------------------------------
         # Full grid extent from NetCDF
         # -----------------------------------------
-    
+
         lats = self.ds["xlat"].isel(Time=0)
         lons = self.ds["xlong"].isel(Time=0)
 
@@ -85,7 +94,7 @@ class TemperatureMapper:
         )
 
         base_cmap = colormaps["turbo"].resampled(len(fixed_levels) - 1)
-        
+
 
         #base_cmap = colormaps["turbo"]
         discrete_cmap = base_cmap.resampled(N_COLORS)
@@ -141,7 +150,7 @@ class TemperatureMapper:
         # 🔥 KEY ADDITION — sharp political boundaries
         ax.add_feature(cfeature.NaturalEarthFeature(
             'cultural',
-            'admin_1_countries',
+            'admin_0_countries',
             '10m',
             edgecolor='black',
             facecolor='none',

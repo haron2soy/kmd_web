@@ -21,7 +21,7 @@ MODEL_CONFIG = {
         },
     },
     "eawrf_maps": {
-        "BASE_MAP_DIR": settings.EAWRF_MAPS ,  
+        "BASE_MAP_DIR": settings.EAWRF_MAPS ,
         "prefix": "d01",
         "variables": {
             "PRECIP": "rainfall_map.png",
@@ -33,7 +33,7 @@ MODEL_CONFIG = {
 DOMAIN_MAP = {
 
     f"d{i:02d}": f"day{i}" for i in range(1, 7)
-    
+
     }
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -74,7 +74,7 @@ def get_model_field(request, model_name):
     REVERSE_DOMAIN_MAP = {v: k for k, v in DOMAIN_MAP.items()}
 
     prefix = REVERSE_DOMAIN_MAP.get(day)
-    
+
 
     model = MODEL_CONFIG.get(model_name)
     if not model:
@@ -83,10 +83,10 @@ def get_model_field(request, model_name):
     base_dir = model["BASE_MAP_DIR"]
     #prefix = model["prefix"]
     variable_map = model["variables"]
-    
+
     if not prefix:
         return HttpResponseBadRequest("Invalid or missing day")
-    
+
     if model_name == "eawrf_maps":
         run_id = find_valid_run(base_dir, prefix, datetime)
 
@@ -120,7 +120,7 @@ def get_model_field(request, model_name):
     file_path = os.path.join(folder, matched_file)
     #print("filePath:", file_path)
 
-   
+
     bounds = [
         [33.0, -5.0],
         [42.0, -5.0],
@@ -218,4 +218,3 @@ def find_valid_run(base_dir, prefix, requested_dt_str):
 
     # ✅ pick latest valid run (important if overlaps ever occur)
     valid_runs.sort(reverse=True)
-    return valid_runs[0][1]

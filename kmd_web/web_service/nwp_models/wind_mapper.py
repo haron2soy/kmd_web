@@ -1,20 +1,28 @@
+import os
+os.environ["CARTOPY_DATA_DIR"] = "/opt/cartopy_data"
+os.environ["CARTOPY_USER_BACKGROUNDS"] = "/opt/cartopy_data"
+os.environ["CARTOPY_PREBUILT_DIR"] = "/opt/cartopy_data"
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+
 import xarray as xr
 import matplotlib
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
+#import cartopy.crs as ccrs
+#import cartopy.feature as cfeature
 import numpy as np
-import os
+#import os
 
 
 class WindMapper:
     def __init__(self, ds, out_dir):
         self.ds = ds
         self.out_dir = out_dir
-        
+
         self.u = None
         self.v = None
         self.wind_speed = None
@@ -115,7 +123,7 @@ class WindMapper:
         ax.add_feature(cfeature.LAKES, facecolor='#a8d4ff', linewidth=0.4)
 
         ax.add_feature(cfeature.NaturalEarthFeature(
-            'cultural', 'admin_1_countries', '10m',
+            'cultural', 'admin_0_countries', '10m',
             edgecolor='black', facecolor='none', linewidth=0.9
         ))
 
